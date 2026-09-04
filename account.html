@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craft & Wrapped Haven | Account Settings</title>
+  <meta name="description" content="Manage your Craft & Wrapped Haven buyer account, contact information, and security settings.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/account.css">
+</head>
+<body class="buyer-logged-in">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg bloom-navbar sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="bloom-brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Craft & Wrapped Logo" class="bloom-brand-img" />
+        <span class="bloom-brand-text">Craft & Wrapped Haven</span>
+      </a>
+      
+      <div class="d-flex align-items-center gap-2 order-lg-3">
+        <a href="cart.html" class="cart-icon-btn" aria-label="Shopping Cart">
+          <i class="bi bi-cart3"></i>
+          <span class="cart-badge">1</span>
+        </a>
+        <div class="navbar-auth-slot d-none d-lg-inline-block ms-1">
+          <!-- Rendered via global.js -->
+        </div>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bloomNavbar" aria-controls="bloomNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse justify-content-center order-lg-2" id="bloomNavbar">
+        <ul class="navbar-nav mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="shop.html">Shop Flowers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="product-details.html?id=1">Custom Bouquet</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact Us</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Account View (Exact Visual Alignment with Attached Reference) -->
+  <main class="account-page-wrapper">
+    <!-- Hidden File Input for Avatar Photo Upload -->
+    <input type="file" id="buyer-avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarFileChosen(event)">
+
+    <!-- 1. Large White Rounded Profile Card -->
+    <div class="account-profile-card">
+      <div class="account-avatar-wrapper">
+        <div class="account-avatar-img" id="buyer-avatar-display">M</div>
+        <button type="button" class="account-avatar-badge" onclick="triggerAvatarUpload()" title="Change Profile Picture" aria-label="Change Profile Picture">
+          <i class="bi bi-camera-fill"></i>
+        </button>
+      </div>
+      
+      <h2 class="buyer-profile-name" id="buyer-name-display">Maria Santos</h2>
+
+      <button type="button" class="btn-edit-profile" onclick="handleEditProfile()">
+        <i class="bi bi-pencil-square"></i>
+        <span>Edit Profile</span>
+      </button>
+    </div>
+
+    <!-- 2. Account Settings Section Header -->
+    <div class="account-section-header">
+      <div class="account-section-title-wrap">
+        <i class="bi bi-gear-fill account-gear-icon"></i>
+        <h3 class="account-section-title">Account Settings</h3>
+      </div>
+      <div class="account-section-divider"></div>
+    </div>
+
+    <!-- 3. Account Settings List (Clean Card-Based Style) -->
+    <div class="account-settings-list">
+      <!-- 1. Edit Name -->
+      <div class="account-setting-card" onclick="handleEditName()" role="button" tabindex="0">
+        <div class="setting-card-left">
+          <div class="setting-icon-box">
+            <i class="bi bi-person"></i>
+          </div>
+          <div class="setting-text-group">
+            <div class="setting-text-title">Edit Name</div>
+            <div class="setting-text-desc">Update your full name</div>
+          </div>
+        </div>
+        <i class="bi bi-chevron-right setting-arrow-icon"></i>
+      </div>
+
+      <!-- 2. Edit Phone Number -->
+      <div class="account-setting-card" onclick="handleEditPhone()" role="button" tabindex="0">
+        <div class="setting-card-left">
+          <div class="setting-icon-box">
+            <i class="bi bi-telephone"></i>
+          </div>
+          <div class="setting-text-group">
+            <div class="setting-text-title">Edit Phone Number</div>
+            <div class="setting-text-desc">Update your contact number</div>
+          </div>
+        </div>
+        <i class="bi bi-chevron-right setting-arrow-icon"></i>
+      </div>
+
+      <!-- 3. Security -->
+      <div class="account-setting-card" onclick="handleEditSecurity()" role="button" tabindex="0">
+        <div class="setting-card-left">
+          <div class="setting-icon-box">
+            <i class="bi bi-shield"></i>
+          </div>
+          <div class="setting-text-group">
+            <div class="setting-text-title">Security</div>
+            <div class="setting-text-desc">Password & account security</div>
+          </div>
+        </div>
+        <i class="bi bi-chevron-right setting-arrow-icon"></i>
+      </div>
+
+      <!-- 4. Logout -->
+      <div class="account-setting-card danger-card" onclick="handleAccountLogout()" role="button" tabindex="0">
+        <div class="setting-card-left">
+          <div class="setting-icon-box danger-icon-box">
+            <i class="bi bi-box-arrow-right"></i>
+          </div>
+          <div class="setting-text-group">
+            <div class="setting-text-title danger-title">Logout</div>
+            <div class="setting-text-desc">Sign out from your account</div>
+          </div>
+        </div>
+        <i class="bi bi-chevron-right setting-arrow-icon danger-arrow"></i>
+      </div>
+    </div>
+
+    <!-- 4. Need Help? Support Card -->
+    <div class="account-help-card" onclick="openSellerChat()" role="button" tabindex="0">
+      <div class="help-card-left">
+        <div class="help-icon-box">
+          <i class="bi bi-headset"></i>
+        </div>
+        <div class="help-text-group">
+          <div class="help-title">Need Help?</div>
+          <div class="help-desc">Our support team is here to help you anytime.</div>
+        </div>
+      </div>
+      <div class="help-action-btn" title="Chat with support">
+        <i class="bi bi-chevron-right"></i>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer (Visible on desktop) -->
+  <footer class="bloom-footer d-none d-lg-block">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <img src="assets/images/logo.png" alt="Craft & Wrapped Logo" style="width: 42px; height: 42px; border-radius: 50%; object-fit: contain;">
+            <span class="fs-5 fw-bold text-dark">Craft & Wrapped Haven</span>
+          </div>
+          <p class="text-muted small">
+            Elevating life's precious milestones with bespoke floral art, artisanal packaging, and effortless online flower ordering.
+          </p>
+          <div class="d-flex gap-2 social-links">
+            <a href="https://www.facebook.com/share/19dB3XW5o1/?mibextid=wwXIfr" target="_blank" rel="noopener" class="social-icon-btn" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com" target="_blank" rel="noopener" class="social-icon-btn" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.tiktok.com" target="_blank" rel="noopener" class="social-icon-btn" aria-label="TikTok"><i class="bi bi-tiktok"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6 col-6">
+          <h5 class="footer-title">Quick Links</h5>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop Flowers</a></li>
+            <li><a href="product-details.html?id=1">Custom Bouquet</a></li>
+            <li><a href="cart.html">Shopping Cart</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6 col-6">
+          <h5 class="footer-title">Categories</h5>
+          <ul class="footer-links">
+            <li><a href="shop.html?category=Fuzzy%20Wire">Fuzzy Wire Flowers</a></li>
+            <li><a href="shop.html?category=Satin%20Ribbon">Satin Ribbon Flowers</a></li>
+            <li><a href="shop.html?category=Fillers">Fillers & Wraps</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h5 class="footer-title">Contact</h5>
+          <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill text-pink me-2"></i>Paralan, Concepcion, Pampanga</p>
+          <p class="text-muted small mb-2"><i class="bi bi-telephone-fill text-pink me-2"></i>0985 487 7820</p>
+          <p class="text-muted small"><i class="bi bi-envelope-fill text-pink me-2"></i>support@craftandwrapped.com</p>
+        </div>
+      </div>
+      <div class="footer-bottom text-center pt-4 mt-4 border-top">
+        <p class="text-muted small mb-0">&copy; 2026 Craft & Wrapped Haven. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Application JS Modules -->
+  <script src="assets/js/global.js"></script>
+  <script src="assets/js/cart.js"></script>
+
+  <!-- Dedicated Account Page Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initAccountPage();
+    });
+
+    function initAccountPage() {
+      let buyer = getActiveBuyer();
+      if (!buyer) {
+        // Fallback for direct viewing / demo state
+        const buyers = getRegisteredBuyers();
+        buyer = (buyers && buyers.length > 0) ? buyers[0] : DEFAULT_DEMO_BUYERS[0];
+        setActiveBuyer(buyer);
+      }
+
+      const avatarEl = document.getElementById('buyer-avatar-display');
+      const nameEl = document.getElementById('buyer-name-display');
+
+      if (avatarEl) {
+        if (buyer.avatar) {
+          avatarEl.innerHTML = `<img src="${buyer.avatar}" alt="${buyer.name || 'User'}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+        } else {
+          avatarEl.textContent = (buyer.name || 'User').charAt(0).toUpperCase();
+        }
+      }
+
+      if (nameEl) {
+        nameEl.textContent = buyer.name || 'Maria Santos';
+      }
+    }
+
+    // Avatar Upload Trigger & Handler
+    function triggerAvatarUpload() {
+      const fileInput = document.getElementById('buyer-avatar-file-input');
+      if (fileInput) {
+        fileInput.click();
+      }
+    }
+
+    function handleAvatarFileChosen(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Invalid File',
+          text: 'Please select an image file (PNG, JPG, JPEG, WebP).',
+          confirmButtonColor: '#e8839b'
+        });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        updateBuyerRecord({ avatar: dataUrl });
+        initAccountPage();
+        updateNavbarAuth();
+        Swal.fire({
+          icon: 'success',
+          title: 'Profile Photo Updated!',
+          text: 'Your new avatar has been saved successfully.',
+          timer: 1500,
+          showConfirmButton: false,
+          width: '320px'
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Edit Profile Modal (Name + Photo Option)
+    function handleEditProfile() {
+      const buyer = getActiveBuyer();
+      if (!buyer) return;
+
+      Swal.fire({
+        title: 'Edit Profile',
+        html: `
+          <div class="text-start font-sans">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted mb-1">Full Name</label>
+              <input type="text" id="swal-profile-name" class="form-control rounded-3" value="${buyer.name || ''}" placeholder="Enter full name">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted mb-1">Profile Photo</label>
+              <div class="d-flex gap-2 align-items-center">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5 fw-semibold" onclick="triggerAvatarUpload(); Swal.close();">
+                  <i class="bi bi-camera me-1"></i> Upload Photo
+                </button>
+                ${buyer.avatar ? `
+                  <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1.5" onclick="removeAvatar(); Swal.close();">
+                    <i class="bi bi-trash"></i> Remove
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Save Changes',
+        confirmButtonColor: '#e8839b',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#64748b',
+        preConfirm: () => {
+          const name = document.getElementById('swal-profile-name')?.value.trim();
+          if (!name || name.length < 3) {
+            Swal.showValidationMessage('Please enter a valid name (at least 3 characters).');
+            return false;
+          }
+          return name;
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          updateBuyerRecord({ name: result.value });
+          initAccountPage();
+          updateNavbarAuth();
+          Swal.fire({
+            icon: 'success',
+            title: 'Profile Updated!',
+            text: 'Your profile has been saved successfully.',
+            timer: 1500,
+            showConfirmButton: false,
+            width: '320px'
+          });
+        }
+      });
+    }
+
+    function removeAvatar() {
+      updateBuyerRecord({ avatar: null });
+      initAccountPage();
+      updateNavbarAuth();
+      Swal.fire({
+        icon: 'success',
+        title: 'Avatar Removed',
+        text: 'Default initial avatar restored.',
+        timer: 1500,
+        showConfirmButton: false,
+        width: '320px'
+      });
+    }
+
+    // 1. Edit Name
+    function handleEditName() {
+      const buyer = getActiveBuyer();
+      if (!buyer) return;
+
+      Swal.fire({
+        title: 'Edit Full Name',
+        input: 'text',
+        inputValue: buyer.name,
+        inputPlaceholder: 'Enter your full name',
+        showCancelButton: true,
+        confirmButtonText: 'Save Changes',
+        confirmButtonColor: '#e8839b',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#64748b',
+        inputValidator: (value) => {
+          if (!value || value.trim().length < 3) {
+            return 'Please enter a valid name (at least 3 letters).';
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          const newName = result.value.trim();
+          updateBuyerRecord({ name: newName });
+          initAccountPage();
+          updateNavbarAuth();
+          Swal.fire({
+            icon: 'success',
+            title: 'Name Updated!',
+            text: 'Your full name has been saved successfully.',
+            timer: 1500,
+            showConfirmButton: false,
+            width: '320px'
+          });
+        }
+      });
+    }
+
+    // 2. Edit Phone Number
+    function handleEditPhone() {
+      const buyer = getActiveBuyer();
+      if (!buyer) return;
+
+      Swal.fire({
+        title: 'Edit Phone Number',
+        input: 'tel',
+        inputValue: buyer.mobile || '',
+        inputPlaceholder: '09171234567',
+        showCancelButton: true,
+        confirmButtonText: 'Save Phone',
+        confirmButtonColor: '#e8839b',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#64748b',
+        inputValidator: (value) => {
+          const phoneRegex = /^09\d{9}$/;
+          if (!value || !phoneRegex.test(value.trim())) {
+            return 'Please enter a valid 11-digit Philippine mobile number starting with 09.';
+          }
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          const newPhone = result.value.trim();
+          updateBuyerRecord({ mobile: newPhone });
+          initAccountPage();
+          updateNavbarAuth();
+          Swal.fire({
+            icon: 'success',
+            title: 'Phone Number Saved!',
+            text: 'Your contact number has been updated.',
+            timer: 1500,
+            showConfirmButton: false,
+            width: '320px'
+          });
+        }
+      });
+    }
+
+    // 3. Security (Change Password)
+    function handleEditSecurity() {
+      const buyer = getActiveBuyer();
+      if (!buyer) return;
+
+      Swal.fire({
+        title: 'Change Password',
+        html: `
+          <div class="text-start font-sans">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-muted mb-1">New Password</label>
+              <input type="password" id="swal-new-pass" class="form-control rounded-3" placeholder="At least 6 characters">
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-bold text-muted mb-1">Confirm New Password</label>
+              <input type="password" id="swal-confirm-pass" class="form-control rounded-3" placeholder="Re-type new password">
+            </div>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Update Password',
+        confirmButtonColor: '#e8839b',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#64748b',
+        preConfirm: () => {
+          const newPass = document.getElementById('swal-new-pass').value;
+          const confirmPass = document.getElementById('swal-confirm-pass').value;
+          if (!newPass || newPass.length < 6) {
+            Swal.showValidationMessage('Password must be at least 6 characters long.');
+            return false;
+          }
+          if (newPass !== confirmPass) {
+            Swal.showValidationMessage('New passwords do not match.');
+            return false;
+          }
+          return newPass;
+        }
+      }).then((result) => {
+        if (result.isConfirmed && result.value) {
+          updateBuyerRecord({ password: result.value });
+          Swal.fire({
+            icon: 'success',
+            title: 'Password Updated!',
+            text: 'Your account security credentials have been changed.',
+            timer: 1600,
+            showConfirmButton: false,
+            width: '320px'
+          });
+        }
+      });
+    }
+
+    // 4. Logout
+    function handleAccountLogout() {
+      Swal.fire({
+        title: 'Sign Out?',
+        text: 'Are you sure you want to log out from your account?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, Log Out',
+        confirmButtonColor: '#dc2626',
+        cancelButtonText: 'Cancel',
+        cancelButtonColor: '#64748b',
+        width: '360px',
+        customClass: { popup: 'compact-swal-popup' }
+      }).then((result) => {
+        if (result.isConfirmed) {
+          logoutBuyer();
+          window.location.href = 'index.html';
+        }
+      });
+    }
+
+    function updateBuyerRecord(updatedFields) {
+      const buyer = getActiveBuyer();
+      if (!buyer) return;
+
+      const updatedBuyer = { ...buyer, ...updatedFields };
+      setActiveBuyer(updatedBuyer);
+
+      // Also update in registered buyers list
+      const buyers = getRegisteredBuyers();
+      const idx = buyers.findIndex(b => (b.id && b.id === buyer.id) || (b.email && buyer.email && b.email.toLowerCase() === buyer.email.toLowerCase()));
+      if (idx !== -1) {
+        buyers[idx] = { ...buyers[idx], ...updatedFields };
+        saveRegisteredBuyers(buyers);
+      }
+    }
+  </script>
+</body>
+</html>

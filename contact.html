@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us | Craft & Wrapped Haven</title>
+  <meta name="description" content="Get in touch with Craft & Wrapped Haven boutique for custom wedding florals, bulk order inquiries, and flower delivery assistance.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  
+  <!-- Custom Page Styles -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+  <link rel="stylesheet" href="assets/css/contact.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg bloom-navbar sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="bloom-brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Craft & Wrapped Logo" class="bloom-brand-img" />
+        <span class="bloom-brand-text">Craft & Wrapped Haven</span>
+      </a>
+      
+      <div class="d-flex align-items-center gap-2 order-lg-3">
+        <a href="cart.html" class="cart-icon-btn" style="display: none;" aria-label="Shopping Cart">
+          <i class="bi bi-cart3"></i>
+          <span class="cart-badge">0</span>
+        </a>
+        <div class="navbar-auth-slot d-none d-lg-inline-block ms-1">
+          <button class="btn btn-sm btn-bloom-outline" onclick="openBuyerLoginModal()" style="border-radius: 20px; font-size: 0.85rem; padding: 0.35rem 0.85rem; font-weight: 600;">
+            Login
+          </button>
+        </div>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bloomNavbar" aria-controls="bloomNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse justify-content-center order-lg-2" id="bloomNavbar">
+        <ul class="navbar-nav mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="shop.html">Shop Flowers</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="product-details.html?id=1">Custom Bouquet</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="contact.html">Contact Us</a>
+          </li>
+        </ul>
+        <div class="navbar-mobile-auth d-lg-none mt-3 pt-3 border-top">
+          <button class="btn btn-bloom-primary w-100 py-2.5 rounded-pill fw-semibold shadow-sm" onclick="openBuyerLoginModal(); closeMobileNav();" style="font-size: 0.9rem;">
+            <i class="bi bi-box-arrow-in-right me-1.5"></i> Login / Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header Banner -->
+  <header class="page-header-banner">
+    <div class="container">
+      <h1 class="page-header-title">Get in Touch</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-bloom mb-0">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Contact Section -->
+  <main class="py-4">
+    <div class="container">
+      <!-- Contact Cards Row -->
+      <div class="row g-3 g-md-4 mb-4 mb-md-5">
+        <div class="col-6 col-md-3">
+          <div class="contact-info-card text-center">
+            <div class="contact-icon-box">
+              <i class="bi bi-geo-alt-fill"></i>
+            </div>
+            <h5 class="h6 font-serif fw-bold mb-2">Location</h5>
+            <p class="small text-muted mb-0">Paralan, Concepcion, Pampanga</p>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="contact-info-card text-center">
+            <div class="contact-icon-box">
+              <i class="bi bi-telephone-fill"></i>
+            </div>
+            <h5 class="h6 font-serif fw-bold mb-2">Phone & WhatsApp</h5>
+            <p class="small text-muted mb-0">+63 (917) 888-BLOOM<br>+63 (2) 8888-5555</p>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="contact-info-card text-center">
+            <div class="contact-icon-box">
+              <i class="bi bi-envelope-heart-fill"></i>
+            </div>
+            <h5 class="h6 font-serif fw-bold mb-2">Email Support</h5>
+            <p class="small text-muted mb-0">hello@craftwrappedhaven.com<br>support@craftwrappedhaven.com</p>
+          </div>
+        </div>
+
+        <div class="col-6 col-md-3">
+          <div class="contact-info-card text-center">
+            <div class="contact-icon-box">
+              <i class="bi bi-clock-fill"></i>
+            </div>
+            <h5 class="h6 font-serif fw-bold mb-2">Operating Hours</h5>
+            <p class="small text-muted mb-0">Mon - Sat: 8 AM - 7 PM<br>Sunday: 9 AM - 5 PM</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Form & Map/FAQ Row -->
+      <div class="row g-5">
+        <!-- Inquiry Form -->
+        <div class="col-lg-6">
+          <div class="contact-form-card">
+            <h3 class="font-serif fw-bold mb-1">Send Us a Message</h3>
+            <p class="text-muted small mb-4">Have a special request or event inquiry? Fill out the form below and our head florist will get back to you promptly.</p>
+
+            <form id="contact-form" class="needs-validation" novalidate>
+              <div class="mb-3">
+                <label for="contact-name" class="form-label fw-semibold small">Your Full Name *</label>
+                <input type="text" id="contact-name" class="form-control" placeholder="e.g. Clara Santos" required>
+                <div class="invalid-feedback">Please enter your name.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="contact-email" class="form-label fw-semibold small">Your Email Address *</label>
+                <input type="email" id="contact-email" class="form-control" placeholder="clara@example.com" required>
+                <div class="invalid-feedback">Please enter a valid email address.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="contact-subject" class="form-label fw-semibold small">Subject *</label>
+                <input type="text" id="contact-subject" class="form-control" placeholder="Custom Order Inquiry / Wedding Florals" required>
+                <div class="invalid-feedback">Please enter a subject.</div>
+              </div>
+
+              <div class="mb-4">
+                <label for="contact-message" class="form-label fw-semibold small">Your Message *</label>
+                <textarea id="contact-message" class="form-control" rows="4" placeholder="Tell us how we can help make your occasion special..." required></textarea>
+                <div class="invalid-feedback">Please write a message.</div>
+              </div>
+
+              <button type="submit" class="btn-bloom-primary w-100 py-3">
+                <i class="bi bi-send-fill me-1"></i> Send Inquiry Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- FAQ Accordion -->
+        <div class="col-lg-6">
+          <div class="mb-4">
+            <span class="section-tag mb-2">Help Center</span>
+            <h3 class="font-serif fw-bold">Frequently Asked Questions</h3>
+          </div>
+
+          <div class="accordion accordion-bloom" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq-heading-1">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-1" aria-expanded="true" aria-controls="faq-collapse-1">
+                  How does flower delivery work?
+                </button>
+              </h2>
+              <div id="faq-collapse-1" class="accordion-collapse collapse show" aria-labelledby="faq-heading-1" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted small">
+                  You can schedule your preferred delivery date and time slot (Morning, Afternoon, or Evening) during checkout. Our delivery couriers handle every bouquet with extreme care in fresh temperature-controlled conditions.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq-heading-2">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-2" aria-expanded="false" aria-controls="faq-collapse-2">
+                  Can I customize add-ons for my bouquet?
+                </button>
+              </h2>
+              <div id="faq-collapse-2" class="accordion-collapse collapse" aria-labelledby="faq-heading-2" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted small">
+                  Yes! On our <strong>Custom Bouquet</strong> page, you can choose optional add-ons including satin ribbons (₱50), personalized greeting cards (₱30), gourmet chocolate boxes (₱180), teddy bears (₱250), fairy lights (₱120), and extra rose stems (₱80 each). The total price automatically updates in real time.
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq-heading-3">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-3" aria-expanded="false" aria-controls="faq-collapse-3">
+                  How long do your fresh flowers stay vibrant?
+                </button>
+              </h2>
+              <div id="faq-collapse-3" class="accordion-collapse collapse" aria-labelledby="faq-heading-3" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted small">
+                  Our flowers are farm-fresh cut and typically remain vibrant for 7 to 12 days with proper care (trimming stems diagonally every 2 days and refreshing clean water with flower food).
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="faq-heading-4">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-collapse-4" aria-expanded="false" aria-controls="faq-collapse-4">
+                  What payment options are accepted?
+                </button>
+              </h2>
+              <div id="faq-collapse-4" class="accordion-collapse collapse" aria-labelledby="faq-heading-4" data-bs-parent="#faqAccordion">
+                <div class="accordion-body text-muted small">
+                  We accept Cash on Delivery (COD), GCash / E-Wallet transfers, and major Credit/Debit cards (Visa, Mastercard, JCB).
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bloom-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <a class="footer-brand d-inline-block mb-2" href="index.html">
+            <img src="assets/images/logo.png" alt="Craft & Wrapped" class="bloom-brand-img" style="height: 60px;" />
+          </a>
+          <p class="footer-text">Elevating life's precious milestones with bespoke floral art, artisanal packaging, and effortless online flower ordering.</p>
+          <div class="mt-3">
+            <a href="https://www.facebook.com/share/19dB3XW5o1/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="social-icon" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="social-icon" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+            <a href="#" class="social-icon" aria-label="Pinterest"><i class="bi bi-pinterest"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop Flowers</a></li>
+            <li><a href="product-details.html?id=1">Custom Bouquet</a></li>
+            <li><a href="cart.html">Shopping Cart</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-title">Flower Categories</h4>
+          <ul class="footer-links">
+            <li><a href="shop.html?category=Roses">Ecuador Roses</a></li>
+            <li><a href="shop.html?category=Sunflowers">Sunflowers</a></li>
+            <li><a href="shop.html?category=Lilies">Crimson Lilies</a></li>
+            <li><a href="shop.html?category=Tulips">Pastel Tulips</a></li>
+            <li><a href="shop.html?category=Orchids">Royal Orchids</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-title">Store Hours</h4>
+          <p class="footer-text mb-1"><i class="bi bi-clock me-2 text-pink"></i> Mon - Sat: 8:00 AM - 7:00 PM</p>
+          <p class="footer-text mb-3"><i class="bi bi-clock me-2 text-pink"></i> Sunday: 9:00 AM - 5:00 PM</p>
+          <p class="footer-text mb-0"><i class="bi bi-geo-alt me-2 text-pink"></i> Paralan, Concepcion, Pampanga</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 Craft & Wrapped Haven. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- JavaScript Modules -->
+  <script src="assets/js/global.js"></script>
+  <script src="assets/js/contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official Order Form | Craft & Wrapped Haven</title>
+  <meta name="description" content="Submit your official Craft & Wrapped Haven order form for custom Fuzzy Wire and Satin Ribbon bouquets with 50% Down Payment option.">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  
+  <!-- SweetAlert2 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  
+  <!-- Custom Page Styles -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <link rel="stylesheet" href="assets/css/home.css">
+  <link rel="stylesheet" href="assets/css/checkout.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg bloom-navbar sticky-top">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="bloom-brand" href="index.html">
+        <img src="assets/images/logo.png" alt="Craft & Wrapped Logo" class="bloom-brand-img" />
+        <span class="bloom-brand-text">Craft & Wrapped Haven</span>
+      </a>
+      
+      <div class="d-flex align-items-center gap-2 order-lg-3">
+        <a href="cart.html" class="cart-icon-btn" style="display: none;" aria-label="Shopping Cart">
+          <i class="bi bi-cart3"></i>
+          <span class="cart-badge">0</span>
+        </a>
+        <div class="navbar-auth-slot d-none d-lg-inline-block ms-1">
+          <button class="btn btn-sm btn-bloom-outline" onclick="openBuyerLoginModal()" style="border-radius: 20px; font-size: 0.85rem; padding: 0.35rem 0.85rem; font-weight: 600;">
+            Login
+          </button>
+        </div>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bloomNavbar" aria-controls="bloomNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+
+      <div class="collapse navbar-collapse justify-content-center order-lg-2" id="bloomNavbar">
+        <ul class="navbar-nav mb-2 mb-lg-0 gap-1">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="shop.html">Shop Catalog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="product-details.html">Custom Bouquet</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contact.html">Contact Us</a>
+          </li>
+        </ul>
+        <div class="navbar-mobile-auth d-lg-none mt-3 pt-3 border-top">
+          <button class="btn btn-bloom-primary w-100 py-2.5 rounded-pill fw-semibold shadow-sm" onclick="openBuyerLoginModal(); closeMobileNav();" style="font-size: 0.9rem;">
+            <i class="bi bi-box-arrow-in-right me-1.5"></i> Login / Register
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Page Header Banner -->
+  <header class="page-header-banner">
+    <div class="container">
+      <h1 class="page-header-title">Official Order Form</h1>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-bloom mb-0">
+          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+          <li class="breadcrumb-item"><a href="cart.html">Shopping Cart</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Official Order Form</li>
+        </ol>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Order Form Section -->
+  <main class="py-4">
+    <div class="container">
+      
+      <!-- Official Reminders Box -->
+      <div class="alert bg-pink-soft border-start border-4 border-danger p-4 rounded-3 shadow-sm mb-4">
+        <h5 class="fw-bold text-dark-rose mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Craft & Wrapped Haven Reminders:</h5>
+        <div class="row g-3 small text-dark">
+          <div class="col-md-6">
+            <ul class="mb-0">
+              <li><strong>Strictly No Cancellation</strong> of orders once confirmed.</li>
+              <li><strong>50% Down Payment</strong> is required to start crafting.</li>
+              <li><strong>10% - 30% Labor Fee</strong> is included in every custom order.</li>
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <ul class="mb-0">
+              <li><strong>3 - 7 Days Process</strong> lead time for handmade bouquets.</li>
+              <li><strong>Rush Orders Accepted</strong> with minimal additional fee.</li>
+              <li><strong>Pick Up, Meet Up & Delivery</strong> available (minimal fee depending on location).</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <form id="checkout-form" class="needs-validation" novalidate>
+        <div class="row g-4">
+          <!-- Left Column: Customer & Fulfillment Details -->
+          <div class="col-lg-7">
+            
+            <!-- Order Form Card -->
+            <div class="checkout-card">
+              <h2 class="checkout-card-title font-serif">
+                <i class="bi bi-clipboard-check text-pink"></i> Order Details Form
+              </h2>
+
+              <div class="row g-3">
+                <!-- Name -->
+                <div class="col-12">
+                  <label for="full-name" class="form-label fw-semibold small">NAME *</label>
+                  <input type="text" id="full-name" class="form-control" placeholder="e.g. Kuronuma Sawako" required>
+                  <div class="invalid-feedback">Please enter your full name.</div>
+                </div>
+
+                <!-- Fulfillment Mode -->
+                <div class="col-md-6">
+                  <label for="fulfillment-mode" class="form-label fw-semibold small">MODE OF FULFILLMENT *</label>
+                  <select id="fulfillment-mode" class="form-select" required>
+                    <option value="Delivery" selected>Delivery</option>
+                    <option value="Pick Up">Pick Up</option>
+                    <option value="Meet Up">Meet Up</option>
+                  </select>
+                </div>
+
+                <!-- Contact Number -->
+                <div class="col-md-6">
+                  <label for="contact-number" class="form-label fw-semibold small">CONTACT NUMBER *</label>
+                  <input type="tel" id="contact-number" class="form-control" placeholder="0912 345 6789" required>
+                  <div class="invalid-feedback">Please enter your contact number.</div>
+                </div>
+
+                <!-- Date of Meet up / Pick up / Delivery -->
+                <div class="col-md-6">
+                  <label for="order-date" class="form-label fw-semibold small">DATE OF MEET UP / PICK UP / DELIVERY *</label>
+                  <input type="date" id="order-date" class="form-control" required>
+                  <div class="invalid-feedback">Please select date.</div>
+                </div>
+
+                <!-- Time -->
+                <div class="col-md-6">
+                  <label for="order-time" class="form-label fw-semibold small">PREFERRED TIME *</label>
+                  <select id="order-time" class="form-select" required>
+                    <option value="Morning (8:00 AM - 12:00 PM)">Morning (8:00 AM - 12:00 PM)</option>
+                    <option value="Afternoon (1:00 PM - 5:00 PM)">Afternoon (1:00 PM - 5:00 PM)</option>
+                    <option value="Evening (6:00 PM - 9:00 PM)">Evening (6:00 PM - 9:00 PM)</option>
+                  </select>
+                </div>
+
+                <!-- Location -->
+                <div class="col-12">
+                  <label for="order-location" class="form-label fw-semibold small" id="location-label">LOCATION OF MEET UP / PICK UP / DELIVERY *</label>
+                  <textarea id="order-location" class="form-control" rows="2" placeholder="e.g. SM Baliwag Food Court / Complete House Address" required></textarea>
+                  <div class="invalid-feedback">Please enter location details.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode of Payment Card -->
+            <div class="checkout-card">
+              <h2 class="checkout-card-title font-serif">
+                <i class="bi bi-wallet2 text-pink"></i> MODE OF PAYMENT (GCASH / CASH)
+              </h2>
+
+              <div class="payment-method-card active">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="pay-gcash" value="GCash" checked>
+                <label class="form-check-label w-100 cursor-pointer" for="pay-gcash">
+                  <strong>GCash Mobile Wallet</strong>
+                  <span class="d-block small text-muted">Send 50% Down Payment or Full Amount to GCash #: 0917-888-9999.</span>
+                </label>
+              </div>
+
+              <div class="payment-method-card">
+                <input class="form-check-input" type="radio" name="paymentMethod" id="pay-cash" value="Cash">
+                <label class="form-check-label w-100 cursor-pointer" for="pay-cash">
+                  <strong>Cash (Upon Pick Up / Meet Up)</strong>
+                  <span class="d-block small text-muted">Pay cash upon meet up or pick up at store branch.</span>
+                </label>
+              </div>
+
+              <!-- DP Option -->
+              <div class="mt-4 pt-3 border-top">
+                <label class="form-label fw-semibold small text-dark-rose d-block">PAYMENT AMOUNT TERMS *</label>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="dpOption" id="dp-50" value="50% Down Payment" checked>
+                  <label class="form-check-label fw-semibold small" for="dp-50">50% Down Payment (Required to start craft)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="dpOption" id="dp-100" value="Full Payment (100%)">
+                  <label class="form-check-label fw-semibold small" for="dp-100">Full Payment (100%)</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: Order Breakdown & Calculation -->
+          <div class="col-lg-5">
+            <div class="checkout-summary-card">
+              <h4 class="font-serif fw-bold mb-3">Order Breakdown</h4>
+
+              <div id="checkout-items-list" class="mb-3">
+                <!-- Rendered via checkout.js -->
+              </div>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Materials Subtotal:</span>
+                <span class="fw-bold" id="checkout-subtotal">₱0</span>
+              </div>
+
+              <hr class="my-3" />
+
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="h6 font-serif fw-bold mb-0">Total Price:</span>
+                <span class="h3 font-serif fw-bold text-dark-rose mb-0" id="checkout-grand-total">₱0</span>
+              </div>
+
+              <div class="alert alert-info py-2 small mb-4">
+                <i class="bi bi-info-circle me-1"></i> 50% DP Required to confirm order.
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn-bloom-primary py-3" id="btn-place-order">
+                  <i class="bi bi-check-circle-fill me-1"></i> Submit Official Order Form
+                </button>
+              </div>
+
+              <div class="text-center mt-3">
+                <small class="text-muted"><i class="bi bi-heart-fill text-pink me-1"></i> Craft & Wrapped Haven Official Ordering</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Official Order Confirmation Modal (Formatted Sample Order Format) -->
+  <div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-labelledby="orderSuccessModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-content-bloom">
+        <div class="modal-header-bloom">
+          <div class="modal-success-icon">
+            <i class="bi bi-flower1"></i>
+          </div>
+          <h3 class="h4 font-serif mb-1" id="orderSuccessModalLabel">Craft & Wrapped Haven Order Summary</h3>
+          <p class="mb-0 small text-white-50">Official Order Ticket Generated Successfully</p>
+        </div>
+
+        <div class="modal-body p-4">
+          <div class="text-center mb-4">
+            <span class="badge bg-pink-soft text-dark-rose px-3 py-2 fs-6">Order Code: <strong id="modal-order-id">BLM-123456</strong></span>
+          </div>
+
+          <div class="bg-light p-4 rounded-3 border mb-4 font-monospace small" style="line-height: 1.8;">
+            <div class="text-center fw-bold fs-6 mb-3 text-uppercase border-bottom pb-2">SAMPLE ORDER FORMAT RECAP</div>
+            
+            <p class="mb-1"><strong>NAME:</strong> <span id="modal-customer-name">Kuronuma Sawako</span></p>
+            <p class="mb-1"><strong>DATE & TIME OF MEET UP/ PICK UP/ DELIVERY:</strong> <span id="modal-slot">July 30, 2025</span></p>
+            <p class="mb-1"><strong>LOCATION OF MEET UP/ PICK UP/ DELIVERY:</strong> <span id="modal-location">SM Baliwag Food Court</span></p>
+            <p class="mb-1"><strong>CONTACT NUMBER:</strong> <span id="modal-contact">09123456789</span></p>
+            <p class="mb-3"><strong>MODE OF PAYMENT:</strong> <span id="modal-payment">CASH</span></p>
+
+            <div class="fw-bold border-top pt-2 mt-2">ORDER BREAKDOWN:</div>
+            <p class="mb-1 text-pink"><strong>• TYPE OF FLOWER/S, PCS., & COLOR/S:</strong><br><span id="modal-order-flowers">TULIPS 3PCS PINK</span></p>
+            <p class="mb-1"><strong>• TYPE OF FILLER/S, PCS., & COLOR/S:</strong><br><span id="modal-order-fillers">SPIRAL 3PCS WHITE</span></p>
+            <p class="mb-1"><strong>• COLOR/S OF WRAPPER:</strong> <span id="modal-order-wrapper">WHITE & PINK</span></p>
+            <p class="mb-1"><strong>• 1 COLOR OF RIBBON:</strong> <span id="modal-order-ribbon">JFY BIG</span></p>
+            <p class="mb-2"><strong>• ADD ONS (OPTIONAL):</strong> <span id="modal-order-addons">1 FAIRY LIGHTS, 1 BOUQUET BAG</span></p>
+
+            <div class="border-top pt-2 mt-2 d-flex justify-content-between fs-6 fw-bold text-dark">
+              <span>GRAND TOTAL:</span>
+              <span class="text-dark-rose" id="modal-total">₱1,250</span>
+            </div>
+            <div class="d-flex justify-content-between small text-muted">
+              <span>50% Down Payment Required:</span>
+              <span class="fw-bold text-danger" id="modal-dp-amount">₱625</span>
+            </div>
+          </div>
+
+          <div class="alert alert-warning small mb-4">
+            <i class="bi bi-clock-history me-1"></i> Please send your 50% Down Payment receipt to <a href="https://www.facebook.com/share/19dB3XW5o1/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="fw-bold text-dark text-decoration-underline">CRAFT & WRAPPED HAVEN Facebook page</a> to confirm your crafting schedule!
+          </div>
+
+          <a href="index.html" class="btn-bloom-primary w-100 py-2.5 text-center">
+            Return to Home Page
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bloom-footer">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+          <a class="footer-brand d-inline-block mb-2" href="index.html">
+            <img src="assets/images/logo.png" alt="Craft & Wrapped" class="bloom-brand-img" style="height: 60px;" />
+          </a>
+          <p class="footer-text">Elevating life's precious milestones with bespoke floral art, artisanal packaging, and effortless online flower ordering.</p>
+        </div>
+        <div class="col-lg-2 col-md-6">
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="shop.html">Shop Catalog</a></li>
+            <li><a href="product-details.html">Custom Bouquet</a></li>
+            <li><a href="cart.html">Shopping Cart</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-title">Handcrafted Stems</h4>
+          <ul class="footer-links">
+            <li><a href="shop.html?category=Fuzzy Wire">Fuzzy Wire Flowers</a></li>
+            <li><a href="shop.html?category=Satin Ribbon">Satin Ribbon Flowers</a></li>
+            <li><a href="shop.html">Custom Fillers</a></li>
+            <li><a href="shop.html">Special Wrappers</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <h4 class="footer-title">Store Hours & Social</h4>
+          <p class="footer-text mb-1"><i class="bi bi-clock me-2 text-pink"></i> Mon - Sat: 8:00 AM - 7:00 PM</p>
+          <p class="footer-text mb-2"><a href="https://www.facebook.com/share/19dB3XW5o1/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="text-decoration-none text-muted"><i class="bi bi-facebook me-2 text-pink"></i> CRAFT & WRAPPED HAVEN</a></p>
+          <p class="footer-text mb-0"><i class="bi bi-geo-alt me-2 text-pink"></i> Paralan, Concepcion, Pampanga</p>
+        </div>
+      </div>
+
+      <div class="footer-bottom text-center">
+        <p class="mb-0">&copy; 2026 Craft & Wrapped Haven. All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- JavaScript Modules -->
+  <script src="assets/js/global.js"></script>
+  <script src="assets/js/checkout.js"></script>
+</body>
+</html>

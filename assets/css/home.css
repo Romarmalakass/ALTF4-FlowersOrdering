@@ -1,0 +1,385 @@
+/* ==========================================================================
+   BLOOMIFY - HOME PAGE STYLESHEET (assets/css/home.css)
+   ========================================================================== */
+
+/* --- Hero Section --- */
+.hero-section {
+  position: relative;
+  padding: 5rem 0 6rem 0;
+  background: radial-gradient(circle at 80% 20%, rgba(248, 192, 205, 0.35) 0%, rgba(255, 250, 252, 1) 70%);
+  overflow: hidden;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  line-height: 1.15;
+  margin-bottom: 1.25rem;
+}
+
+@media (min-width: 992px) {
+  .hero-title {
+    font-size: 3.8rem;
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  max-width: 540px;
+}
+
+.hero-img-wrapper {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: visible;
+}
+
+.hero-img-main {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  object-fit: cover;
+  height: 480px;
+  border: 4px solid #fff;
+}
+
+.hero-floating-card {
+  position: absolute;
+  bottom: -25px;
+  left: -20px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.4rem;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-hover);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  animation: floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hero-badge-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  color: var(--pink-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+/* --- Category Cards --- */
+.category-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  height: 220px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-normal);
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+}
+
+.category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.category-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(37, 22, 28, 0.1) 0%, rgba(37, 22, 28, 0.75) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  color: #fff;
+  transition: var(--transition-fast);
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+}
+
+.category-card:hover img {
+  transform: scale(1.1);
+}
+
+.category-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  margin-bottom: 0.2rem;
+  color: #fff;
+}
+
+.category-card-subtitle {
+  font-size: 0.85rem;
+  color: var(--pink-accent);
+  margin-bottom: 0;
+}
+
+/* --- Product Cards (Shared Card UI) --- */
+.flower-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: var(--transition-normal);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.flower-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--pink-primary);
+}
+
+.flower-card-img-wrapper {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--pink-soft);
+}
+
+.flower-card-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.4s ease;
+}
+
+.flower-card:hover .flower-card-img {
+  transform: scale(1.08);
+}
+
+.card-badge-container {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 2;
+}
+
+.bloom-badge {
+  font-size: 0.725rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-bestseller {
+  background-color: var(--dark-rose);
+  color: #fff;
+}
+
+.badge-fresh {
+  background-color: var(--sage-accent);
+  color: #fff;
+}
+
+.flower-card-body {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.flower-category-tag {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: var(--pink-primary);
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-bottom: 0.35rem;
+}
+
+.flower-card-title {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.flower-rating {
+  font-size: 0.85rem;
+  color: #f59e0b;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.flower-rating span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.flower-price-row {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--pink-soft);
+}
+
+.flower-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--dark-rose);
+}
+
+.flower-original-price {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-decoration: line-through;
+  margin-left: 0.4rem;
+}
+
+/* --- Features Section --- */
+.feature-box {
+  text-align: center;
+  padding: 2.25rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-fast);
+}
+
+.feature-box:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--pink-primary);
+}
+
+.feature-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  color: var(--dark-rose);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+/* --- Testimonials --- */
+.testimonial-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+}
+
+.testimonial-avatar {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--pink-primary);
+}
+
+/* --- Mobile Responsiveness for Home Page --- */
+@media (max-width: 767.98px) {
+  .hero-section {
+    padding: 2.75rem 0 3.5rem 0;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2.1rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem;
+    margin: 0 auto 1.5rem auto;
+  }
+
+  .hero-img-main {
+    height: 280px;
+    margin-top: 1rem;
+  }
+
+  .hero-floating-card {
+    position: static;
+    margin-top: 1rem;
+    animation: none;
+    justify-content: center;
+  }
+
+  .feature-box {
+    padding: 1.5rem 1rem;
+  }
+
+  .feature-icon-wrapper {
+    width: 55px;
+    height: 55px;
+    font-size: 1.5rem;
+    margin-bottom: 0.85rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .hero-section .d-flex.gap-3 {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-section .btn-bloom-primary,
+  .hero-section .btn-bloom-outline {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .flower-card-img-wrapper {
+    height: 150px;
+  }
+
+  .flower-card-body {
+    padding: 0.85rem;
+  }
+
+  .flower-card-title {
+    font-size: 0.95rem;
+  }
+
+  .flower-price {
+    font-size: 1.05rem;
+  }
+}

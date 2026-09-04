@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | Craft & Wrapped Haven</title>
+  <meta name="description" content="Official Admin Order Management & Live Customer Chat for Craft & Wrapped Haven">
+  
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- SweetAlert2 CSS & JS -->
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Page Custom Styles -->
+  <link rel="stylesheet" href="assets/css/global.css">
+  <style>
+    body {
+      background-color: #ffffff;
+      font-family: 'Poppins', sans-serif !important;
+      color: #2b1820;
+      overflow-x: hidden;
+    }
+    
+    * {
+      font-family: 'Poppins', sans-serif !important;
+      box-sizing: border-box;
+    }
+
+    /* Layout Wrapper */
+    .admin-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Clean Minimalist Left Sidebar */
+    .admin-sidebar {
+      width: 240px;
+      min-width: 240px;
+      background: #ffffff;
+      border-right: 1px solid #f0e2e7;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 1000;
+      padding: 1.25rem 0.85rem;
+    }
+
+    .admin-sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.25rem 0.5rem 1rem 0.5rem;
+      border-bottom: 1px solid #f4e8ed;
+      margin-bottom: 1rem;
+    }
+
+    .admin-sidebar-brand img {
+      height: 36px;
+      width: 36px;
+      object-fit: contain;
+    }
+
+    .admin-brand-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #7a2236;
+      line-height: 1.1;
+    }
+
+    .admin-badge-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      background: #fdf0f4;
+      color: #e8839b;
+      border: 1px solid #f2d1de;
+      padding: 0.1rem 0.45rem;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 2px;
+    }
+
+    .admin-sidebar-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex-grow: 1;
+    }
+
+    .admin-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 0.85rem;
+      border-radius: 10px;
+      color: #634a54;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .admin-nav-item:hover {
+      background: #fff5f8;
+      color: #7a2236;
+    }
+
+    .admin-nav-item.active {
+      background: #e8839b;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .admin-nav-item.active .badge {
+      background-color: #ffffff !important;
+      color: #7a2236 !important;
+    }
+
+    .admin-nav-icon {
+      font-size: 1rem;
+      margin-right: 0.6rem;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    /* Minimalist Sidebar Footer (Logout) */
+    .admin-sidebar-footer {
+      border-top: 1px solid #f4e8ed;
+      padding-top: 0.85rem;
+    }
+
+    .btn-admin-logout-sidebar {
+      background: transparent;
+      color: #dc3545;
+      border: 1px solid #fce3e6;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 0.5rem 0.85rem;
+      border-radius: 8px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-admin-logout-sidebar:hover {
+      background: #dc3545;
+      color: #ffffff;
+      border-color: #dc3545;
+    }
+
+    /* Main Area */
+    .admin-main-area {
+      flex: 1;
+      margin-left: 240px;
+      padding: 1.5rem 2rem;
+      min-height: 100vh;
+      background-color: #ffffff;
+    }
+
+    /* Clean Stat Cards */
+    .stat-card-clean {
+      background: #ffffff;
+      border: 1px solid #f0e2e7;
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      position: relative;
+    }
+    
+    .stat-card-accent {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #8c7580;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-value {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #2b1820;
+    }
+
+    /* Order Cards */
+    .order-card-clean {
+      background: #ffffff;
+      border: 1px solid #f0e2e7;
+      border-radius: 12px;
+      padding: 0.95rem 1.15rem;
+      margin-bottom: 0.75rem;
+      transition: border-color 0.2s ease;
+    }
+    .order-card-clean:hover {
+      border-color: #e8839b;
+    }
+
+    .status-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+    }
+    .status-OrderPlaced, .status-Pending { background-color: #fff8e6; color: #b78103; border: 1px solid #ffe8b3; }
+    .status-InCrafting, .status-Confirmed { background-color: #eef6ff; color: #1d68c2; border: 1px solid #c9e2ff; }
+    .status-OutforDelivery, .status-Delivery, .status-MeetupPickup { background-color: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+    .status-Delivered, .status-Completed { background-color: #edfcf2; color: #167a3a; border: 1px solid #b7f0c9; }
+    .status-Cancelled { background-color: #fdf2f2; color: #9c2727; border: 1px solid #f8c8c8; }
+
+    .btn-admin-view-white {
+      background: #ffffff;
+      color: #2d2428;
+      border: 1px solid #e0cfd6;
+      border-radius: 50px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-admin-view-white:hover {
+      background: #fffafc;
+      border-color: #e8839b;
+      color: #7a2236;
+    }
+
+    .btn-admin-confirm {
+      background: #22c55e;
+      color: #ffffff;
+      border: none;
+      border-radius: 50px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .btn-admin-confirm:hover {
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: #e8839b !important;
+      color: #ffffff !important;
+    }
+    .nav-pills .nav-link {
+      color: #523541;
+      background-color: #ffffff;
+      border: 1px solid #f0e2e7;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.35rem 0.85rem;
+    }
+
+    /* Messenger Style Chat Module */
+    .admin-messenger-container {
+      background: #ffffff;
+      border: 1px solid #f0e2e7;
+      border-radius: 14px;
+      height: calc(100vh - 130px);
+      min-height: 500px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .admin-chat-userlist-pane {
+      width: 300px;
+      min-width: 300px;
+      border-right: 1px solid #f0e2e7;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .admin-chat-search-box {
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid #f0e2e7;
+      background: #faf6f8;
+    }
+
+    .admin-chat-users-scroll {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .admin-chat-user-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #f9f0f3;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .admin-chat-user-item:hover {
+      background-color: #fff5f8;
+    }
+
+    .admin-chat-user-item.active {
+      background-color: #fde8ef;
+      border-left: 3px solid #e8839b;
+    }
+
+    .chat-user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #fde2eb;
+      color: #7a2236;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .chat-user-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-user-name {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: #2b1820;
+      margin-bottom: 0.1rem;
+    }
+
+    .chat-user-snippet {
+      font-size: 0.73rem;
+      color: #7a6870;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chat-user-time {
+      font-size: 0.68rem;
+      color: #a08c95;
+    }
+
+    .admin-chat-convo-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fcf9fb;
+      min-width: 0;
+    }
+
+    .admin-chat-header {
+      padding: 0.85rem 1.25rem;
+      background: #ffffff;
+      border-bottom: 1px solid #f0e2e7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-chat-messages-area {
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .admin-bubble {
+      max-width: 72%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 14px;
+      font-size: 0.83rem;
+      line-height: 1.45;
+      word-wrap: break-word;
+    }
+
+    .admin-bubble-customer {
+      align-self: flex-start;
+      background: #ffffff;
+      color: #2b1820;
+      border: 1px solid #f0e2e7;
+      border-bottom-left-radius: 3px;
+    }
+
+    .admin-bubble-seller {
+      align-self: flex-end;
+      background: #e8839b;
+      color: #ffffff;
+      border-bottom-right-radius: 3px;
+    }
+
+    .admin-bubble-time {
+      font-size: 0.65rem;
+      margin-top: 3px;
+      opacity: 0.75;
+      text-align: right;
+    }
+
+    .admin-chat-quick-templates {
+      padding: 0.5rem 1rem;
+      background: #ffffff;
+      border-top: 1px solid #f3e6eb;
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .admin-quick-chip {
+      background: #fff3f6;
+      border: 1px solid #f2d1de;
+      color: #7a2236;
+      font-size: 0.73rem;
+      font-weight: 500;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .admin-quick-chip:hover {
+      background: #e8839b;
+      color: #ffffff;
+      border-color: #e8839b;
+    }
+
+    .admin-chat-input-footer {
+      padding: 0.75rem 1rem;
+      background: #ffffff;
+      border-top: 1px solid #f0e2e7;
+    }
+
+    .admin-chat-input {
+      border-radius: 20px !important;
+      border: 1.5px solid #f0e2e7 !important;
+      padding: 0.5rem 0.95rem !important;
+      font-size: 0.84rem !important;
+      background: #faf6f8;
+    }
+    .admin-chat-input:focus {
+      border-color: #e8839b !important;
+      box-shadow: 0 0 0 3px rgba(232, 131, 155, 0.15) !important;
+      background: #ffffff;
+    }
+
+    .btn-admin-send {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #e8839b;
+      color: #ffffff;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+    .btn-admin-send:hover {
+      background: #d86c87;
+    }
+
+    @media (max-width: 991.98px) {
+      .admin-sidebar {
+        width: 68px;
+        min-width: 68px;
+        padding: 1rem 0.4rem;
+      }
+      .admin-sidebar-brand span,
+      .admin-nav-item span,
+      .btn-admin-logout-sidebar span {
+        display: none !important;
+      }
+      .admin-sidebar-brand {
+        justify-content: center;
+        padding-bottom: 0.75rem;
+      }
+      .admin-nav-item {
+        justify-content: center;
+        padding: 0.7rem;
+      }
+      .admin-nav-icon {
+        margin-right: 0;
+      }
+      .admin-main-area {
+        margin-left: 68px;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-wrapper">
+    <!-- Clean Left Sidebar -->
+    <aside class="admin-sidebar">
+      <div>
+        <!-- Brand -->
+        <div class="admin-sidebar-brand">
+          <img src="assets/images/logo.png" alt="Craft & Wrapped" />
+          <div class="d-flex flex-column">
+            <span class="admin-brand-name">Craft & Wrapped</span>
+            <span class="admin-badge-tag">Admin</span>
+          </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="admin-sidebar-menu">
+          <a class="admin-nav-item active" id="nav-orders-btn" onclick="switchAdminView('orders')">
+            <div>
+              <span class="admin-nav-icon"><i class="bi bi-box-seam"></i></span>
+              <span>Orders</span>
+            </div>
+            <span class="badge bg-light text-dark rounded-pill" id="badge-nav-orders">0</span>
+          </a>
+
+          <a class="admin-nav-item" id="nav-chat-btn" onclick="switchAdminView('chat')">
+            <div>
+              <span class="admin-nav-icon"><i class="bi bi-chat-dots-fill"></i></span>
+              <span>Messages</span>
+            </div>
+            <span class="badge bg-pink-soft text-dark-rose rounded-pill" id="badge-nav-chats">0</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Sidebar Footer (Logout) -->
+      <div class="admin-sidebar-footer">
+        <button id="admin-logout-btn" class="btn btn-admin-logout-sidebar">
+          <i class="bi bi-box-arrow-right"></i>
+          <span>Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="admin-main-area">
+      
+      <!-- VIEW 1: ORDERS DASHBOARD -->
+      <div id="orders-view-section">
+        <!-- Title Bar -->
+        <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <h2 class="h5 fw-bold text-dark mb-0">Orders Dashboard</h2>
+          </div>
+          <div>
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-medium" onclick="seedSampleOrder()" style="font-size: 0.8rem;">
+              <i class="bi bi-plus-circle me-1"></i> Demo Order
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-card-accent" style="background-color: #e8839b;"></div>
+              <div class="stat-label">TOTAL ORDERS</div>
+              <div class="stat-value" id="stat-total-orders">0</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-card-accent" style="background-color: #ffc107;"></div>
+              <div class="stat-label">PENDING DP</div>
+              <div class="stat-value text-warning" id="stat-pending-orders">0</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-card-accent" style="background-color: #0d6efd;"></div>
+              <div class="stat-label">IN CRAFTING</div>
+              <div class="stat-value text-primary" id="stat-confirmed-orders">0</div>
+            </div>
+          </div>
+
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-card-accent" style="background-color: #198754;"></div>
+              <div class="stat-label">DELIVERED SALES</div>
+              <div class="stat-value text-success" id="stat-total-revenue">₱0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter & Search Bar -->
+        <div class="card border-0 rounded-3 mb-3 p-2.5" style="background: #ffffff; border: 1px solid #f0e2e7 !important;">
+          <div class="row align-items-center g-2">
+            <div class="col-12 col-md-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control bg-light border-start-0 ps-0" id="admin-order-search" placeholder="Search order ID, customer name, contact...">
+              </div>
+            </div>
+            <div class="col-12 col-md-7">
+              <ul class="nav nav-pills gap-1 justify-content-md-end" id="order-filter-tabs">
+                <li class="nav-item">
+                  <button class="nav-link active rounded-pill" data-status="ALL">All</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-status="Order Placed">Order Placed</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-status="In Crafting">In Crafting</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-status="Out for Delivery">Out for Delivery</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-status="Delivered">Delivered</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-status="Cancelled">Cancelled</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders List Container -->
+        <div id="orders-list-container"></div>
+      </div>
+
+      <!-- VIEW 2: CUSTOMER MESSAGES -->
+      <div id="chat-view-section" style="display: none;">
+        <div class="mb-3">
+          <h2 class="h5 fw-bold text-dark mb-0">Customer Messages</h2>
+        </div>
+
+        <div class="admin-messenger-container">
+          <!-- Left: User List -->
+          <div class="admin-chat-userlist-pane">
+            <div class="admin-chat-search-box">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control bg-white border-start-0 ps-0" id="admin-chat-search" placeholder="Search customer..." oninput="filterAdminChatUsers()">
+              </div>
+            </div>
+            
+            <div class="admin-chat-users-scroll" id="admin-chat-users-list"></div>
+          </div>
+
+          <!-- Right: Active Chat Conversation -->
+          <div class="admin-chat-convo-pane" id="admin-chat-convo-pane">
+            <div class="admin-chat-header" id="admin-chat-convo-header">
+              <div class="d-flex align-items-center gap-2">
+                <div class="chat-user-avatar" id="active-chat-avatar">M</div>
+                <div>
+                  <div class="fw-bold text-dark" id="active-chat-name" style="font-size: 0.88rem; line-height: 1.2;">Maria Santos</div>
+                  <div class="text-muted" id="active-chat-email" style="font-size: 0.72rem;">maria@gmail.com</div>
+                </div>
+              </div>
+
+              <div>
+                <button class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1" onclick="viewActiveCustomerOrders()" style="font-size: 0.78rem;">
+                  <i class="bi bi-bag-heart text-danger me-1"></i> View Orders
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-chat-messages-area" id="admin-chat-messages-body"></div>
+
+            <!-- Quick Template Chips -->
+            <div class="admin-chat-quick-templates">
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Yes po! Available lahat ng Fuzzy Wire & Satin Ribbon stems 🌸')">🌸 Available</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Maaari pong i-customize ang wrapper color at ribbon shades sa builder ✨')">🎨 Customization</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Standard crafting takes 3-7 days po 🚚')">🚚 Delivery Time</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Na-confirm na po namin ang down payment, start na po crafting! ✂️💖')">💖 DP Confirmed</button>
+            </div>
+
+            <!-- Send Input -->
+            <div class="admin-chat-input-footer">
+              <form id="admin-chat-send-form" onsubmit="event.preventDefault(); handleAdminChatSend();" class="d-flex align-items-center gap-2">
+                <input type="text" id="admin-chat-input-field" class="form-control admin-chat-input" placeholder="Type a reply..." autocomplete="off">
+                <button type="submit" class="btn btn-admin-send" title="Send">
+                  <i class="bi bi-send-fill" style="font-size: 0.85rem;"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="assets/js/global.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>

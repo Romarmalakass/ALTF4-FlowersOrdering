@@ -1,0 +1,68 @@
+# ==============================================================================
+# CRAFT & WRAPPED HAVEN - INFINITYFREE / APACHE DEPLOYMENT CONFIGURATION
+# ==============================================================================
+
+# 1. Directory Index Defaults
+DirectoryIndex index.html index.php
+
+# 2. Disable Directory Browsing for Security
+Options -Indexes
+
+# 3. Enable UTF-8 Encoding
+AddDefaultCharset UTF-8
+
+# 4. Correct MIME Types
+<IfModule mod_mime.c>
+  AddType text/html .html .htm
+  AddType text/css .css
+  AddType application/javascript .js
+  AddType application/json .json
+  AddType image/svg+xml .svg .svgz
+  AddType image/webp .webp
+  AddType image/png .png
+  AddType image/jpeg .jpg .jpeg
+  AddType font/woff .woff
+  AddType font/woff2 .woff2
+  AddType font/ttf .ttf
+  AddType font/otf .otf
+</IfModule>
+
+# 5. Browser Caching & Performance Optimization
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+  
+  # HTML Documents (keep fresh)
+  ExpiresByType text/html "access plus 0 seconds"
+  
+  # Stylesheets & Scripts
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  
+  # Images & Media
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+  
+  # Web Fonts
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+</IfModule>
+
+# 6. Gzip Compression (if supported by server)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
+</IfModule>
+
+# 7. Basic Security Headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 8. Graceful 404 Fallback
+ErrorDocument 404 index.html

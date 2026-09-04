@@ -1,0 +1,98 @@
+/* ==========================================================================
+   BLOOMIFY - CONTACT PAGE STYLESHEET (assets/css/contact.css)
+   ========================================================================== */
+
+.contact-info-card {
+  background: #fff;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+  transition: var(--transition-fast);
+}
+
+.contact-info-card:hover {
+  border-color: var(--pink-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.contact-icon-box {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: var(--pink-soft);
+  color: var(--dark-rose);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.contact-form-card {
+  background: #fff;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 2.25rem;
+  box-shadow: var(--shadow-md);
+}
+
+.accordion-bloom .accordion-item {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm) !important;
+  margin-bottom: 0.85rem;
+  overflow: hidden;
+}
+
+.accordion-bloom .accordion-button {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--dark-main);
+  background-color: #fff;
+  padding: 1.15rem 1.4rem;
+}
+
+.accordion-bloom .accordion-button:not(.collapsed) {
+  color: var(--dark-rose);
+  background-color: var(--pink-soft);
+  box-shadow: none;
+}
+
+.accordion-bloom .accordion-button:focus {
+  box-shadow: none;
+  border-color: var(--pink-primary);
+}
+
+/* --- Mobile Responsiveness for Contact Page --- */
+@media (max-width: 767.98px) {
+  .contact-info-card {
+    padding: 1.25rem 0.75rem;
+  }
+
+  .contact-icon-box {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .contact-info-card h5 {
+    font-size: 0.9rem;
+  }
+
+  .contact-info-card p {
+    font-size: 0.75rem !important;
+  }
+
+  .contact-form-card {
+    padding: 1.25rem;
+  }
+
+  .accordion-bloom .accordion-button {
+    font-size: 0.95rem;
+    padding: 1rem 1.15rem;
+  }
+}
