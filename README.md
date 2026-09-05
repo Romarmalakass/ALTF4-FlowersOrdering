@@ -9,7 +9,7 @@ Project Manager: Divine Grace Antigo
 Repository Link: https://github.com/Romarmalakass/ALTF4-FlowersOrdering
 
 Group Members:
-- Divine Grace Antigo (Project Manager)
+- Divine Grace Antigo/ Project Manager
 - Romar Villafuerte
 - Jann Christopher Abacan
 - Mike Lacebal Jr/Q&A
