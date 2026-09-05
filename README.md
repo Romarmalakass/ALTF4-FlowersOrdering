@@ -48,7 +48,6 @@ Technologies Used:
 - JavaScript
 - Bootstrap 5
 - SweetAlert2
-- XAMPP
 - Visual Studio Code
 - Figma
 
@@ -76,13 +75,10 @@ FlowersOrdering/
 ---
 
 How to Run:
-Using XAMPP:
-1. Place this folder in your XAMPP htdocs directory:
-   C:/xampp/htdocs/FlowersOrdering
-2. Start Apache in XAMPP Control Panel.
-3. Open browser and go to:
-   http://localhost/FlowersOrdering/
+Option 1: Direct in Browser
+1. Open the project folder.
+2. Double-click or open index.html in any web browser.
 
-Using VS Code:
+Option 2: Using VS Code Live Server
 1. Open the FlowersOrdering folder in VS Code.
 2. Right click index.html and click Open with Live Server.
