@@ -13,7 +13,7 @@ Group Members:
 - Romar Villafuerte/Frontend Developer
 - Jann Christopher Abacan / Designer
 - Mike Lacebal Jr/Q&A
-- Ariza Garcia/Analysis
+- Ariza Garcia/Analyts
 - Ivan Wayne Biore
 
 ---
