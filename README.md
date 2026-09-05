@@ -50,7 +50,7 @@ Technologies Used:
 - SweetAlert2
 - XAMPP
 - Visual Studio Code
--Figma
+- Figma
 
 ---
 
