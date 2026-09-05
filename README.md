@@ -10,7 +10,7 @@ Repository Link: https://github.com/Romarmalakass/ALTF4-FlowersOrdering
 
 Group Members:
 - Divine Grace Antigo/ Project Manager
-- Romar Villafuerte
+- Romar Villafuerte/Frontend Developer
 - Jann Christopher Abacan
 - Mike Lacebal Jr/Q&A
 - Ariza Garcia/Analysis
