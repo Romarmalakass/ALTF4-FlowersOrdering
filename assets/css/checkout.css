@@ -1,4 +1,3 @@
-
 .checkout-card {
   background: #fff;
   border: 1px solid var(--glass-border);
@@ -46,7 +45,6 @@
   background-color: var(--pink-soft);
 }
 
-/* Success Modal Styles */
 .modal-content-bloom {
   border-radius: var(--radius-md);
   border: none;
@@ -74,7 +72,6 @@
   margin-bottom: 0.75rem;
 }
 
-/* --- Mobile Responsiveness for Checkout / Order Form --- */
 @media (max-width: 991.98px) {
   .checkout-summary-card {
     position: static;

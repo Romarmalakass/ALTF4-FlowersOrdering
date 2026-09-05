@@ -1,4 +1,3 @@
-
 .cart-item-card {
   background: #fff;
   border: 1px solid var(--glass-border);
@@ -64,7 +63,6 @@
   margin-bottom: 0.75rem;
 }
 
-/* --- Cart & Orders Tab Switcher --- */
 .cart-nav-tabs-pill {
   box-shadow: none !important;
   background: #ffffff !important;
@@ -91,7 +89,6 @@
   box-shadow: none !important;
 }
 
-/* --- Order Tracker Card Styles --- */
 .order-tracker-card {
   background: #ffffff;
   border: 1px solid #f0e2e7;
@@ -107,7 +104,6 @@
   box-shadow: none !important;
 }
 
-/* Stepper Progress Bar (4 Stages) */
 .order-stepper {
   display: flex;
   justify-content: space-between;
@@ -200,7 +196,6 @@
   font-weight: 600;
 }
 
-/* Status Badges */
 .badge-status-pending,
 .status-OrderPlaced {
   background-color: #fff8e6;
@@ -236,7 +231,6 @@
   border: 1px solid #f8c8c8;
 }
 
-/* --- Mobile Responsiveness for Shopping Cart --- */
 @media (max-width: 991.98px) {
   .cart-summary-card {
     position: static;

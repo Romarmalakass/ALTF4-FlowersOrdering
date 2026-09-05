@@ -1,12 +1,9 @@
-
-/* Page Container - Mobile First & Centered */
 .account-page-wrapper {
   max-width: 480px;
   margin: 0 auto;
   padding: 1.25rem 1.15rem 6.5rem 1.15rem;
 }
 
-/* 1. Large White Rounded Profile Card */
 .account-profile-card {
   background: #ffffff;
   border: 1.5px solid #f8e4ec;
@@ -22,7 +19,6 @@
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Avatar Wrapper & Camera Badge Overlay */
 .account-avatar-wrapper {
   position: relative;
   width: 96px;
@@ -81,7 +77,6 @@
   background-color: #d62d5e;
 }
 
-/* Buyer Name */
 .buyer-profile-name {
   font-size: 1.45rem;
   font-weight: 700;
@@ -92,7 +87,6 @@
   word-break: break-word;
 }
 
-/* Edit Profile Button */
 .btn-edit-profile {
   width: 100%;
   display: flex;
@@ -129,7 +123,6 @@
   transform: translateY(0);
 }
 
-/* 2. Account Settings Section Header */
 .account-section-header {
   display: flex;
   align-items: center;
@@ -164,7 +157,6 @@
   border-radius: 2px;
 }
 
-/* 3. Account Settings List (Clean Card-Based Style) */
 .account-settings-list {
   display: flex;
   flex-direction: column;
@@ -253,7 +245,6 @@
   transform: translateX(3px);
 }
 
-/* Logout Specific Styling */
 .account-setting-card.danger-card .danger-icon-box {
   background: #fdf0f4;
   color: #d93b68;
@@ -276,7 +267,6 @@
   border-color: #f7b2c5;
 }
 
-/* 4. Need Help? Support Card */
 .account-help-card {
   display: flex;
   align-items: center;
@@ -359,7 +349,6 @@
   background-color: #d83262;
 }
 
-/* Mobile Responsive Optimization */
 @media (max-width: 575.98px) {
   .account-page-wrapper {
     padding: 1rem 0.85rem 6.5rem 0.85rem;

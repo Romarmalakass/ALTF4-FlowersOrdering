@@ -1,6 +1,3 @@
-
-// --- Craft & Wrapped Haven Master Catalog ---
-
 const FUZZY_WIRE_FLOWERS = [
   { id: 'fw-1', name: "Rose Bloom", price: 90, image: "assets/images/fw-1.png", type: "Fuzzy Wire" },
   { id: 'fw-2', name: "Lady Rose", price: 130, image: "assets/images/fw-2.png", type: "Fuzzy Wire" },
@@ -103,7 +100,6 @@ const CRAFT_ADDONS = [
   { id: 'ao-6', name: "Teddy Bear Plushie", price: 250, icon: "bi-heart-fill" }
 ];
 
-// Master catalog for shop grid
 const PRODUCTS_DATA = [
   {
     id: 1,
@@ -179,7 +175,6 @@ const PRODUCTS_DATA = [
   }
 ];
 
-// --- LocalStorage Cart Helpers ---
 const CART_STORAGE_KEY = 'craft_wrapped_haven_cart';
 
 function getCart() {
@@ -291,7 +286,6 @@ function updateNavbarCartCount() {
   });
 }
 
-// --- Global Order Store & Live Tracking Functions ---
 const ORDERS_STORAGE_KEY = 'flower_orders';
 
 function getOrders() {
@@ -325,14 +319,10 @@ function cancelCustomerOrder(orderId, reason = "Customer requested cancellation"
   return false;
 }
 
-/// ==========================================================================
-// BUYER AUTHENTICATION & DEMO LOCAL STORAGE STATE
-// ==========================================================================
 const BUYER_STORAGE_KEY = 'cwh_active_buyer';
 const BUYERS_DB_KEY = 'cwh_registered_buyers';
 const CHAT_STORAGE_PREFIX = 'cwh_chat_history_';
 
-// Pre-seeded demo accounts
 const DEFAULT_DEMO_BUYERS = [
   {
     name: 'Maria Santos',
@@ -404,18 +394,15 @@ function closeMobileNav() {
 function updateNavbarAuth() {
   const buyer = getActiveBuyer();
 
-  // Toggle buyer-logged-in class on body
   document.body.classList.toggle('buyer-logged-in', !!buyer);
 
-  // Hide cart button in navbar for guests, show for logged-in buyers
   const cartBtns = document.querySelectorAll('.cart-icon-btn');
   cartBtns.forEach(btn => {
     btn.style.display = buyer ? 'flex' : 'none';
   });
 
-  // 1. Desktop Navbar Auth Slot (Hidden on mobile <992px)
   const navContainers = document.querySelectorAll('.bloom-navbar .d-flex.align-items-center.gap-2.order-lg-3');
-  
+
   navContainers.forEach(container => {
     let authSlot = container.querySelector('.navbar-auth-slot');
     if (!authSlot) {
@@ -476,7 +463,6 @@ function updateNavbarAuth() {
     }
   });
 
-  // 2. Mobile Drawer for Guests Only (Hidden when logged in)
   const navCollapses = document.querySelectorAll('.bloom-navbar .navbar-collapse');
   navCollapses.forEach(collapse => {
     const navLists = collapse.querySelectorAll('.navbar-nav');
@@ -500,7 +486,6 @@ function updateNavbarAuth() {
     }
   });
 
-  // 3. Mobile App Bottom Navigation Bar (Picture 2 & 3 Design)
   let bottomNav = document.getElementById('bloom-mobile-bottom-nav');
   if (buyer) {
     if (!bottomNav) {
@@ -546,7 +531,6 @@ function updateFloatingChatVisibility() {
   if (chatTrigger) chatTrigger.style.display = 'none';
 }
 
-// Helper: Toggle Password Visibility
 function togglePasswordVisibility(inputId, btnEl) {
   const input = document.getElementById(inputId);
   if (!input) return;
@@ -558,7 +542,6 @@ function togglePasswordVisibility(inputId, btnEl) {
   }
 }
 
-// --- Dedicated Fullscreen Auth Overlay DOM Management ---
 function getOrCreateAuthModalContainer() {
   let container = document.getElementById('bloom-auth-modal');
   if (!container) {
@@ -579,7 +562,6 @@ function closeAuthModal() {
   document.body.style.overflow = '';
 }
 
-// --- Buyer Login Modal (Full Screen Layout) ---
 function openBuyerLoginModal() {
   closeMobileNav();
   if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close();
@@ -691,8 +673,7 @@ function handleBuyerLoginSubmit() {
 
   closeAuthModal();
   setActiveBuyer(found);
-  
-  // Compact centered 1.5s auto-closing SweetAlert
+
   Swal.fire({
     icon: 'success',
     title: `Welcome back, ${found.name.split(' ')[0]}! 🌸`,
@@ -734,7 +715,6 @@ function handleForgotPassword() {
   });
 }
 
-// --- Buyer Registration Modal (Full Screen Layout) ---
 function openBuyerRegisterModal(prefill = {}) {
   closeMobileNav();
   if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close();
@@ -912,7 +892,6 @@ function setupRegisterLiveValidation() {
   }
 
   if (mobileInput && mobileInd) {
-    // Strictly prevent typing letters/symbols
     mobileInput.addEventListener('keydown', (e) => {
       if (['Backspace', 'Tab', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
       if (e.ctrlKey || e.metaKey) return;
@@ -1034,7 +1013,6 @@ function handleBuyerRegisterSubmit() {
   });
 }
 
-// --- Buyer Profile Modal Navigation ---
 function openBuyerProfileModal() {
   const buyer = getActiveBuyer();
   if (!buyer) {
@@ -1044,17 +1022,12 @@ function openBuyerProfileModal() {
   window.location.href = 'account.html';
 }
 
-// ==========================================================================
-// CHAT WITH SELLER FLOATING ENGINE
-// ==========================================================================
 function initFloatingChat() {
-  // Do not initialize floating chat widget on admin pages
   if (window.location.pathname.includes('admin.html') || window.location.pathname.includes('admin-login.html')) {
     return;
   }
   if (document.getElementById('floating-chat-panel')) return;
 
-  // Create floating chat panel
   const panel = document.createElement('div');
   panel.id = 'floating-chat-panel';
   panel.className = 'floating-chat-panel chat-hidden';
@@ -1084,25 +1057,20 @@ function initFloatingChat() {
   `;
   document.body.appendChild(panel);
 
-  // --- Mobile Keyboard Fix: keep chat footer above keyboard ---
-  // Uses visualViewport API (supported on all modern mobile browsers)
   function adjustChatForKeyboard() {
     if (!panel || panel.classList.contains('chat-hidden')) return;
     const vvp = window.visualViewport;
     if (!vvp) return;
     const offsetBottom = window.innerHeight - vvp.height - vvp.offsetTop;
     if (offsetBottom > 30) {
-      // Keyboard is open — lift the panel bottom above the keyboard
       panel.style.bottom = offsetBottom + 'px';
       panel.style.top = '0px';
       panel.style.height = vvp.height + 'px';
     } else {
-      // Keyboard closed — restore to CSS defaults
       panel.style.bottom = '';
       panel.style.top = '';
       panel.style.height = '';
     }
-    // Scroll to the latest message after resize
     const msgContainer = document.getElementById('chat-messages-container');
     if (msgContainer) {
       setTimeout(() => { msgContainer.scrollTop = msgContainer.scrollHeight; }, 50);
@@ -1113,7 +1081,6 @@ function initFloatingChat() {
     window.visualViewport.addEventListener('resize', adjustChatForKeyboard);
     window.visualViewport.addEventListener('scroll', adjustChatForKeyboard);
   }
-  // Real-time synchronization across browser tabs
   window.addEventListener('storage', (e) => {
     if (e.key && e.key.startsWith(CHAT_STORAGE_PREFIX)) {
       renderChatMessages();
@@ -1184,7 +1151,6 @@ function openSellerChat() {
   panel.classList.remove('chat-hidden');
   renderChatMessages();
 
-  // Highlight Chat button in mobile bottom nav
   const bottomNav = document.getElementById('bloom-mobile-bottom-nav');
   if (bottomNav) {
     bottomNav.querySelectorAll('.mobile-bottom-nav-item').forEach(item => item.classList.remove('active'));
@@ -1202,7 +1168,6 @@ function closeSellerChat() {
   const panel = document.getElementById('floating-chat-panel');
   if (panel) panel.classList.add('chat-hidden');
 
-  // Restore current page's active tab in mobile bottom nav
   const bottomNav = document.getElementById('bloom-mobile-bottom-nav');
   if (bottomNav) {
     const chatBtn = document.getElementById('bottom-nav-chat-btn');
@@ -1231,7 +1196,6 @@ function getChatHistory(buyerEmail) {
     }
   } catch (e) {}
 
-  // Initial greeting saved immediately
   const buyer = getActiveBuyer();
   const buyerName = buyer ? buyer.name.split(' ')[0] : 'Friend';
   const initial = [
@@ -1288,7 +1252,6 @@ function handleChatSubmit(e) {
   const history = getChatHistory(cleanEmail);
   const nowTime = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
 
-  // Add buyer message
   history.push({
     sender: 'buyer',
     text: text,
@@ -1298,10 +1261,8 @@ function handleChatSubmit(e) {
   renderChatMessages();
   input.value = '';
 
-  // Check if admin has already engaged in this conversation
   const isAdminEngaged = localStorage.getItem('cwh_admin_engaged_' + cleanEmail) === 'true';
 
-  // Only simulate auto-reply if admin hasn't engaged yet
   if (!isAdminEngaged) {
     showSellerTypingIndicator(text);
   }
@@ -1323,7 +1284,7 @@ function showSellerTypingIndicator(userPrompt) {
   container.appendChild(typingEl);
   container.scrollTop = container.scrollHeight;
 
-  const delay = Math.floor(Math.random() * 600) + 1200; // 1.2s - 1.8s realistic delay
+  const delay = Math.floor(Math.random() * 600) + 1200;
 
   setTimeout(() => {
     const ind = document.getElementById('seller-typing-indicator');
@@ -1333,7 +1294,6 @@ function showSellerTypingIndicator(userPrompt) {
     if (!buyer) return;
 
     const cleanEmail = (buyer.email || '').toLowerCase().trim();
-    // Double check admin engagement before posting auto reply
     if (localStorage.getItem('cwh_admin_engaged_' + cleanEmail) === 'true') {
       return;
     }
@@ -1379,7 +1339,6 @@ function generateSmartSellerReply(prompt, buyer) {
     return `You're always welcome po, ${firstName}! Let us know whenever you're ready to order 💐✨`;
   }
 
-  // Courteous default reply
   const defaultReplies = [
     `Thank you for your message po, ${firstName}! We'll be happy to assist you with your flower bouquet. Would you like a custom design or from our catalog? 💐`,
     `Noted po! We craft each petal with love. Feel free to specify your preferred flower colors, wrapper, and date needed ✨`,
@@ -1432,7 +1391,6 @@ function handleMockAttachment() {
   });
 }
 
-// --- Utility Helpers ---
 function openAdminLoginModal() {
   closeAuthModal();
   if (typeof Swal !== 'undefined') {
@@ -1537,7 +1495,6 @@ function showToast(message, type = "success") {
   }
 }
 
-// --- Global Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
   const navbar = document.querySelector('.bloom-navbar');
   if (navbar) {

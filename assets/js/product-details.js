@@ -1,11 +1,10 @@
-
-let flowerCategory = 'Fuzzy Wire'; // 'Fuzzy Wire', 'Satin Ribbon', 'Colors', 'Fillers', 'Wrappers', 'Ribbons', 'Addons'
-let selectedFlowers = {}; // { id: { flowerObj, qty } }
-let selectedFillers = {}; // { id: { fillerObj, qty } }
-let selectedColors = []; // Array of chosen color names for Fuzzy Wire
+let flowerCategory = 'Fuzzy Wire';
+let selectedFlowers = {};
+let selectedFillers = {};
+let selectedColors = [];
 let selectedWrapper = WRAPPER_OPTIONS[0];
-let selectedRibbon = SATIN_COLORS_DATA[0]; // Ribbon selection object
-let selectedAddons = {}; // { id: addonObj }
+let selectedRibbon = SATIN_COLORS_DATA[0];
+let selectedAddons = {};
 let inspoPhotoData = null;
 let customNotes = '';
 
@@ -40,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
   calculateGrandTotal();
 });
 
-// Category Switcher Navigation Bar
 function renderCategoryTabs() {
   const container = document.getElementById('flower-cat-tabs');
   if (!container) return;
@@ -86,7 +84,6 @@ function updateBuilderView() {
   calculateGrandTotal();
 }
 
-// Unified Grid Render for active tab
 function renderUnifiedSelectionGrid() {
   const container = document.getElementById('flower-selection-grid');
   if (!container) return;
@@ -108,7 +105,6 @@ function renderUnifiedSelectionGrid() {
   }
 }
 
-// Render Flower/Filler Item Cards Grid
 function renderItemsGrid(container, dataset, selectedMap, type) {
   container.innerHTML = dataset.map(item => {
     const isSelected = !!selectedMap[item.id];
@@ -124,7 +120,7 @@ function renderItemsGrid(container, dataset, selectedMap, type) {
           <div class="item-card-body p-2 text-center">
             <div class="item-card-name small fw-bold text-truncate">${item.name}</div>
             <div class="item-card-price text-dark-rose small fw-bold">${formatCurrency(item.price)} / pc</div>
-            
+
             <div class="mt-2 pt-2 border-top d-flex align-items-center justify-content-center" onclick="event.stopPropagation();">
               <div class="quantity-control">
                 <button type="button" class="quantity-btn" onclick="updateItemQuantity('${type}', '${item.id}', ${qty - 1})">-</button>
@@ -172,7 +168,6 @@ function updateItemQuantity(type, id, newQty) {
   calculateGrandTotal();
 }
 
-// Render 18 Fuzzy Wire Color Shades inside Color Shades Tab
 function renderFuzzyColorsTab(container) {
   container.innerHTML = `
     <div class="col-12 mb-3">
@@ -222,7 +217,6 @@ function renderFuzzyColorsTab(container) {
   });
 }
 
-// Render Wrappers Tab (With exact cropped black box poster images)
 function renderWrappersTab(container) {
   container.innerHTML = WRAPPER_OPTIONS.map(wrapper => `
     <div class="col-6 col-md-4 col-lg-3 mb-3">
@@ -246,7 +240,6 @@ function renderWrappersTab(container) {
   });
 }
 
-// Render 14 Satin Ribbon Roll Choices inside Ribbons Tab (From Picture 2)
 function renderRibbonsTab(container) {
   container.innerHTML = `
     <div class="col-12 mb-3">
@@ -289,11 +282,10 @@ function renderRibbonsTab(container) {
   });
 }
 
-// Render Addons Tab
 function renderAddonsTab(container) {
   container.innerHTML = CRAFT_ADDONS.map(addon => {
     const isSelected = !!selectedAddons[addon.id];
-    const imageHTML = addon.image 
+    const imageHTML = addon.image
       ? `<div class="item-card-img-wrapper mb-2" style="height: 90px;"><img src="${addon.image}" alt="${addon.name}" /></div>`
       : `<div class="my-2 text-center"><i class="bi ${addon.icon} fs-2 text-pink"></i></div>`;
 
@@ -325,7 +317,6 @@ function renderAddonsTab(container) {
   });
 }
 
-// Inspo Photo Upload Handler
 function setupInspoUpload() {
   const input = document.getElementById('inspo-file-input');
   const preview = document.getElementById('inspo-preview-img');
@@ -355,9 +346,7 @@ function setupInspoUpload() {
   }
 }
 
-// Calculate Grand Total
 function calculateGrandTotal() {
-  // 1. Flowers cost
   let flowersTotal = 0;
   let flowerItemsList = [];
   Object.values(selectedFlowers).forEach(item => {
@@ -366,7 +355,6 @@ function calculateGrandTotal() {
     flowerItemsList.push(`${item.flowerObj.name} (${item.qty}x @ ${formatCurrency(item.flowerObj.price)})`);
   });
 
-  // 2. Fillers cost
   let fillersTotal = 0;
   let fillerItemsList = [];
   Object.values(selectedFillers).forEach(item => {
@@ -375,11 +363,9 @@ function calculateGrandTotal() {
     fillerItemsList.push(`${item.fillerObj.name} (${item.qty}x)`);
   });
 
-  // 3. Wrapper & Ribbon
   const wrapperCost = selectedWrapper ? selectedWrapper.price : 0;
   const ribbonName = selectedRibbon ? selectedRibbon.name : 'Cream';
 
-  // 4. Addons
   let addonsTotal = 0;
   let addonsList = [];
   Object.values(selectedAddons).forEach(addon => {
@@ -387,17 +373,13 @@ function calculateGrandTotal() {
     addonsList.push(addon.name);
   });
 
-  // Chosen Colors
   const chosenColorsList = [...selectedColors];
 
-  // Subtotal materials
   const materialsSubtotal = flowersTotal + fillersTotal + wrapperCost + addonsTotal;
-  
-  // Labor Fee (15%)
+
   const laborFee = Math.round(materialsSubtotal * 0.15);
   const grandTotal = materialsSubtotal + laborFee;
 
-  // Render Breakdown
   const breakdownContainer = document.getElementById('craft-itemized-summary');
   if (breakdownContainer) {
     let html = `
@@ -455,7 +437,6 @@ function calculateGrandTotal() {
   };
 }
 
-// Actions
 function renderActionButtons() {
   const container = document.getElementById('craft-action-buttons-container');
   if (!container) return;

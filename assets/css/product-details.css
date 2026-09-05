@@ -1,4 +1,3 @@
-
 .customizer-step-card {
   background: #fff;
   border: 1px solid var(--glass-border);
@@ -37,7 +36,6 @@
   color: var(--dark-main);
 }
 
-/* Visual Item Card (Flower, Filler, Addon) */
 .item-select-card {
   border: 1.5px solid var(--glass-border);
   border-radius: var(--radius-sm);
@@ -129,7 +127,6 @@
   font-weight: 700;
 }
 
-/* Color Swatches Grid */
 .color-swatch-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
@@ -156,7 +153,6 @@
   box-shadow: 0 4px 12px rgba(232, 131, 155, 0.3);
 }
 
-/* Wrapper Swatches */
 .wrapper-swatch-card {
   border: 1.5px solid var(--glass-border);
   border-radius: var(--radius-sm);
@@ -174,7 +170,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Color Swatch Card with Image */
 .color-swatch-card {
   border: 1.5px solid var(--glass-border);
   border-radius: var(--radius-sm);
@@ -201,7 +196,6 @@
   border: 2px solid rgba(0,0,0,0.1);
 }
 
-/* Reminders Alert Box */
 .reminders-notice-box {
   background: linear-gradient(135deg, #fff5f8 0%, #fdf0f4 100%);
   border-left: 4px solid var(--dark-rose);
@@ -221,7 +215,6 @@
   margin-bottom: 0.35rem;
 }
 
-/* Sticky Live Total Calculator */
 .craft-total-card {
   background: linear-gradient(145deg, #ffffff 0%, var(--pink-light) 100%);
   border: 2px solid var(--pink-accent);
@@ -232,7 +225,6 @@
   top: 100px;
 }
 
-/* --- Mobile Responsiveness for Custom Bouquet Builder --- */
 @media (max-width: 991.98px) {
   .craft-total-card {
     position: static;
@@ -246,7 +238,6 @@
     margin-bottom: 1rem;
   }
 
-  /* Horizontal swipeable tabs on mobile */
   #flower-cat-tabs > div {
     display: flex !important;
     flex-wrap: nowrap !important;

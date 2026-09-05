@@ -1,4 +1,3 @@
-
 let currentCategory = 'All';
 let currentSearch = '';
 let currentSort = 'default';
@@ -117,8 +116,8 @@ function filterAndRenderProducts() {
   }
 
   if (currentSearch !== '') {
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(currentSearch) || 
+    filtered = filtered.filter(p =>
+      p.name.toLowerCase().includes(currentSearch) ||
       p.category.toLowerCase().includes(currentSearch)
     );
   }

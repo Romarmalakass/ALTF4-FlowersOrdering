@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ALTF4_Week5_FrontendSetup</title>
+<style>  @page {
+    size: A4 portrait;
+    margin: 16mm 14mm 16mm 14mm;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  }
+  body {
+    color: #222;
+    background: #fff;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .page {
+    page-break-after: always;
+    padding-bottom: 5px;
+  }
+  .page:last-child {
+    page-break-after: avoid;
+  }
+
+  .header-box {
+    border-bottom: 2px solid #222;
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+  }
+  .header-title {
+    font-size: 16px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #111;
+  }
+  .header-sub {
+    font-size: 11px;
+    color: #555;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2px;
+  }
+
+  .section-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    background: #f0f0f0;
+    padding: 4px 8px;
+    margin: 10px 0 6px 0;
+    border-left: 3px solid #333;
+    color: #111;
+  }
+  .sub-title {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #333;
+    margin: 6px 0 2px 0;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 16px;
+    margin-bottom: 10px;
+    background: #fafafa;
+    border: 1px solid #e5e5e5;
+    padding: 8px 12px;
+    border-radius: 4px;
+  }
+  .meta-item {
+    font-size: 11.5px;
+  }
+  .meta-label {
+    font-weight: 700;
+    color: #444;
+  }
+  .meta-val {
+    color: #111;
+  }
+
+  ul {
+    margin-left: 18px;
+    margin-bottom: 6px;
+  }
+  li {
+    margin-bottom: 2px;
+  }
+
+  .figure-container {
+    margin-top: 6px;
+    margin-bottom: 10px;
+  }
+  .figure-caption {
+    font-size: 11px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+  }
+  .figure-desc {
+    font-size: 10.5px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+  .img-box {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f8f8f8;
+    text-align: center;
+  }
+  .img-box img {
+    width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .two-col-img {
+    display: flex;
+    gap: 12px;
+  }
+  .two-col-img .figure-container {
+    flex: 1;
+  }
+  .two-col-img .img-box img {
+    max-height: 160px;
+  }
+
+  .checklist {
+    list-style: none;
+    margin-left: 4px;
+    margin-top: 4px;
+  }
+  .checklist li {
+    padding: 2px 0;
+    font-size: 11px;
+  }
+  .check-box {
+    color: #0b8043;
+    font-weight: bold;
+    margin-right: 6px;
+  }
+  a {
+    color: #0366d6;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="header-box">
+    <div class="header-title">Frontend Project Setup and Repository</div>
+    <div class="header-sub">
+      <span>Week 5 Submission Template</span>
+      <span>Due: September 5, 2026</span>
+    </div>
+  </div>
+
+  <div class="section-title">Project Overview</div>
+  <div class="meta-grid">
+    <div class="meta-item" style="grid-column: span 2;">
+      <span class="meta-label">Project Title: </span>
+      <span class="meta-val">Web-Based Digital Flower Shop with Online Ordering, Custom Bouquet Builder, and Order Management to Craft Wrapped Haven</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Group Name: </span>
+      <span class="meta-val"><strong>ALT F4</strong></span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Project Manager: </span>
+      <span class="meta-val"><strong>Divine Grace G. Antigo</strong></span>
+    </div>
+  </div>
+
+  <div class="sub-title">Team Members:</div>
+  <ul>
+    <li>1. Ariza Garcia</li>
+    <li>2. Jan Christopher Abacan</li>
+    <li>3. Romar Villafuerte</li>
+    <li>4. Ivan Wayne Biore</li>
+    <li>5. Mike Lacebal Jr</li>
+  </ul>
+
+  <div class="section-title">1. Development Setup</div>
+  <div class="meta-grid">
+    <div class="meta-item">
+      <span class="meta-label">Repository Platform: </span>
+      <span class="meta-val">GitHub</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Project Branch: </span>
+      <span class="meta-val">master</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Frontend Technology: </span>
+      <span class="meta-val">HTML, CSS, JavaScript, Bootstrap 5</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">README Status: </span>
+      <span class="meta-val">Completed & Updated</span>
+    </div>
+    <div class="meta-item" style="grid-column: span 2;">
+      <span class="meta-label">Repository Link: </span>
+      <span class="meta-val"><a href="https://github.com/Romarmalakass/ALTF4-FlowersOrdering" target="_blank">https://github.com/Romarmalakass/ALTF4-FlowersOrdering</a></span>
+    </div>
+  </div>
+
+  <div class="section-title">2. Initial Implementation</div>
+  <div class="sub-title">Completed Setup Tasks:</div>
+  <ul>
+    <li>Created the initial frontend project structure for the Digital Flower Shop.</li>
+    <li>Set up the folders and files needed for the website (assets/css, assets/js, assets/images).</li>
+    <li>Prepared the homepage and basic navigation structure.</li>
+    <li>Added the initial HTML, CSS, and JavaScript files.</li>
+    <li>Created the GitHub repository and organized the project files.</li>
+  </ul>
+
+  <div class="sub-title">Implemented Screens / Components:</div>
+  <ul>
+    <li>Homepage / Main Landing Page (index.html)</li>
+    <li>Navigation Bar (bloom-navbar with responsive drawer and cart badge)</li>
+    <li>Flower Product Cards (flower-card)</li>
+    <li>Basic Bouquet / Product Section</li>
+    <li>Buttons for navigation to different sections (btn-bloom-primary, btn-bloom-outline)</li>
+    <li>Reusable layout and content components (Footer, Modals, Category Filters)</li>
+  </ul>
+</div>
+
+<div class="page">
+  <div class="header-box">
+    <div class="header-title">3. Evidence of Progress</div>
+    <div class="header-sub">
+      <span>ALT F4 • Craft Wrapped Haven</span>
+      <span>Screenshots and Visual Proof</span>
+    </div>
+  </div>
+
+  <div class="figure-container">
+    <div class="figure-caption">Screenshot 1: Homepage Screen</div>
+    <div class="figure-desc">This screenshot shows the initial homepage of our Digital Flower shop. It includes the basic layout, navigation, and flower shop content based on our approved design.</div>
+    <div class="img-box">
+      <img src="screenshot_homepage.png" alt="Homepage Screenshot">
+    </div>
+  </div>
+
+  <div class="two-col-img">
+    <div class="figure-container">
+      <div class="figure-caption">Screenshot 2A: Project Structure</div>
+      <div class="figure-desc">Organized project folders and files used for developing the frontend.</div>
+      <div class="img-box">
+        <img src="screenshot_structure.png" alt="Folder Structure">
+      </div>
+    </div>
+    <div class="figure-container">
+      <div class="figure-caption">Screenshot 2B: GitHub Repository</div>
+      <div class="figure-desc">GitHub repository showing commits, branches, and member contributions.</div>
+      <div class="img-box">
+        <img src="screenshot_repo.png" alt="GitHub Repository">
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">4. Issues and Next Steps</div>
+  <div class="sub-title">Current Issues:</div>
+  <ul>
+    <li>Some parts of the design still need to be improved and matched with the approved Figma design.</li>
+    <li>Some pages and functions are currently prototypes and not yet connected to a live database.</li>
+    <li>We still need to further improve the responsiveness of the website on different screen sizes.</li>
+  </ul>
+
+  <div class="sub-title">Next Week Plan:</div>
+  <ul>
+    <li>Continue developing the remaining pages of the flower shop.</li>
+    <li>Improve the homepage design and navigation.</li>
+    <li>Add more product and bouquet sections.</li>
+    <li>Start working on the custom bouquet builder.</li>
+    <li>Improve the responsive layout and overall appearance of the website.</li>
+  </ul>
+
+  <div class="section-title">Final Checklist</div>
+  <ul class="checklist">
+    <li><span class="check-box">☑</span> Repository is accessible to the instructor.</li>
+    <li><span class="check-box">☑</span> README contains project title, description, setup steps, and members.</li>
+    <li><span class="check-box">☑</span> Homepage and navigation are implemented.</li>
+    <li><span class="check-box">☑</span> Folder structure is organized.</li>
+    <li><span class="check-box">☑</span> PDF includes repository link and screenshots.</li>
+    <li><span class="check-box">☑</span> All members commented: Group Name - Project Manager Name.</li>
+  </ul>
+</div>
+
+</body>
+</html>

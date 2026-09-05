@@ -1,18 +1,15 @@
-
-let currentAdminView = 'orders'; // 'orders' or 'chat'
+let currentAdminView = 'orders';
 let currentFilter = 'ALL';
 let searchQuery = '';
 let selectedCustomerEmail = null;
 let chatSearchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Auth Check: Redirect to index.html if not authenticated
   if (sessionStorage.getItem('cwh_admin_auth') !== 'true') {
     window.location.href = 'index.html';
     return;
   }
 
-  // Logout listener with confirmation
   const logoutBtn = document.getElementById('admin-logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
@@ -36,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Orders Search Input listener
   const searchInput = document.getElementById('admin-order-search');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -45,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Filter Tabs listeners
   const tabs = document.querySelectorAll('#order-filter-tabs .nav-link');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -56,12 +51,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Initial render
   renderAdminDashboard();
   initAdminChatList();
   updateSidebarBadges();
 
-  // Welcome Back Alert upon entering dashboard
   if (sessionStorage.getItem('cwh_admin_just_logged_in') === 'true') {
     sessionStorage.removeItem('cwh_admin_just_logged_in');
     setTimeout(() => {
@@ -78,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// --- View Switcher: Orders vs. Chat ---
 function switchAdminView(view) {
   currentAdminView = view;
 
@@ -118,7 +110,6 @@ function updateSidebarBadges() {
   }
 }
 
-// --- Order Store Helpers ---
 function getOrders() {
   const data = localStorage.getItem('flower_orders');
   if (!data) return [];
@@ -134,11 +125,9 @@ function saveOrders(orders) {
   updateSidebarBadges();
 }
 
-// --- Render Admin Dashboard (Orders) ---
 function renderAdminDashboard() {
   const orders = getOrders();
 
-  // Calculate global KPI statistics
   const totalOrders = orders.length;
   const pendingOrders = orders.filter(o => o.status === 'Pending' || o.status === 'Order Placed').length;
   const confirmedOrders = orders.filter(o => o.status === 'Confirmed' || o.status === 'In Crafting').length;
@@ -156,7 +145,6 @@ function renderAdminDashboard() {
   if (statConfirmed) statConfirmed.textContent = confirmedOrders;
   if (statRevenue) statRevenue.textContent = formatCurrency(totalRevenue);
 
-  // Apply Filter and Search Query
   let filtered = orders;
   if (currentFilter !== 'ALL') {
     filtered = filtered.filter(o => {
@@ -203,7 +191,6 @@ function renderAdminDashboard() {
     const isInCrafting = status === 'In Crafting' || status === 'Confirmed';
     const isOutForDelivery = status === 'Out for Delivery' || status === 'Delivery' || status === 'Meet up / Pick up' || status === 'Pickup';
 
-    // Contextual Quick Action Button
     let quickActionBtn = '';
     if (isOrderPlaced) {
       quickActionBtn = `
@@ -271,7 +258,7 @@ function quickUpdateStatus(orderId, newStatus) {
     orders[index].status = newStatus;
     saveOrders(orders);
     renderAdminDashboard();
-    
+
     if (typeof Swal !== 'undefined') {
       Swal.fire({
         icon: 'success',
@@ -435,15 +422,9 @@ function seedSampleOrder() {
   showToast("Sample Order Created!", "success");
 }
 
-
-// ==========================================================================
-// ADMIN LIVE CUSTOMER CHAT MODULE (MESSENGER STYLE)
-// ==========================================================================
-
 function getAdminAllChatUsers() {
   const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
-  
-  // Map buyers with their latest message
+
   return buyers.map(buyer => {
     let history = [];
     const cleanEmail = (buyer.email || '').toLowerCase().trim();
@@ -470,7 +451,6 @@ function initAdminChatList() {
   const container = document.getElementById('admin-chat-users-list');
   if (!container) return;
 
-  // Set default active user if none selected
   if (!selectedCustomerEmail && users.length > 0) {
     selectedCustomerEmail = users[0].email;
   }
@@ -478,7 +458,6 @@ function initAdminChatList() {
   renderAdminChatUserItems(users);
   renderActiveAdminConversation();
 
-  // Listen for storage events (real-time chat sync across tabs)
   if (!window._adminChatSyncInitialized) {
     window._adminChatSyncInitialized = true;
     window.addEventListener('storage', (e) => {
@@ -494,8 +473,8 @@ function initAdminChatList() {
 function filterAdminChatUsers() {
   const query = document.getElementById('admin-chat-search')?.value.toLowerCase().trim() || '';
   const users = getAdminAllChatUsers();
-  const filtered = users.filter(u => 
-    u.name.toLowerCase().includes(query) || 
+  const filtered = users.filter(u =>
+    u.name.toLowerCase().includes(query) ||
     u.email.toLowerCase().includes(query) ||
     u.lastMessage.toLowerCase().includes(query)
   );
@@ -549,7 +528,6 @@ function renderActiveAdminConversation() {
 
   if (!buyer) return;
 
-  // Update Convo Header
   const avatarEl = document.getElementById('active-chat-avatar');
   const nameEl = document.getElementById('active-chat-name');
   const emailEl = document.getElementById('active-chat-email');
@@ -558,7 +536,6 @@ function renderActiveAdminConversation() {
   if (nameEl) nameEl.textContent = buyer.name;
   if (emailEl) emailEl.textContent = `${buyer.email} • ${buyer.mobile || 'Registered Customer'}`;
 
-  // Get chat history
   let history = [];
   const cleanEmail = (buyer.email || '').toLowerCase().trim();
   try {
@@ -566,7 +543,6 @@ function renderActiveAdminConversation() {
     if (data) {
       history = JSON.parse(data);
     } else {
-      // Create initial greeting if empty
       const initial = [
         {
           sender: 'seller',
@@ -581,7 +557,6 @@ function renderActiveAdminConversation() {
     history = [];
   }
 
-  // Render Messages
   const body = document.getElementById('admin-chat-messages-body');
   if (!body) return;
 
@@ -637,8 +612,7 @@ function handleAdminChatSend() {
   input.value = '';
 
   renderActiveAdminConversation();
-  
-  // Update sidebar snippet
+
   const users = getAdminAllChatUsers();
   renderAdminChatUserItems(users);
 }
@@ -653,14 +627,14 @@ function insertAdminQuickReply(text) {
 
 function viewActiveCustomerOrders() {
   if (!selectedCustomerEmail) return;
-  
+
   const cleanEmail = selectedCustomerEmail.toLowerCase().trim();
   const orders = getOrders();
   const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
   const buyer = buyers.find(b => (b.email || '').toLowerCase().trim() === cleanEmail);
   const buyerName = buyer ? buyer.name : '';
 
-  const customerOrders = orders.filter(o => 
+  const customerOrders = orders.filter(o =>
     (o.customerName && o.customerName.toLowerCase().includes(buyerName.toLowerCase())) ||
     (o.contactNumber && buyer && o.contactNumber.includes(buyer.mobile))
   );

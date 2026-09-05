@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   renderFeaturedProducts();
   renderBestsellers();
@@ -8,7 +7,6 @@ function renderFeaturedProducts() {
   const container = document.getElementById('featured-products-grid');
   if (!container) return;
 
-  // Render top 4 products
   const featured = PRODUCTS_DATA.slice(0, 4);
   container.innerHTML = featured.map(product => createProductCardHTML(product)).join('');
 }
@@ -22,9 +20,9 @@ function renderBestsellers() {
 }
 
 function createProductCardHTML(product) {
-  const ratingStars = Array(5).fill(0).map((_, i) => 
-    i < Math.floor(product.rating) 
-      ? '<i class="bi bi-star-fill"></i>' 
+  const ratingStars = Array(5).fill(0).map((_, i) =>
+    i < Math.floor(product.rating)
+      ? '<i class="bi bi-star-fill"></i>'
       : (i < product.rating ? '<i class="bi bi-star-half"></i>' : '<i class="bi bi-star"></i>')
   ).join('');
 

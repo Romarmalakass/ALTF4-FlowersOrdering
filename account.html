@@ -5,36 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Craft & Wrapped Haven | Account Settings</title>
   <meta name="description" content="Manage your Craft & Wrapped Haven buyer account, contact information, and security settings.">
-  
-  <!-- Bootstrap 5 CSS -->
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-  
-  <!-- SweetAlert2 CSS -->
+
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-  
-  <!-- Custom Styles -->
+
   <link rel="stylesheet" href="assets/css/global.css">
   <link rel="stylesheet" href="assets/css/account.css">
 </head>
 <body class="buyer-logged-in">
 
-  <!-- Navigation Bar -->
   <nav class="navbar navbar-expand-lg bloom-navbar sticky-top">
     <div class="container-fluid px-3 px-lg-4">
       <a class="bloom-brand" href="index.html">
         <img src="assets/images/logo.png" alt="Craft & Wrapped Logo" class="bloom-brand-img" />
         <span class="bloom-brand-text">Craft & Wrapped Haven</span>
       </a>
-      
+
       <div class="d-flex align-items-center gap-2 order-lg-3">
         <a href="cart.html" class="cart-icon-btn" aria-label="Shopping Cart">
           <i class="bi bi-cart3"></i>
           <span class="cart-badge">1</span>
         </a>
         <div class="navbar-auth-slot d-none d-lg-inline-block ms-1">
-          <!-- Rendered via global.js -->
         </div>
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#bloomNavbar" aria-controls="bloomNavbar" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -60,12 +54,9 @@
     </div>
   </nav>
 
-  <!-- Main Account View (Exact Visual Alignment with Attached Reference) -->
   <main class="account-page-wrapper">
-    <!-- Hidden File Input for Avatar Photo Upload -->
     <input type="file" id="buyer-avatar-file-input" accept="image/*" style="display: none;" onchange="handleAvatarFileChosen(event)">
 
-    <!-- 1. Large White Rounded Profile Card -->
     <div class="account-profile-card">
       <div class="account-avatar-wrapper">
         <div class="account-avatar-img" id="buyer-avatar-display">M</div>
@@ -73,7 +64,7 @@
           <i class="bi bi-camera-fill"></i>
         </button>
       </div>
-      
+
       <h2 class="buyer-profile-name" id="buyer-name-display">Maria Santos</h2>
 
       <button type="button" class="btn-edit-profile" onclick="handleEditProfile()">
@@ -82,7 +73,6 @@
       </button>
     </div>
 
-    <!-- 2. Account Settings Section Header -->
     <div class="account-section-header">
       <div class="account-section-title-wrap">
         <i class="bi bi-gear-fill account-gear-icon"></i>
@@ -91,9 +81,7 @@
       <div class="account-section-divider"></div>
     </div>
 
-    <!-- 3. Account Settings List (Clean Card-Based Style) -->
     <div class="account-settings-list">
-      <!-- 1. Edit Name -->
       <div class="account-setting-card" onclick="handleEditName()" role="button" tabindex="0">
         <div class="setting-card-left">
           <div class="setting-icon-box">
@@ -107,7 +95,6 @@
         <i class="bi bi-chevron-right setting-arrow-icon"></i>
       </div>
 
-      <!-- 2. Edit Phone Number -->
       <div class="account-setting-card" onclick="handleEditPhone()" role="button" tabindex="0">
         <div class="setting-card-left">
           <div class="setting-icon-box">
@@ -121,7 +108,6 @@
         <i class="bi bi-chevron-right setting-arrow-icon"></i>
       </div>
 
-      <!-- 3. Security -->
       <div class="account-setting-card" onclick="handleEditSecurity()" role="button" tabindex="0">
         <div class="setting-card-left">
           <div class="setting-icon-box">
@@ -135,7 +121,6 @@
         <i class="bi bi-chevron-right setting-arrow-icon"></i>
       </div>
 
-      <!-- 4. Logout -->
       <div class="account-setting-card danger-card" onclick="handleAccountLogout()" role="button" tabindex="0">
         <div class="setting-card-left">
           <div class="setting-icon-box danger-icon-box">
@@ -150,7 +135,6 @@
       </div>
     </div>
 
-    <!-- 4. Need Help? Support Card -->
     <div class="account-help-card" onclick="openSellerChat()" role="button" tabindex="0">
       <div class="help-card-left">
         <div class="help-icon-box">
@@ -167,7 +151,6 @@
     </div>
   </main>
 
-  <!-- Footer (Visible on desktop) -->
   <footer class="bloom-footer d-none d-lg-block">
     <div class="container">
       <div class="row g-4">
@@ -216,25 +199,23 @@
     </div>
   </footer>
 
-  <!-- Bootstrap 5 JS Bundle -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- SweetAlert2 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-  <!-- Application JS Modules -->
-  <script src="assets/js/global.js"></script>
-  <script src="assets/js/cart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
+</script>
 
-  <!-- Dedicated Account Page Script -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
+  <script src="assets/js/global.js">
+</script>
+  <script src="assets/js/cart.js">
+</script>
+
+  <script>    document.addEventListener('DOMContentLoaded', () => {
       initAccountPage();
     });
 
     function initAccountPage() {
       let buyer = getActiveBuyer();
       if (!buyer) {
-        // Fallback for direct viewing / demo state
         const buyers = getRegisteredBuyers();
         buyer = (buyers && buyers.length > 0) ? buyers[0] : DEFAULT_DEMO_BUYERS[0];
         setActiveBuyer(buyer);
@@ -256,7 +237,6 @@
       }
     }
 
-    // Avatar Upload Trigger & Handler
     function triggerAvatarUpload() {
       const fileInput = document.getElementById('buyer-avatar-file-input');
       if (fileInput) {
@@ -296,7 +276,6 @@
       reader.readAsDataURL(file);
     }
 
-    // Edit Profile Modal (Name + Photo Option)
     function handleEditProfile() {
       const buyer = getActiveBuyer();
       if (!buyer) return;
@@ -368,7 +347,6 @@
       });
     }
 
-    // 1. Edit Name
     function handleEditName() {
       const buyer = getActiveBuyer();
       if (!buyer) return;
@@ -406,7 +384,6 @@
       });
     }
 
-    // 2. Edit Phone Number
     function handleEditPhone() {
       const buyer = getActiveBuyer();
       if (!buyer) return;
@@ -445,7 +422,6 @@
       });
     }
 
-    // 3. Security (Change Password)
     function handleEditSecurity() {
       const buyer = getActiveBuyer();
       if (!buyer) return;
@@ -497,7 +473,6 @@
       });
     }
 
-    // 4. Logout
     function handleAccountLogout() {
       Swal.fire({
         title: 'Sign Out?',
@@ -525,7 +500,6 @@
       const updatedBuyer = { ...buyer, ...updatedFields };
       setActiveBuyer(updatedBuyer);
 
-      // Also update in registered buyers list
       const buyers = getRegisteredBuyers();
       const idx = buyers.findIndex(b => (b.id && b.id === buyer.id) || (b.email && buyer.email && b.email.toLowerCase() === buyer.email.toLowerCase()));
       if (idx !== -1) {
@@ -533,6 +507,6 @@
         saveRegisteredBuyers(buyers);
       }
     }
-  </script>
+</script>
 </body>
 </html>

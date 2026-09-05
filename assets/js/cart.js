@@ -1,12 +1,11 @@
-
-let activeCartTab = 'cart'; // 'cart' or 'orders'
+let activeCartTab = 'cart';
 let customerOrderSearchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const tabParam = urlParams.get('tab');
   const viewParam = urlParams.get('view');
-  
+
   const cart = getCart();
   const orders = getOrders();
 
@@ -73,7 +72,6 @@ function updateCartAndOrderCounts() {
   if (ordersCountEl) ordersCountEl.textContent = orders.length;
 }
 
-// --- Active Cart Rendering ---
 function renderCart() {
   const cart = getCart();
   const cartContainer = document.getElementById('cart-items-container');
@@ -93,13 +91,11 @@ function renderCart() {
   if (cartContentRow) cartContentRow.style.display = 'flex';
   if (emptyCartContainer) emptyCartContainer.style.display = 'none';
 
-  // Render Cart Items
   cartContainer.innerHTML = cart.map((item, index) => {
     const unitPrice = Number(item.unitPrice || item.price || 0);
     const qty = Number(item.quantity || 1);
     const itemSubtotal = unitPrice * qty;
-    
-    // Add-ons list badges
+
     const addOnsHTML = (item.addOns && item.addOns.length > 0)
       ? item.addOns.map(a => `<span class="addon-badge">+ ${a.name} (${formatCurrency(a.price)})</span>`).join(' ')
       : '';
@@ -176,7 +172,6 @@ function renderCart() {
   calculateTotals();
 }
 
-// --- Cart Totals Calculation ---
 function calculateTotals() {
   const cart = getCart();
   const subtotal = cart.reduce((sum, item) => {
@@ -189,7 +184,7 @@ function calculateTotals() {
 
   const subtotalEl = document.getElementById('summary-subtotal');
   if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);
-  
+
   const deliveryEl = document.getElementById('summary-delivery');
   if (deliveryEl) {
     if (deliveryFee === 0) {
@@ -243,7 +238,6 @@ function handleClearCart() {
   }
 }
 
-// --- Live Order Tracker Functions ---
 function handleCustomerOrderSearch(val) {
   customerOrderSearchQuery = val.trim().toLowerCase();
   renderPlacedOrders();
@@ -257,7 +251,7 @@ function renderPlacedOrders() {
 
   let filtered = orders;
   if (customerOrderSearchQuery !== '') {
-    filtered = filtered.filter(o => 
+    filtered = filtered.filter(o =>
       (o.orderId && o.orderId.toLowerCase().includes(customerOrderSearchQuery)) ||
       (o.customerName && o.customerName.toLowerCase().includes(customerOrderSearchQuery)) ||
       (o.location && o.location.toLowerCase().includes(customerOrderSearchQuery))
@@ -309,7 +303,6 @@ function renderPlacedOrders() {
       step1 = 'completed'; step2 = 'completed'; step3 = 'completed'; step4 = 'completed';
     }
 
-    // Status Badge
     let statusBadgeHTML = `<span class="badge badge-status-pending px-2.5 py-1 rounded-pill fs-8 fw-semibold">Order Placed</span>`;
     if (isInCrafting) {
       statusBadgeHTML = `<span class="badge badge-status-confirmed px-2.5 py-1 rounded-pill fs-8 fw-semibold">In Crafting</span>`;
@@ -349,7 +342,7 @@ function renderPlacedOrders() {
           <div class="order-stepper">
             <div class="order-stepper-track"></div>
             <div class="stepper-progress-bar" style="width: ${progressWidth};"></div>
-            
+
             <div class="step-item ${step1}">
               <div class="step-circle"><i class="bi bi-bag-check"></i></div>
               <span class="step-label">Order Placed</span>
@@ -407,8 +400,7 @@ function handleCustomerCancelOrder(orderId) {
         cancelCustomerOrder(orderId, 'Cancelled by customer.');
         renderPlacedOrders();
         updateCartAndOrderCounts();
-        
-        // Auto-disappearing success check alert
+
         Swal.fire({
           icon: 'success',
           title: 'Order Cancelled',

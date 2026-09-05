@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
   const buyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;
   if (!buyer) {
@@ -77,7 +76,7 @@ function renderCheckoutSummary() {
     const fillerDetailsHTML = (item.fillerDetails && item.fillerDetails.length > 0) ? `<div class="small text-muted"><strong>Fillers:</strong> ${item.fillerDetails.join(', ')}</div>` : '';
     const wrapperRibbonHTML = `
       <div class="small text-muted">
-        <span><strong>Wrapper:</strong> ${item.wrapper || 'Standard'}</span> | 
+        <span><strong>Wrapper:</strong> ${item.wrapper || 'Standard'}</span> |
         <span><strong>Ribbon:</strong> ${item.ribbon || 'Standard'}</span>
       </div>
     `;
@@ -120,7 +119,6 @@ function setupCheckoutForm() {
       return;
     }
 
-    // Form inputs
     const name = document.getElementById('full-name').value.trim();
     const date = document.getElementById('order-date').value;
     const time = document.getElementById('order-time').value;
@@ -133,7 +131,6 @@ function setupCheckoutForm() {
     const grandTotal = cart.reduce((sum, i) => sum + (i.unitPrice * (i.quantity || 1)), 0);
     const dpRequiredAmount = Math.round(grandTotal * 0.5);
 
-    // Format sample order recap
     const firstItem = cart[0];
     const orderFlowers = firstItem.flowerDetails ? firstItem.flowerDetails.join('\n') : firstItem.name;
     const orderFillers = firstItem.fillerDetails ? firstItem.fillerDetails.join('\n') : 'Standard Fillers';
@@ -143,7 +140,6 @@ function setupCheckoutForm() {
 
     const orderId = 'CWH-' + Math.floor(100000 + Math.random() * 900000);
 
-    // Persist Order for Admin Panel
     const orderRecord = {
       orderId: orderId,
       customerName: name,
@@ -213,7 +209,6 @@ function setupCheckoutForm() {
         }
       });
     } else {
-      // Fallback modal
       document.getElementById('modal-order-id').textContent = orderId;
       document.getElementById('modal-customer-name').textContent = name;
       document.getElementById('modal-slot').textContent = `${date} (${time}) [${fulfillmentMode}]`;

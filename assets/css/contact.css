@@ -1,4 +1,3 @@
-
 .contact-info-card {
   background: #fff;
   border: 1px solid var(--glass-border);
@@ -63,7 +62,6 @@
   border-color: var(--pink-primary);
 }
 
-/* --- Mobile Responsiveness for Contact Page --- */
 @media (max-width: 767.98px) {
   .contact-info-card {
     padding: 1.25rem 0.75rem;
