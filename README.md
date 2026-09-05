@@ -12,8 +12,8 @@ Group Members:
 - Divine Grace Antigo (Project Manager)
 - Romar Villafuerte
 - Jann Christopher Abacan
-- Mike Lacebal Jr (Q\A)
-- Ariza Garcia (Analysis)
+- Mike Lacebal Jr Q\A
+- Ariza Garcia Analysis
 - Ivan Wayne Biore
 
 ---
