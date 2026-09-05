@@ -49,6 +49,8 @@ Technologies Used:
 - Bootstrap 5
 - SweetAlert2
 - XAMPP
+- Visual Studio Code
+-Figma
 
 ---
 
