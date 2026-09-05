@@ -1,62 +1,58 @@
-# Craft & Wrapped Haven
-An online flower ordering and custom bouquet website for handcrafted flowers, fresh roses, sunflowers, and customized floral arrangements.
+# Craft and Wrapped Haven
 
-## Project Details
-- **Course Milestone:** Week 5 - Frontend Project Setup and Code Repository
-- **Group Name:** ALT F4
-- **Project Manager:** Divine ([@Divine253](https://github.com/Divine253))
-- **Repository Link:** https://github.com/Romarmalakass/ALTF4-FlowersOrdering
+Online flower ordering and custom bouquet website for handcrafted flowers and customized floral arrangements.
 
-### Group Members
-- **Divine** (Project Manager) - @Divine253
-- **Romar Malakas** - @Romarmalakass
-- **Ariza Garcia** - @arizagarcia217-ops
-- **BEEMO0508** - @BEEMO0508
-- **Dyisiefdyi** - @Dyisiefdyi
-- **oriaxxxx** - @oriaxxxx
+Project Details:
+Course Milestone: Week 5 - Frontend Project Setup and Code Repository
+Group Name: ALT F4
+Project Manager: Divine Grace Antigo
+Repository Link: https://github.com/Romarmalakass/ALTF4-FlowersOrdering
 
----
-
-## Project Description
-Craft & Wrapped Haven is a web application created to showcase handcrafted and fresh flower arrangements. Customers can browse different flower categories, customize their own bouquet by selecting flowers, wrappers, and ribbons, and proceed through a shopping cart and checkout process.
-
-This Week 5 submission establishes our frontend project foundation, implementing our approved Figma design, file structure, reusable UI components, and initial functional pages.
+Group Members:
+- Divine Grace Antigo (Project Manager)
+- Romar Villafuerte
+- Jann Christopher Abacan
+- Mike Lacebal Jr
+- Ariza Garcia
+- Ivan Wayne Biore
 
 ---
 
-## Pages and Components
-### Completed Pages
-- **Home (`index.html`)** - Main landing page with hero banner, featured bouquets, and best sellers.
-- **Shop (`shop.html`)** - Flower catalog with search, filter by category, and sorting.
-- **Custom Bouquet (`product-details.html`)** - Bouquet customization page with options for flowers, wrappers, and ribbons.
-- **Cart (`cart.html`)** - Shopping cart view for reviewing selected items and totals.
-- **Checkout (`checkout.html`)** - Order form with delivery details and payment options.
-- **Contact Us (`contact.html`)** - Inquiry form, store location, and FAQs.
-- **Account (`account.html`)** - Profile overview and order tracker.
-- **Admin (`admin.html`)** - Store management view for tracking incoming orders.
-
-### Reusable UI Components
-- **Navigation Bar (`bloom-navbar`)** - Responsive sticky header with page links and cart counter badge.
-- **Product Cards (`flower-card`)** - Reusable card displaying product image, price, rating, and action buttons.
-- **Buttons** - Consistent button styles (`btn-bloom-primary`, `btn-bloom-outline`).
-- **Modal Dialogs** - Login/registration popup modal and feedback alerts.
-- **Footer** - Standard site footer with contact details and quick links.
+Project Description:
+Craft and Wrapped Haven is an ordering website for handcrafted flowers and bouquets. Users can choose flowers, select wrappers and ribbons, add them to a cart, and proceed to checkout.
 
 ---
 
-## Technologies Used
+Completed Pages:
+- Home (index.html) - Landing page with hero banner and flower products.
+- Shop (shop.html) - Product catalog with search and category filters.
+- Custom Bouquet (product-details.html) - Customizer page for bouquet selection.
+- Cart (cart.html) - Shopping cart page with item total.
+- Checkout (checkout.html) - Order and delivery form.
+- Contact (contact.html) - Store contact form and information.
+- Account (account.html) - User profile and order history.
+- Admin (admin.html) - Admin dashboard for store orders.
+
+Reusable Components:
+- Navigation bar with cart badge
+- Product card for flowers
+- Primary and secondary buttons
+- Login modal popup
+- Footer section
+
+---
+
+Technologies Used:
 - HTML5
-- CSS3 (Vanilla CSS with custom stylesheets)
-- JavaScript (Vanilla ES6)
-- Bootstrap 5.3.2
-- Bootstrap Icons 1.11.1
+- CSS3
+- JavaScript
+- Bootstrap 5
 - SweetAlert2
-- XAMPP / Apache
+- XAMPP
 
 ---
 
-## Project Structure
-```text
+Folder Structure:
 FlowersOrdering/
 ├── index.html
 ├── shop.html
@@ -74,22 +70,17 @@ FlowersOrdering/
     ├── css/
     ├── js/
     └── images/
-```
 
 ---
 
-## Setup and Installation
-### Running with XAMPP
-1. Move or clone this project folder into your XAMPP `htdocs` directory:
-   ```bash
-   c:/xampp/htdocs/FlowersOrdering
-   ```
-2. Open XAMPP Control Panel and start the **Apache** server.
-3. Open your browser and go to:
-   ```text
+How to Run:
+Using XAMPP:
+1. Place this folder in your XAMPP htdocs directory:
+   C:/xampp/htdocs/FlowersOrdering
+2. Start Apache in XAMPP Control Panel.
+3. Open browser and go to:
    http://localhost/FlowersOrdering/
-   ```
 
-### Running with VS Code Live Server
-1. Open the `FlowersOrdering` folder in VS Code.
-2. Right-click on `index.html` and select **Open with Live Server**.
+Using VS Code:
+1. Open the FlowersOrdering folder in VS Code.
+2. Right click index.html and click Open with Live Server.
