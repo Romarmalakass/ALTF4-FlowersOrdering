@@ -13,7 +13,7 @@ Group Members:
 - Romar Villafuerte
 - Jann Christopher Abacan
 - Mike Lacebal Jr 
-- Ariza Garcia Analysis
+- Ariza Garcia/Analysis
 - Ivan Wayne Biore
 
 ---
