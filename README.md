@@ -14,7 +14,7 @@ Group Members:
 - Jann Christopher Abacan / Designer
 - Mike Lacebal Jr/Q&A
 - Ariza Garcia/Analyts
-- Ivan Wayne Biore
+- Ivan Wayne Biore/Q&A
 
 ---
 
