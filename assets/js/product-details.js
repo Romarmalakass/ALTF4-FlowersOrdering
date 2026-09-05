@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - UNIFIED COMPACT TABBED BUILDER ENGINE
- * (assets/js/product-details.js)
- */
 
 let flowerCategory = 'Fuzzy Wire'; // 'Fuzzy Wire', 'Satin Ribbon', 'Colors', 'Fillers', 'Wrappers', 'Ribbons', 'Addons'
 let selectedFlowers = {}; // { id: { flowerObj, qty } }

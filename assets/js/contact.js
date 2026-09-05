@@ -1,6 +1,3 @@
-/**
- * BLOOMIFY - CONTACT PAGE JAVASCRIPT MODULE (assets/js/contact.js)
- */
 
 document.addEventListener('DOMContentLoaded', () => {
   setupContactForm();

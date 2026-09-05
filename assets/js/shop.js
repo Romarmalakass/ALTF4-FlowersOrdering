@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - SHOP CATALOG JAVASCRIPT MODULE
- * (assets/js/shop.js)
- */
 
 let currentCategory = 'All';
 let currentSearch = '';

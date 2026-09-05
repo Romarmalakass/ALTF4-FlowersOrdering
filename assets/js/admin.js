@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - ADMIN PANEL JAVASCRIPT (assets/js/admin.js)
- * Clean Minimalist Order Management, Left Sidebar Navigation, and Messenger-style Live Chat
- */
 
 let currentAdminView = 'orders'; // 'orders' or 'chat'
 let currentFilter = 'ALL';

@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - SHOPPING CART & LIVE ORDER TRACKER JAVASCRIPT MODULE
- * (assets/js/cart.js)
- */
 
 let activeCartTab = 'cart'; // 'cart' or 'orders'
 let customerOrderSearchQuery = '';

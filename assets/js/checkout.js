@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - CHECKOUT & ORDER FORM JAVASCRIPT MODULE
- * (assets/js/checkout.js)
- */
 
 document.addEventListener('DOMContentLoaded', () => {
   const buyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;

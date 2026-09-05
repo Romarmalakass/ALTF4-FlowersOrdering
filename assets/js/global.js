@@ -1,7 +1,3 @@
-/**
- * CRAFT & WRAPPED HAVEN - GLOBAL JAVASCRIPT MODULE
- * Master Catalog with Local Cropped Photo Assets & LocalStorage Cart Manager
- */
 
 // --- Craft & Wrapped Haven Master Catalog ---
 

@@ -1,6 +1,3 @@
-/**
- * BLOOMIFY - HOME PAGE JAVASCRIPT MODULE (assets/js/home.js)
- */
 
 document.addEventListener('DOMContentLoaded', () => {
   renderFeaturedProducts();
