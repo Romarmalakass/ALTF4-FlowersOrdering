@@ -161,20 +161,16 @@ function filterAndRenderProducts() {
       <div class="flower-card h-100 d-flex flex-column justify-content-between">
         <div>
           <div class="flower-card-img-wrapper">
-            <div class="card-badge-container">
-              <span class="bloom-badge badge-fresh">${product.category}</span>
-            </div>
             <img src="${product.image}" alt="${product.name}" class="flower-card-img" loading="lazy" />
           </div>
           <div class="flower-card-body p-3">
-            <div class="flower-category-tag">${product.category}</div>
-            <h5 class="flower-card-title fs-6 fw-bold mb-1" title="${product.name}">${product.name}</h5>
+            <h5 class="flower-card-title fs-6 fw-bold mb-0" title="${product.name}">${product.name}</h5>
           </div>
         </div>
         <div class="flower-card-footer p-3 pt-0">
           <div class="d-flex align-items-center justify-content-between flex-wrap gap-1 pt-2 border-top">
-            <span class="flower-price text-dark-rose fw-bold" style="font-size: 0.92rem;">
-              ${formatCurrency(product.price)} <small class="text-muted" style="font-size: 0.70rem; font-weight: normal;">/ pc</small>
+            <span class="flower-price text-dark-rose fw-bold" style="font-size: 0.95rem;">
+              ${formatCurrency(product.price)}
             </span>
             <button class="btn btn-sm btn-bloom-primary rounded-pill px-3 py-1 fw-semibold" onclick="quickAddToCart('${product.id}')" title="Add to Cart" style="font-size: 0.78rem;">
               Buy
