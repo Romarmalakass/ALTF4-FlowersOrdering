@@ -1,10 +1,9 @@
 .shop-filter-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(12px);
+  background: #fff;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-md);
   padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none !important;
   margin-bottom: 2rem;
 }
 
@@ -85,19 +84,54 @@
   margin-bottom: 1rem;
 }
 
+.flower-card {
+  box-shadow: none !important;
+  border: 1px solid #ebdbe2 !important;
+  background: #fff !important;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.flower-card:hover {
+  box-shadow: none !important;
+  transform: none !important;
+  border-color: var(--pink-primary) !important;
+}
+
 .flower-card-img-wrapper {
   position: relative;
   overflow: hidden;
-  height: 180px;
-  background: #fff5f8;
-  border-radius: 12px 12px 0 0;
+  width: 100%;
+  height: 270px;
+  background: #fff;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-bottom: 1px solid var(--pink-soft);
 }
 
 .flower-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
   display: block;
+}
+
+.flower-card .btn-bloom-primary {
+  background: var(--pink-primary) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.flower-card .btn-bloom-primary:hover {
+  background: var(--pink-hover) !important;
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 @media (max-width: 767.98px) {
@@ -153,16 +187,19 @@
     border-radius: 14px !important;
     overflow: hidden !important;
     border: 1px solid #f0e2e7 !important;
-    box-shadow: 0 2px 8px rgba(45, 20, 30, 0.04) !important;
+    box-shadow: none !important;
   }
 
   .flower-card-img-wrapper {
-    height: 125px !important;
+    height: 190px !important;
   }
 
   .flower-card-img {
-    height: 100% !important;
-    object-fit: cover !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
   }
 
   .flower-card-body {
