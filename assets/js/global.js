@@ -391,6 +391,18 @@ function closeMobileNav() {
   }
 }
 
+// QA: Automatically close mobile navigation drawer when a nav link is selected
+document.addEventListener('DOMContentLoaded', () => {
+  const navLinks = document.querySelectorAll('.bloom-navbar .nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 992) {
+        closeMobileNav();
+      }
+    });
+  });
+});
+
 function updateNavbarAuth() {
   const buyer = getActiveBuyer();
 
