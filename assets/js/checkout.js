@@ -128,6 +128,15 @@ function setupCheckoutForm() {
     const paymentMode = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'Cash';
     const dpOption = document.querySelector('input[name="dpOption"]:checked')?.value || '50% Down Payment';
 
+    // QA Validation: Ensure contact number contains at least 10 digits
+    const cleanedContact = contact.replace(/\D/g, '');
+    if (cleanedContact.length < 10) {
+      showToast("Please enter a valid contact number (at least 10 digits).", "warning");
+      const contactEl = document.getElementById('contact-number');
+      if (contactEl) contactEl.focus();
+      return;
+    }
+
     const grandTotal = cart.reduce((sum, i) => sum + (i.unitPrice * (i.quantity || 1)), 0);
     const dpRequiredAmount = Math.round(grandTotal * 0.5);
 
