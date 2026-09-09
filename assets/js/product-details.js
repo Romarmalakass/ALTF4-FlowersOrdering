@@ -360,7 +360,7 @@ function calculateGrandTotal() {
   Object.values(selectedFillers).forEach(item => {
     const cost = item.fillerObj.price * item.qty;
     fillersTotal += cost;
-    fillerItemsList.push(`${item.fillerObj.name} (${item.qty}x)`);
+    fillerItemsList.push(`${item.fillerObj.name} (${item.qty}x @ ${formatCurrency(item.fillerObj.price)})`);
   });
 
   const wrapperCost = selectedWrapper ? selectedWrapper.price : 0;
@@ -376,45 +376,76 @@ function calculateGrandTotal() {
   const chosenColorsList = [...selectedColors];
 
   const materialsSubtotal = flowersTotal + fillersTotal + wrapperCost + addonsTotal;
-
-  const laborFee = Math.round(materialsSubtotal * 0.15);
-  const grandTotal = materialsSubtotal + laborFee;
+  const grandTotal = materialsSubtotal;
 
   const breakdownContainer = document.getElementById('craft-itemized-summary');
   if (breakdownContainer) {
-    let html = `
-      <div class="itemized-row d-flex justify-content-between mb-1">
-        <span>Flowers Material (${Object.keys(selectedFlowers).length} types)</span>
-        <span class="fw-bold">${formatCurrency(flowersTotal)}</span>
-      </div>
-      <div class="itemized-row d-flex justify-content-between mb-1">
-        <span>Fillers Material (${Object.keys(selectedFillers).length} types)</span>
-        <span class="fw-bold">${formatCurrency(fillersTotal)}</span>
-      </div>
-      <div class="itemized-row d-flex justify-content-between mb-1">
-        <span>Wrapper (${selectedWrapper.name})</span>
-        <span class="fw-bold">${wrapperCost > 0 ? '+' + formatCurrency(wrapperCost) : 'Free'}</span>
-      </div>
-      <div class="itemized-row d-flex justify-content-between mb-1">
-        <span>Ribbon (${ribbonName})</span>
-        <span class="fw-bold">Included</span>
-      </div>
-      <div class="itemized-row d-flex justify-content-between mb-1">
-        <span>Optional Add-ons (${Object.keys(selectedAddons).length})</span>
-        <span class="fw-bold">${formatCurrency(addonsTotal)}</span>
-      </div>
-      <div class="itemized-row d-flex justify-content-between text-primary mb-1">
-        <span>Labor & Craft Fee (15%)</span>
-        <span class="fw-bold">+${formatCurrency(laborFee)}</span>
-      </div>
-    `;
+    const flowerEntries = Object.values(selectedFlowers);
+    const fillerEntries = Object.values(selectedFillers);
+    const addonEntries = Object.values(selectedAddons);
+    const hasItems = flowerEntries.length > 0 || fillerEntries.length > 0;
 
-    if (chosenColorsList.length > 0) {
-      html += `
-        <div class="small text-muted mt-2 pt-2 border-top">
-          <strong>Chosen Color Palette:</strong> ${chosenColorsList.join(', ')}
+    let html = '';
+    if (!hasItems) {
+      html = `
+        <div class="text-muted text-center py-2 small" style="font-size: 0.82rem;">
+          Select flower stems to view summary.
         </div>
       `;
+    } else {
+      // List each selected flower item with name, quantity, and cost
+      flowerEntries.forEach(item => {
+        const itemCost = item.flowerObj.price * item.qty;
+        const qtyText = item.qty > 1 ? `${item.qty} pcs` : `1 pc`;
+        html += `
+          <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
+            <span class="text-dark text-truncate me-2" title="${item.flowerObj.name}">
+              ${item.flowerObj.name} <small class="text-muted">(${qtyText})</small>
+            </span>
+            <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+          </div>
+        `;
+      });
+
+      // List each selected filler item with name, quantity, and cost
+      fillerEntries.forEach(item => {
+        const itemCost = item.fillerObj.price * item.qty;
+        const qtyText = item.qty > 1 ? `${item.qty} pcs` : `1 pc`;
+        html += `
+          <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
+            <span class="text-dark text-truncate me-2" title="${item.fillerObj.name}">
+              ${item.fillerObj.name} <small class="text-muted">(${qtyText})</small>
+            </span>
+            <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+          </div>
+        `;
+      });
+
+      if (wrapperCost > 0) {
+        html += `
+          <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
+            <span class="text-dark text-truncate me-2">Wrapper: ${selectedWrapper.name}</span>
+            <span class="fw-bold text-nowrap">+${formatCurrency(wrapperCost)}</span>
+          </div>
+        `;
+      }
+
+      addonEntries.forEach(addon => {
+        html += `
+          <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
+            <span class="text-dark text-truncate me-2">${addon.name}</span>
+            <span class="fw-bold text-nowrap">+${formatCurrency(addon.price)}</span>
+          </div>
+        `;
+      });
+
+      if (chosenColorsList.length > 0) {
+        html += `
+          <div class="small text-muted mt-2 pt-2 border-top" style="font-size: 0.78rem;">
+            <strong>Palette:</strong> ${chosenColorsList.join(', ')}
+          </div>
+        `;
+      }
     }
 
     breakdownContainer.innerHTML = html;
@@ -428,7 +459,7 @@ function calculateGrandTotal() {
     fillersTotal,
     wrapperCost,
     addonsTotal,
-    laborFee,
+    laborFee: 0,
     grandTotal,
     flowerItemsList,
     fillerItemsList,
@@ -458,9 +489,6 @@ function renderActionButtons() {
       <button class="btn btn-bloom-outline py-2.5 w-100 rounded-pill fw-semibold" onclick="openBuyerLoginModal()" style="font-size: 0.88rem; border-width: 1.5px;">
         <i class="bi bi-lock-fill me-1 text-pink"></i> Log In to Add to Cart
       </button>
-      <div class="text-center mt-1">
-        <small class="text-muted" style="font-size: 0.74rem;">Log in to your buyer account to save and order this custom bouquet.</small>
-      </div>
     `;
   }
 }
@@ -470,22 +498,34 @@ function setupActionButtons() {
   const btnBuyNow = document.getElementById('btn-craft-buy-now');
 
   if (btnAddToCart) {
-    btnAddToCart.addEventListener('click', () => {
-      const cartObj = buildCustomCraftCartObject();
-      if (!cartObj) return;
-      addToCart(cartObj);
-    });
+    btnAddToCart.onclick = (e) => {
+      e.preventDefault();
+      try {
+        const cartObj = buildCustomCraftCartObject();
+        if (!cartObj) return;
+        addToCart(cartObj);
+      } catch (err) {
+        console.error("Error in Add to Cart:", err);
+        showToast("Could not add to cart. Please try again.", "danger");
+      }
+    };
   }
 
   if (btnBuyNow) {
-    btnBuyNow.addEventListener('click', () => {
-      const cartObj = buildCustomCraftCartObject();
-      if (!cartObj) return;
-      const added = addToCart(cartObj);
-      if (added) {
-        window.location.href = 'checkout.html';
+    btnBuyNow.onclick = (e) => {
+      e.preventDefault();
+      try {
+        const cartObj = buildCustomCraftCartObject();
+        if (!cartObj) return;
+        const added = addToCart(cartObj);
+        if (added !== false) {
+          window.location.href = 'checkout.html';
+        }
+      } catch (err) {
+        console.error("Error in Proceed to Order:", err);
+        showToast("Could not proceed to order. Please try again.", "danger");
       }
-    });
+    };
   }
 }
 
@@ -499,6 +539,12 @@ function buildCustomCraftCartObject() {
 
   const addOnsList = Object.values(selectedAddons).map(a => ({ name: a.name, price: a.price }));
 
+  const notesInput = document.getElementById('custom-notes-input');
+  const finalNotes = (notesInput?.value || customNotes || '').trim();
+
+  const safeWrapperName = selectedWrapper?.name || (typeof WRAPPER_OPTIONS !== 'undefined' && WRAPPER_OPTIONS[0]?.name) || "White";
+  const safeRibbonName = calc.ribbonName || selectedRibbon?.name || "Cream";
+
   return {
     productId: 'custom-craft-' + Date.now(),
     name: `Custom ${flowerCategory} Handcrafted Bouquet`,
@@ -506,16 +552,16 @@ function buildCustomCraftCartObject() {
     image: Object.values(selectedFlowers)[0]?.flowerObj?.image || Object.values(selectedFillers)[0]?.fillerObj?.image || "assets/images/fw-1.png",
     basePrice: calc.flowersTotal,
     unitPrice: calc.grandTotal,
-    color: calc.chosenColorsList.join(', ') || "Custom Choice",
+    color: (calc.chosenColorsList && calc.chosenColorsList.length > 0) ? calc.chosenColorsList.join(', ') : "Custom Choice",
     size: `${Object.keys(selectedFlowers).length} Flower Types`,
-    wrapper: selectedWrapper.name,
-    ribbon: calc.ribbonName,
+    wrapper: safeWrapperName,
+    ribbon: safeRibbonName,
     addOns: addOnsList,
     flowerDetails: calc.flowerItemsList,
     fillerDetails: calc.fillerItemsList,
     quantity: 1,
     inspoPhoto: inspoPhotoData,
-    notes: customNotes
+    notes: finalNotes
   };
 }
 

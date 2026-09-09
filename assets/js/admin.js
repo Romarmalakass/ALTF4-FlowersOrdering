@@ -289,84 +289,150 @@ function viewOrderDetails(orderId) {
   if (!order) return;
 
   const firstItem = order.items && order.items[0] ? order.items[0] : {};
-  const orderFlowers = firstItem.flowerDetails ? firstItem.flowerDetails.join(', ') : (firstItem.name || 'Custom Bouquet');
-  const orderFillers = firstItem.fillerDetails ? firstItem.fillerDetails.join(', ') : 'None';
-  const orderWrapper = firstItem.wrapper || 'Standard Wrapper';
-  const orderRibbon = firstItem.ribbon || 'Standard Ribbon';
-  const orderAddons = firstItem.addOns && firstItem.addOns.length > 0 ? firstItem.addOns.map(a => a.name).join(', ') : 'None';
+  const parseStem = (str) => {
+    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
+    if (!match) return { name: str, qty: '1x', price: '' };
+    const name = match[1].trim();
+    const qty = match[2] ? match[2].trim() : '1x';
+    const price = match[3] ? match[3].trim() : '';
+    return { name, qty, price };
+  };
+
+  let itemsHTML = '';
+
+  if (firstItem.flowerDetails && firstItem.flowerDetails.length > 0) {
+    firstItem.flowerDetails.forEach(str => {
+      const s = parseStem(str);
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.86rem;">
+          <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+          <span class="fw-semibold text-dark">${s.price}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (firstItem.fillerDetails && firstItem.fillerDetails.length > 0) {
+    firstItem.fillerDetails.forEach(str => {
+      const s = parseStem(str);
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.84rem;">
+          <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+          <span class="fw-semibold">${s.price || 'Included'}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (firstItem.wrapper) {
+    itemsHTML += `
+      <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.84rem;">
+        <span>Wrapper: ${firstItem.wrapper}</span>
+        <span class="fw-semibold">${firstItem.wrapperCost > 0 ? '+₱' + firstItem.wrapperCost : 'Included'}</span>
+      </div>
+    `;
+  }
+
+  if (firstItem.ribbon) {
+    itemsHTML += `
+      <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.84rem;">
+        <span>Ribbon: ${firstItem.ribbon}</span>
+        <span class="fw-semibold">Included</span>
+      </div>
+    `;
+  }
+
+  if (firstItem.addOns && firstItem.addOns.length > 0) {
+    firstItem.addOns.forEach(addon => {
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.84rem;">
+          <span>${addon.name}</span>
+          <span class="fw-semibold text-dark-rose">+${formatCurrency(addon.price)}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (!itemsHTML) {
+    itemsHTML = `
+      <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.86rem;">
+        <span>${firstItem.name || 'Custom Bouquet'}</span>
+        <span class="fw-semibold text-dark">${formatCurrency(order.grandTotal)}</span>
+      </div>
+    `;
+  }
+
   const inspoPhotoHTML = firstItem.inspoPhoto ? `
-    <div class="mt-2.5 pt-2 border-top">
-      <span class="d-block fw-semibold text-dark mb-1" style="font-size: 0.78rem;">📷 Reference Photo:</span>
-      <img src="${firstItem.inspoPhoto}" style="max-height: 110px; border-radius: 10px; border: 1.5px solid #e8839b;" />
+    <div class="mt-2 pt-2 border-top">
+      <span class="small text-muted d-block mb-1">Inspo Photo Reference:</span>
+      <img src="${firstItem.inspoPhoto}" style="max-height: 85px; border-radius: 8px; border: 1px solid #eedde4;" />
     </div>
   ` : '';
 
   const currentStatus = order.status || 'Order Placed';
 
   Swal.fire({
-    title: `<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 border-bottom pb-2">
+    title: `<div class="d-flex align-items-center justify-content-between w-100 pb-2 border-bottom">
       <span class="fs-6 fw-bold text-dark font-monospace">#${order.orderId}</span>
       <span class="status-badge status-${currentStatus.replace(/\s+/g, '')}">${currentStatus}</span>
     </div>`,
     html: `
-      <div class="text-start" style="font-family: 'Poppins', sans-serif; color: #2d2428; font-size: 0.8rem; line-height: 1.5;">
-        <!-- Single Clean Minimalist Box: Customer Details -->
-        <div class="p-2.5 rounded-3 mb-2 bg-white border" style="border-color: #f0e2e7 !important;">
-          <div class="fw-bold text-dark mb-1 pb-1 border-bottom d-flex align-items-center gap-1.5" style="font-size: 0.82rem;">
-            <i class="bi bi-person me-1 text-danger"></i> Customer & Delivery Details
+      <div class="text-start mt-2" style="font-size: 0.86rem;">
+        <div class="p-3 rounded-3 border mb-2.5" style="border-color: #eedde4 !important; background-color: #fffbfc;">
+          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
+            <span class="text-muted">Customer:</span>
+            <span class="fw-semibold text-dark text-end">${order.customerName}</span>
           </div>
-          <div><strong>Recipient:</strong> ${order.customerName} <span class="text-muted">(${order.contactNumber || 'N/A'})</span></div>
-          <div><strong>Location:</strong> ${order.location || 'N/A'}</div>
-          <div><strong>Needed Slot:</strong> ${order.dateNeeded || 'N/A'} (${order.timeNeeded || 'N/A'})</div>
-          <div><strong>Mode:</strong> ${order.fulfillmentMode || 'Delivery'}</div>
-        </div>
+          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
+            <span class="text-muted">Contact:</span>
+            <span class="fw-semibold text-dark text-end">${order.contactNumber || 'N/A'}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
+            <span class="text-muted">Location:</span>
+            <span class="fw-semibold text-dark text-end text-truncate ms-2" style="max-width: 250px;" title="${order.location}">${order.location || 'N/A'}</span>
+          </div>
+          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
+            <span class="text-muted">Schedule:</span>
+            <span class="fw-semibold text-dark text-end">${order.dateNeeded || 'N/A'} • ${order.fulfillmentMode || 'Pick Up'}</span>
+          </div>
 
-        <!-- Single Clean Minimalist Box: Bouquet Specifications -->
-        <div class="p-2.5 rounded-3 mb-2 bg-white border" style="border-color: #f0e2e7 !important;">
-          <div class="fw-bold text-dark mb-1 pb-1 border-bottom d-flex align-items-center gap-1.5" style="font-size: 0.82rem;">
-            <i class="bi bi-flower1 me-1 text-danger"></i> Bouquet Specifications
+          <div class="py-2 border-bottom" style="border-color: #f4e8ed !important;">
+            <div class="fw-bold text-dark-rose mb-1" style="font-size: 0.88rem;">${firstItem.name || 'Custom Bouquet'}</div>
+            ${itemsHTML}
+            ${inspoPhotoHTML}
           </div>
-          <div><strong>🌸 Flowers:</strong> ${orderFlowers}</div>
-          <div><strong>🌿 Fillers:</strong> ${orderFillers}</div>
-          <div><strong>🎁 Packaging:</strong> ${orderWrapper} (Wrapper) • ${orderRibbon} (Ribbon)</div>
-          <div><strong>✨ Add-ons:</strong> ${orderAddons}</div>
-          ${inspoPhotoHTML}
-        </div>
 
-        <!-- Single Clean Minimalist Box: Payment -->
-        <div class="p-2.5 rounded-3 mb-2 bg-white border" style="border-color: #f0e2e7 !important;">
-          <div class="d-flex justify-content-between align-items-center">
-            <span>Payment: <strong>${order.paymentMode || 'Cash'}</strong> (${order.dpOption || '50% DP'})</span>
-            <span>Grand Total: <strong class="fs-6 text-dark">${formatCurrency(order.grandTotal)}</strong></span>
+          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
+            <span class="text-muted">Payment:</span>
+            <span class="fw-semibold text-success text-end"><i class="bi bi-cash-stack me-1"></i>Cash on Delivery / Pick Up</span>
           </div>
-          <div class="d-flex justify-content-between align-items-center pt-1 mt-1 border-top small text-muted">
-            <span>50% Down Payment Required:</span>
-            <span class="fw-bold text-danger">${formatCurrency(order.dpRequiredAmount)}</span>
+          <div class="d-flex justify-content-between align-items-center pt-2">
+            <span class="fw-bold text-dark fs-6">Total Amount:</span>
+            <span class="fw-bold fs-5 text-dark-rose">${formatCurrency(order.grandTotal)}</span>
           </div>
         </div>
 
         <!-- Status Controller -->
-        <div class="p-2 rounded-3 bg-white border" style="border-color: #f0e2e7 !important;">
-          <label class="form-label fw-semibold mb-1 d-block text-dark" style="font-size: 0.76rem;">
-            <i class="bi bi-sliders me-1 text-danger"></i> Update Live Stage:
+        <div class="p-2.5 rounded-3 bg-white border" style="border-color: #eedde4 !important;">
+          <label class="form-label fw-semibold mb-1.5 d-block text-dark small">
+            <i class="bi bi-sliders me-1 text-pink"></i> Update Order Status:
           </label>
-          <select class="form-select form-select-sm fw-semibold" id="modal-status-select" onchange="updateOrderStatus('${order.orderId}', this.value)" style="border: 1px solid #e0cfd6; font-size: 0.8rem; padding: 0.35rem 0.65rem; border-radius: 6px;">
-            <option value="Order Placed" ${currentStatus === 'Order Placed' || currentStatus === 'Pending' ? 'selected' : ''}>1. 📝 Order Placed (Pending 50% DP)</option>
-            <option value="In Crafting" ${currentStatus === 'In Crafting' || currentStatus === 'Confirmed' ? 'selected' : ''}>2. ✂️ In Crafting (DP Confirmed)</option>
-            <option value="Out for Delivery" ${currentStatus === 'Out for Delivery' || currentStatus === 'Delivery' ? 'selected' : ''}>3. 🚚 Out for Delivery</option>
-            <option value="Delivered" ${currentStatus === 'Delivered' || currentStatus === 'Completed' ? 'selected' : ''}>4. ✅ Delivered (Completed)</option>
-            <option value="Cancelled" ${currentStatus === 'Cancelled' ? 'selected' : ''}>❌ Cancelled</option>
+          <select class="form-select form-select-sm fw-semibold" id="modal-status-select" onchange="updateOrderStatus('${order.orderId}', this.value)">
+            <option value="Order Placed" ${currentStatus === 'Order Placed' || currentStatus === 'Pending' ? 'selected' : ''}>1. Order Placed</option>
+            <option value="In Crafting" ${currentStatus === 'In Crafting' || currentStatus === 'Confirmed' ? 'selected' : ''}>2. In Crafting</option>
+            <option value="Out for Delivery" ${currentStatus === 'Out for Delivery' || currentStatus === 'Delivery' ? 'selected' : ''}>3. Out for Delivery</option>
+            <option value="Delivered" ${currentStatus === 'Delivered' || currentStatus === 'Completed' ? 'selected' : ''}>4. Delivered</option>
+            <option value="Cancelled" ${currentStatus === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
           </select>
         </div>
       </div>
     `,
-    width: '480px',
     showCancelButton: true,
     confirmButtonText: 'Delete Order',
     confirmButtonColor: '#dc3545',
     cancelButtonText: 'Close',
     cancelButtonColor: '#64748b',
-    customClass: { popup: 'admin-order-modal' }
+    customClass: { popup: 'receipt-swal-popup' }
   }).then((result) => {
     if (result.isConfirmed) {
       deleteOrder(order.orderId);

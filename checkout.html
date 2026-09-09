@@ -64,40 +64,13 @@
   </nav>
 
   <header class="page-header-banner">
-    <div class="container">
-      <h1 class="page-header-title">Official Order Form</h1>
-      <nav aria-label="breadcrumb">
-        <ol class="breadcrumb breadcrumb-bloom mb-0">
-          <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item"><a href="cart.html">Shopping Cart</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Official Order Form</li>
-        </ol>
-      </nav>
+    <div class="container text-center">
+      <h1 class="page-header-title mb-0">Official Order Form</h1>
     </div>
   </header>
 
   <main class="py-4">
     <div class="container">
-
-      <div class="alert bg-pink-soft border-start border-4 border-danger p-4 rounded-3 shadow-sm mb-4">
-        <h5 class="fw-bold text-dark-rose mb-2"><i class="bi bi-exclamation-octagon-fill me-1"></i> Craft & Wrapped Haven Reminders:</h5>
-        <div class="row g-3 small text-dark">
-          <div class="col-md-6">
-            <ul class="mb-0">
-              <li><strong>Strictly No Cancellation</strong> of orders once confirmed.</li>
-              <li><strong>50% Down Payment</strong> is required to start crafting.</li>
-              <li><strong>10% - 30% Labor Fee</strong> is included in every custom order.</li>
-            </ul>
-          </div>
-          <div class="col-md-6">
-            <ul class="mb-0">
-              <li><strong>3 - 7 Days Process</strong> lead time for handmade bouquets.</li>
-              <li><strong>Rush Orders Accepted</strong> with minimal additional fee.</li>
-              <li><strong>Pick Up, Meet Up & Delivery</strong> available (minimal fee depending on location).</li>
-            </ul>
-          </div>
-        </div>
-      </div>
 
       <form id="checkout-form" class="needs-validation" novalidate>
         <div class="row g-4">
@@ -153,40 +126,6 @@
               </div>
             </div>
 
-            <div class="checkout-card">
-              <h2 class="checkout-card-title font-serif">
-                <i class="bi bi-wallet2 text-pink"></i> MODE OF PAYMENT (GCASH / CASH)
-              </h2>
-
-              <div class="payment-method-card active">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="pay-gcash" value="GCash" checked>
-                <label class="form-check-label w-100 cursor-pointer" for="pay-gcash">
-                  <strong>GCash Mobile Wallet</strong>
-                  <span class="d-block small text-muted">Send 50% Down Payment or Full Amount to GCash #: 0917-888-9999.</span>
-                </label>
-              </div>
-
-              <div class="payment-method-card">
-                <input class="form-check-input" type="radio" name="paymentMethod" id="pay-cash" value="Cash">
-                <label class="form-check-label w-100 cursor-pointer" for="pay-cash">
-                  <strong>Cash (Upon Pick Up / Meet Up)</strong>
-                  <span class="d-block small text-muted">Pay cash upon meet up or pick up at store branch.</span>
-                </label>
-              </div>
-
-              <div class="mt-4 pt-3 border-top">
-                <label class="form-label fw-semibold small text-dark-rose d-block">PAYMENT AMOUNT TERMS *</label>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="dpOption" id="dp-50" value="50% Down Payment" checked>
-                  <label class="form-check-label fw-semibold small" for="dp-50">50% Down Payment (Required to start craft)</label>
-                </div>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input" type="radio" name="dpOption" id="dp-100" value="Full Payment (100%)">
-                  <label class="form-check-label fw-semibold small" for="dp-100">Full Payment (100%)</label>
-                </div>
-              </div>
-            </div>
-
           </div>
 
           <div class="col-lg-5">
@@ -208,18 +147,14 @@
                 <span class="h3 font-serif fw-bold text-dark-rose mb-0" id="checkout-grand-total">₱0</span>
               </div>
 
-              <div class="alert alert-info py-2 small mb-4">
-                <i class="bi bi-info-circle me-1"></i> 50% DP Required to confirm order.
+              <div class="text-center my-3">
+                <small class="text-muted"><i class="bi bi-cash-stack text-success me-1"></i> Payment: Cash upon Delivery / Pick Up</small>
               </div>
 
               <div class="d-grid">
                 <button type="submit" class="btn-bloom-primary py-3" id="btn-place-order">
                   <i class="bi bi-check-circle-fill me-1"></i> Submit Official Order Form
                 </button>
-              </div>
-
-              <div class="text-center mt-3">
-                <small class="text-muted"><i class="bi bi-heart-fill text-pink me-1"></i> Craft & Wrapped Haven Official Ordering</small>
               </div>
             </div>
           </div>
@@ -265,13 +200,9 @@
               <span class="text-dark-rose" id="modal-total">₱1,250</span>
             </div>
             <div class="d-flex justify-content-between small text-muted">
-              <span>50% Down Payment Required:</span>
-              <span class="fw-bold text-danger" id="modal-dp-amount">₱625</span>
+              <span>Payment Terms:</span>
+              <span class="fw-bold text-dark" id="modal-dp-amount">Cash on Delivery / Pick Up</span>
             </div>
-          </div>
-
-          <div class="alert alert-warning small mb-4">
-            <i class="bi bi-clock-history me-1"></i> Please send your 50% Down Payment receipt to <a href="https://www.facebook.com/share/19dB3XW5o1/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" class="fw-bold text-dark text-decoration-underline">CRAFT & WRAPPED HAVEN Facebook page</a> to confirm your crafting schedule!
           </div>
 
           <a href="index.html" class="btn-bloom-primary w-100 py-2.5 text-center">

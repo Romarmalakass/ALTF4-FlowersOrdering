@@ -427,58 +427,133 @@ function viewCustomerReceipt(orderId) {
   if (!order) return;
 
   const firstItem = order.items && order.items[0] ? order.items[0] : {};
-  const orderFlowers = firstItem.flowerDetails ? firstItem.flowerDetails.join(', ') : (firstItem.name || 'Custom Bouquet');
-  const orderFillers = firstItem.fillerDetails ? firstItem.fillerDetails.join(', ') : 'Standard Fillers';
-  const orderWrapper = firstItem.wrapper || 'Standard Wrapper';
-  const orderRibbon = firstItem.ribbon || 'Standard Ribbon';
-  const orderAddons = firstItem.addOns && firstItem.addOns.length > 0 ? firstItem.addOns.map(a => a.name).join(', ') : 'None';
-  const inspoPhotoHTML = firstItem.inspoPhoto ? `<div class="mt-2 text-start"><strong>📷 Inspo Photo Reference:</strong><br><img src="${firstItem.inspoPhoto}" style="max-height: 90px; border-radius: 8px; border: 1px solid #e8839b;" /></div>` : '';
+
+  const parseStem = (str) => {
+    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
+    if (!match) return { name: str, qty: '1x', price: '' };
+    const name = match[1].trim();
+    const qty = match[2] ? match[2].trim() : '1x';
+    const price = match[3] ? match[3].trim() : '';
+    return { name, qty, price };
+  };
+
+  let itemsHTML = '';
+
+  if (firstItem.flowerDetails && firstItem.flowerDetails.length > 0) {
+    firstItem.flowerDetails.forEach(str => {
+      const s = parseStem(str);
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.88rem;">
+          <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+          <span class="fw-semibold text-dark">${s.price}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (firstItem.fillerDetails && firstItem.fillerDetails.length > 0) {
+    firstItem.fillerDetails.forEach(str => {
+      const s = parseStem(str);
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.84rem;">
+          <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+          <span class="fw-semibold">${s.price || 'Included'}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (firstItem.wrapper) {
+    itemsHTML += `
+      <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.85rem;">
+        <span>Wrapper: ${firstItem.wrapper}</span>
+        <span class="fw-semibold">${firstItem.wrapperCost > 0 ? '+₱' + firstItem.wrapperCost : 'Included'}</span>
+      </div>
+    `;
+  }
+
+  if (firstItem.ribbon) {
+    itemsHTML += `
+      <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.85rem;">
+        <span>Ribbon: ${firstItem.ribbon}</span>
+        <span class="fw-semibold">Included</span>
+      </div>
+    `;
+  }
+
+  if (firstItem.addOns && firstItem.addOns.length > 0) {
+    firstItem.addOns.forEach(addon => {
+      itemsHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.85rem;">
+          <span>${addon.name}</span>
+          <span class="fw-semibold text-dark-rose">+${formatCurrency(addon.price)}</span>
+        </div>
+      `;
+    });
+  }
+
+  if (!itemsHTML) {
+    itemsHTML = `
+      <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.88rem;">
+        <span>${firstItem.name || 'Custom Bouquet'}</span>
+        <span class="fw-semibold text-dark">${formatCurrency(order.grandTotal)}</span>
+      </div>
+    `;
+  }
+
+  const inspoPhotoHTML = firstItem.inspoPhoto ? `
+    <div class="mt-2 pt-2 border-top">
+      <span class="small text-muted d-block mb-1">Inspo Photo Reference:</span>
+      <img src="${firstItem.inspoPhoto}" style="max-height: 85px; border-radius: 8px; border: 1px solid #eedde4;" />
+    </div>
+  ` : '';
 
   if (typeof Swal !== 'undefined') {
     Swal.fire({
-      title: `<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 w-100 border-bottom pb-2">
+      title: `<div class="d-flex align-items-center justify-content-between w-100 pb-2 border-bottom">
         <span class="fs-6 fw-bold text-dark font-monospace">#${order.orderId}</span>
-        <span class="badge badge-status-${(order.status || 'Order Placed').replace(/\s+/g, '')} px-2.5 py-1 rounded-pill fs-8 fw-semibold">${order.status || 'Order Placed'}</span>
+        <span class="badge rounded-pill bg-pink-soft text-dark-rose px-3 py-1 fw-bold" style="font-size: 0.82rem;">${order.status || 'Order Placed'}</span>
       </div>`,
       html: `
-        <div class="text-start" style="font-family: 'Poppins', sans-serif; color: #2d2428; font-size: 0.8rem; line-height: 1.5;">
-          <div class="p-2.5 rounded-3 mb-2 bg-white border" style="border-color: #f0e2e7 !important;">
-            <div class="fw-bold text-dark mb-1 pb-1 border-bottom d-flex align-items-center gap-1.5" style="font-size: 0.82rem;">
-              <i class="bi bi-person me-1 text-danger"></i> Customer & Delivery Details
+        <div class="text-start mt-2" style="font-size: 0.88rem;">
+          <div class="p-3 rounded-3 border" style="border-color: #eedde4 !important; background-color: #fffbfc;">
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Customer:</span>
+              <span class="fw-semibold text-dark text-end">${order.customerName}</span>
             </div>
-            <div><strong>Recipient:</strong> ${order.customerName} <span class="text-muted">(${order.contactNumber || 'N/A'})</span></div>
-            <div><strong>Location:</strong> ${order.location || 'N/A'}</div>
-            <div><strong>Needed Slot:</strong> ${order.dateNeeded || 'N/A'} (${order.timeNeeded || 'N/A'})</div>
-            <div><strong>Mode:</strong> ${order.fulfillmentMode || 'Delivery'}</div>
-          </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Contact:</span>
+              <span class="fw-semibold text-dark text-end">${order.contactNumber || 'N/A'}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Location:</span>
+              <span class="fw-semibold text-dark text-end text-truncate ms-2" style="max-width: 250px;" title="${order.location}">${order.location || 'N/A'}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Schedule:</span>
+              <span class="fw-semibold text-dark text-end">${order.dateNeeded || 'N/A'} • ${order.fulfillmentMode || 'Pick Up'}</span>
+            </div>
 
-          <div class="p-2.5 rounded-3 mb-2 bg-white border" style="border-color: #f0e2e7 !important;">
-            <div class="fw-bold text-dark mb-1 pb-1 border-bottom d-flex align-items-center gap-1.5" style="font-size: 0.82rem;">
-              <i class="bi bi-flower1 me-1 text-danger"></i> Bouquet Specifications
+            <div class="py-2 border-bottom" style="border-color: #f4e8ed !important;">
+              <div class="fw-bold text-dark-rose mb-1.5" style="font-size: 0.9rem;">${firstItem.name || 'Custom Bouquet'}</div>
+              ${itemsHTML}
+              ${inspoPhotoHTML}
             </div>
-            <div><strong>🌸 Flowers:</strong> ${orderFlowers}</div>
-            <div><strong>🌿 Fillers:</strong> ${orderFillers}</div>
-            <div><strong>🎁 Packaging:</strong> ${orderWrapper} (Wrapper) • ${orderRibbon} (Ribbon)</div>
-            <div><strong>✨ Add-ons:</strong> ${orderAddons}</div>
-            ${inspoPhotoHTML}
-          </div>
 
-          <div class="p-2.5 rounded-3 bg-white border" style="border-color: #f0e2e7 !important;">
-            <div class="d-flex justify-content-between align-items-center">
-              <span>Payment: <strong>${order.paymentMode || 'Cash'}</strong> (${order.dpOption || '50% DP'})</span>
-              <span>Grand Total: <strong class="fs-6 text-dark">${formatCurrency(order.grandTotal)}</strong></span>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Payment:</span>
+              <span class="fw-semibold text-success text-end"><i class="bi bi-cash-stack me-1"></i>Cash upon Delivery / Pick Up</span>
             </div>
-            <div class="d-flex justify-content-between align-items-center pt-1 mt-1 border-top small text-muted">
-              <span>50% Down Payment Required:</span>
-              <span class="fw-bold text-danger">${formatCurrency(order.dpRequiredAmount)}</span>
+            <div class="d-flex justify-content-between align-items-center pt-2.5">
+              <span class="fw-bold text-dark fs-6">Total Amount:</span>
+              <span class="fw-bold fs-5 text-dark-rose">${formatCurrency(order.grandTotal)}</span>
             </div>
           </div>
         </div>
       `,
       confirmButtonText: 'Close',
       confirmButtonColor: '#e8839b',
-      width: '480px',
-      customClass: { popup: 'order-details-modal' }
+      customClass: { popup: 'receipt-swal-popup' }
     });
   }
 }

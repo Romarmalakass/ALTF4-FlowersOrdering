@@ -68,29 +68,99 @@ function renderCheckoutSummary() {
 
   let subtotal = 0;
 
+  const parseStem = (str) => {
+    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
+    if (!match) return { name: str, qty: '1x', price: '' };
+    const name = match[1].trim();
+    const qty = match[2] ? match[2].trim() : '1x';
+    const price = match[3] ? match[3].trim() : '';
+    return { name, qty, price };
+  };
+
   summaryContainer.innerHTML = cart.map(item => {
     const itemTotal = item.unitPrice * (item.quantity || 1);
     subtotal += itemTotal;
 
-    const flowerDetailsHTML = (item.flowerDetails && item.flowerDetails.length > 0) ? `<div class="small text-dark-rose"><strong>Stems:</strong> ${item.flowerDetails.join(', ')}</div>` : '';
-    const fillerDetailsHTML = (item.fillerDetails && item.fillerDetails.length > 0) ? `<div class="small text-muted"><strong>Fillers:</strong> ${item.fillerDetails.join(', ')}</div>` : '';
-    const wrapperRibbonHTML = `
-      <div class="small text-muted">
-        <span><strong>Wrapper:</strong> ${item.wrapper || 'Standard'}</span> |
-        <span><strong>Ribbon:</strong> ${item.ribbon || 'Standard'}</span>
-      </div>
-    `;
+    let itemsListHTML = '';
+
+    if (item.flowerDetails && item.flowerDetails.length > 0) {
+      item.flowerDetails.forEach(str => {
+        const s = parseStem(str);
+        itemsListHTML += `
+          <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.88rem;">
+            <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+            <span class="fw-semibold text-dark">${s.price}</span>
+          </div>
+        `;
+      });
+    }
+
+    if (item.fillerDetails && item.fillerDetails.length > 0) {
+      item.fillerDetails.forEach(str => {
+        const s = parseStem(str);
+        itemsListHTML += `
+          <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.84rem;">
+            <span>${s.name} <small class="text-muted fw-normal">${s.qty}</small></span>
+            <span class="fw-semibold">${s.price || 'Included'}</span>
+          </div>
+        `;
+      });
+    }
+
+    if (item.addOns && item.addOns.length > 0) {
+      item.addOns.forEach(addon => {
+        itemsListHTML += `
+          <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.85rem;">
+            <span>${addon.name}</span>
+            <span class="fw-semibold text-dark-rose">+${formatCurrency(addon.price)}</span>
+          </div>
+        `;
+      });
+    }
+
+    if (item.wrapper) {
+      itemsListHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.85rem;">
+          <span>Wrapper: ${item.wrapper}</span>
+          <span class="fw-semibold">${item.wrapperCost > 0 ? '+₱' + item.wrapperCost : 'Included'}</span>
+        </div>
+      `;
+    }
+
+    if (item.ribbon) {
+      itemsListHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.85rem;">
+          <span>Ribbon: ${item.ribbon}</span>
+          <span class="fw-semibold">Included</span>
+        </div>
+      `;
+    }
+
+    if (item.color && item.color !== 'Custom Choice') {
+      itemsListHTML += `
+        <div class="d-flex justify-content-between align-items-center py-1 text-muted" style="font-size: 0.85rem;">
+          <span>Color Palette: ${item.color}</span>
+          <span class="fw-semibold">Custom</span>
+        </div>
+      `;
+    }
+
+    if (!itemsListHTML) {
+      itemsListHTML = `
+        <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.88rem;">
+          <span>${item.name} <small class="text-muted fw-normal">${item.quantity || 1}x</small></span>
+          <span class="fw-semibold text-dark">${formatCurrency(itemTotal)}</span>
+        </div>
+      `;
+    }
 
     return `
-      <div class="py-2 border-bottom">
-        <div class="d-flex justify-content-between align-items-start">
-          <h6 class="mb-0 fw-bold small">${item.name} (${item.quantity || 1}x)</h6>
-          <span class="fw-bold small text-dark-rose">${formatCurrency(itemTotal)}</span>
+      <div class="py-2.5 border-bottom">
+        <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
+          <span class="fw-bold text-dark-rose small">${item.name}</span>
+          <span class="fw-bold small text-dark">${formatCurrency(itemTotal)}</span>
         </div>
-        <div class="small text-muted"><strong>Color Palette:</strong> ${item.color || 'Standard Choice'}</div>
-        ${flowerDetailsHTML}
-        ${fillerDetailsHTML}
-        ${wrapperRibbonHTML}
+        ${itemsListHTML}
       </div>
     `;
   }).join('');
@@ -125,8 +195,8 @@ function setupCheckoutForm() {
     const fulfillmentMode = document.getElementById('fulfillment-mode').value;
     const location = document.getElementById('order-location').value.trim();
     const contact = document.getElementById('contact-number').value.trim();
-    const paymentMode = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'Cash';
-    const dpOption = document.querySelector('input[name="dpOption"]:checked')?.value || '50% Down Payment';
+    const paymentMode = 'Cash';
+    const dpOption = 'Cash on Delivery / Pick Up';
 
     // QA Validation: Ensure contact number contains at least 10 digits
     const cleanedContact = contact.replace(/\D/g, '');
@@ -138,7 +208,6 @@ function setupCheckoutForm() {
     }
 
     const grandTotal = cart.reduce((sum, i) => sum + (i.unitPrice * (i.quantity || 1)), 0);
-    const dpRequiredAmount = Math.round(grandTotal * 0.5);
 
     const firstItem = cart[0];
     const orderFlowers = firstItem.flowerDetails ? firstItem.flowerDetails.join('\n') : firstItem.name;
@@ -161,7 +230,7 @@ function setupCheckoutForm() {
       dpOption: dpOption,
       items: cart,
       grandTotal: grandTotal,
-      dpRequiredAmount: dpRequiredAmount,
+      dpRequiredAmount: 0,
       status: 'Pending',
       createdAt: new Date().toISOString()
     };
@@ -172,43 +241,54 @@ function setupCheckoutForm() {
 
     if (typeof Swal !== 'undefined') {
       Swal.fire({
-        title: `Order #${orderId}`,
+        icon: 'success',
+        title: 'Order Placed Successfully!',
         html: `
-          <div class="text-start bg-light p-2.5 rounded-3 border small" style="line-height: 1.5; font-size: 0.82rem;">
-            <div class="mb-2 pb-1.5 border-bottom">
-              <div><strong>Recipient:</strong> ${name} (${contact})</div>
-              <div><strong>Location:</strong> ${location}</div>
-              <div><strong>Slot:</strong> ${date} (${time}) [${fulfillmentMode}]</div>
-              <div><strong>Terms:</strong> ${paymentMode} (${dpOption})</div>
-            </div>
-
-            <div class="mb-2 pb-1.5 border-bottom">
-              <div><strong>Items:</strong> ${orderFlowers}</div>
-              <div>Wrapper: ${orderWrapper} • Ribbon: ${orderRibbon}</div>
-              ${orderAddons !== 'None' ? `<div>Add-ons: ${orderAddons}</div>` : ''}
-            </div>
-
-            <div class="d-flex justify-content-between fw-bold text-dark fs-6">
-              <span>Total:</span>
-              <span class="text-danger">${formatCurrency(grandTotal)}</span>
-            </div>
-            <div class="d-flex justify-content-between text-muted" style="font-size: 0.76rem;">
-              <span>50% Down Payment:</span>
-              <span class="fw-semibold text-danger">${formatCurrency(dpRequiredAmount)}</span>
-            </div>
+          <div class="mb-3">
+            <span class="badge rounded-pill bg-pink-soft text-dark-rose px-3 py-1 fw-bold" style="font-size: 0.88rem; letter-spacing: 0.5px;">Order #${orderId}</span>
           </div>
-          <div class="alert alert-warning py-1.5 px-2.5 small mt-2 mb-0" style="font-size: 0.76rem;">
-            <i class="bi bi-info-circle me-1"></i> Send your 50% DP receipt to Facebook page to confirm.
+
+          <div class="text-start p-3 rounded-3 border" style="font-size: 0.88rem; border-color: #eedde4 !important; background-color: #fffbfc;">
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Customer:</span>
+              <span class="fw-semibold text-dark text-end">${name}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Contact:</span>
+              <span class="fw-semibold text-dark text-end">${contact}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Location:</span>
+              <span class="fw-semibold text-dark text-end text-truncate ms-2" style="max-width: 250px;" title="${location}">${location}</span>
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Schedule:</span>
+              <span class="fw-semibold text-dark text-end">${date} • ${fulfillmentMode}</span>
+            </div>
+            <div class="py-2 border-bottom" style="border-color: #f4e8ed !important;">
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-muted">Bouquet:</span>
+                <span class="fw-semibold text-dark text-end">${firstItem.name}</span>
+              </div>
+              <div class="small text-muted text-end mt-0.5" style="font-size: 0.8rem;">Wrapper: ${orderWrapper} • Ribbon: ${orderRibbon}</div>
+              ${orderAddons !== 'None' ? `<div class="small text-dark-rose text-end mt-0.5" style="font-size: 0.8rem;">Add-ons: ${orderAddons}</div>` : ''}
+            </div>
+            <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
+              <span class="text-muted">Payment:</span>
+              <span class="fw-semibold text-success text-end"><i class="bi bi-cash-stack me-1"></i>Cash on Delivery / Pick Up</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center pt-2.5">
+              <span class="fw-bold text-dark fs-6">Total Amount:</span>
+              <span class="fw-bold fs-5 text-dark-rose">${formatCurrency(grandTotal)}</span>
+            </div>
           </div>
         `,
-        icon: 'success',
         showCancelButton: true,
-        confirmButtonText: '<i class="bi bi-truck me-1"></i> Track Order',
-        cancelButtonText: 'Home',
+        confirmButtonText: '<i class="bi bi-truck me-1.5"></i> Track Order',
+        cancelButtonText: '<i class="bi bi-house me-1.5"></i> Home',
         confirmButtonColor: '#e8839b',
         cancelButtonColor: '#6c757d',
-        width: '420px',
-        customClass: { popup: 'compact-swal-popup' }
+        customClass: { popup: 'receipt-swal-popup' }
       }).then((result) => {
         clearCart();
         if (result.isConfirmed) {
@@ -223,9 +303,9 @@ function setupCheckoutForm() {
       document.getElementById('modal-slot').textContent = `${date} (${time}) [${fulfillmentMode}]`;
       document.getElementById('modal-location').textContent = location;
       document.getElementById('modal-contact').textContent = contact;
-      document.getElementById('modal-payment').textContent = `${paymentMode} (${dpOption})`;
+      document.getElementById('modal-payment').textContent = 'Cash on Delivery / Pick Up';
       document.getElementById('modal-total').textContent = formatCurrency(grandTotal);
-      document.getElementById('modal-dp-amount').textContent = formatCurrency(dpRequiredAmount);
+      if (document.getElementById('modal-dp-amount')) document.getElementById('modal-dp-amount').textContent = 'N/A (Cash)';
 
       document.getElementById('modal-order-flowers').textContent = orderFlowers;
       document.getElementById('modal-order-fillers').textContent = orderFillers;
