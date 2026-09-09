@@ -69,6 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, 150);
   }
+
+  // Keyboard shortcut: Escape key clears active search filter
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && searchQuery) {
+      searchQuery = '';
+      const searchInput = document.getElementById('admin-order-search');
+      if (searchInput) searchInput.value = '';
+      renderAdminDashboard();
+    }
+  });
 });
 
 function switchAdminView(view) {
