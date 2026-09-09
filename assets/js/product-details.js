@@ -518,3 +518,11 @@ function buildCustomCraftCartObject() {
     notes: customNotes
   };
 }
+
+// UX Polish: Ensure active component category tab stays centered in viewport
+function highlightActiveCategorySelection() {
+  const activeTab = document.querySelector('#flower-cat-tabs .btn-bloom-primary');
+  if (activeTab) {
+    activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+}
