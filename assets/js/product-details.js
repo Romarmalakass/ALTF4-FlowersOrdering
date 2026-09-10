@@ -517,10 +517,9 @@ function setupActionButtons() {
       try {
         const cartObj = buildCustomCraftCartObject();
         if (!cartObj) return;
-        const added = addToCart(cartObj);
-        if (added !== false) {
-          window.location.href = 'checkout.html';
-        }
+        // Direct checkout: order ONLY this currently customized bouquet
+        sessionStorage.setItem('cwh_direct_order', JSON.stringify([cartObj]));
+        window.location.href = 'checkout.html?direct=1';
       } catch (err) {
         console.error("Error in Proceed to Order:", err);
         showToast("Could not proceed to order. Please try again.", "danger");

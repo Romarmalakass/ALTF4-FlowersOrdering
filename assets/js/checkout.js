@@ -49,20 +49,41 @@ function setupFulfillmentToggle() {
   }
 }
 
+function getCheckoutItems() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDirect = urlParams.get('direct') === '1' || sessionStorage.getItem('cwh_direct_order');
+
+  if (isDirect) {
+    try {
+      const directData = sessionStorage.getItem('cwh_direct_order');
+      if (directData) {
+        const items = JSON.parse(directData);
+        if (Array.isArray(items) && items.length > 0) {
+          return items;
+        }
+      }
+    } catch (e) {}
+  }
+
+  return getCart();
+}
+
 function renderCheckoutSummary() {
-  const cart = getCart();
+  const checkoutItems = getCheckoutItems();
   const summaryContainer = document.getElementById('checkout-items-list');
   const grandTotalEl = document.getElementById('checkout-grand-total');
 
   if (!summaryContainer) return;
 
-  if (cart.length === 0) {
+  if (checkoutItems.length === 0) {
     summaryContainer.innerHTML = `
       <div class="alert alert-warning small mb-3">
-        Your cart is empty. <a href="product-details.html" class="alert-link">Build a custom bouquet</a> first.
+        Your order is empty. <a href="product-details.html" class="alert-link">Build a custom bouquet</a> first.
       </div>
     `;
     if (grandTotalEl) grandTotalEl.textContent = '₱0';
+    const subtotalEl = document.getElementById('checkout-subtotal');
+    if (subtotalEl) subtotalEl.textContent = '₱0';
     return;
   }
 
@@ -77,7 +98,16 @@ function renderCheckoutSummary() {
     return { name, qty, price };
   };
 
-  summaryContainer.innerHTML = cart.map(item => {
+  const clearMultiNotice = checkoutItems.length > 1 ? `
+    <div class="d-flex justify-content-between align-items-center py-1.5 px-2 mb-2 rounded bg-light border" style="font-size: 0.78rem;">
+      <span class="text-muted"><i class="bi bi-bag-check me-1"></i>${checkoutItems.length} items in order</span>
+      <button type="button" class="btn btn-sm text-danger p-0 border-0 fw-semibold" onclick="clearAllCheckoutItems()" style="font-size: 0.78rem;">
+        <i class="bi bi-trash me-1"></i>Clear all
+      </button>
+    </div>
+  ` : '';
+
+  summaryContainer.innerHTML = clearMultiNotice + checkoutItems.map((item, index) => {
     const itemTotal = item.unitPrice * (item.quantity || 1);
     subtotal += itemTotal;
 
@@ -158,7 +188,12 @@ function renderCheckoutSummary() {
       <div class="py-2.5 border-bottom">
         <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom">
           <span class="fw-bold text-dark-rose small">${item.name}</span>
-          <span class="fw-bold small text-dark">${formatCurrency(itemTotal)}</span>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold small text-dark">${formatCurrency(itemTotal)}</span>
+            <button type="button" class="btn btn-sm text-danger p-0 border-0" onclick="removeCheckoutItem(${index})" title="Remove item from order" style="line-height: 1;">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
         </div>
         ${itemsListHTML}
       </div>
@@ -169,6 +204,38 @@ function renderCheckoutSummary() {
   if (grandTotalEl) grandTotalEl.textContent = formatCurrency(subtotal);
 }
 
+function removeCheckoutItem(index) {
+  const isDirect = sessionStorage.getItem('cwh_direct_order');
+
+  if (isDirect) {
+    try {
+      let items = JSON.parse(sessionStorage.getItem('cwh_direct_order') || '[]');
+      items.splice(index, 1);
+      if (items.length === 0) {
+        sessionStorage.removeItem('cwh_direct_order');
+      } else {
+        sessionStorage.setItem('cwh_direct_order', JSON.stringify(items));
+      }
+    } catch (e) {}
+  } else {
+    let cart = getCart();
+    cart.splice(index, 1);
+    saveCart(cart);
+  }
+
+  renderCheckoutSummary();
+  if (typeof updateCartBadge === 'function') updateCartBadge();
+  showToast("Item removed from order", "info");
+}
+
+function clearAllCheckoutItems() {
+  sessionStorage.removeItem('cwh_direct_order');
+  clearCart();
+  renderCheckoutSummary();
+  if (typeof updateCartBadge === 'function') updateCartBadge();
+  showToast("Order items cleared", "info");
+}
+
 function setupCheckoutForm() {
   const form = document.getElementById('checkout-form');
   if (!form) return;
@@ -176,9 +243,9 @@ function setupCheckoutForm() {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    const cart = getCart();
-    if (cart.length === 0) {
-      showToast("Your cart is empty! Please customize a bouquet to proceed.", "danger");
+    const checkoutItems = getCheckoutItems();
+    if (checkoutItems.length === 0) {
+      showToast("Your order is empty! Please customize a bouquet to proceed.", "danger");
       return;
     }
 
@@ -207,9 +274,9 @@ function setupCheckoutForm() {
       return;
     }
 
-    const grandTotal = cart.reduce((sum, i) => sum + (i.unitPrice * (i.quantity || 1)), 0);
+    const grandTotal = checkoutItems.reduce((sum, i) => sum + (i.unitPrice * (i.quantity || 1)), 0);
 
-    const firstItem = cart[0];
+    const firstItem = checkoutItems[0];
     const orderFlowers = firstItem.flowerDetails ? firstItem.flowerDetails.join('\n') : firstItem.name;
     const orderFillers = firstItem.fillerDetails ? firstItem.fillerDetails.join('\n') : 'Standard Fillers';
     const orderWrapper = firstItem.wrapper || 'Standard Wrapper';
@@ -228,7 +295,7 @@ function setupCheckoutForm() {
       contactNumber: contact,
       paymentMode: paymentMode,
       dpOption: dpOption,
-      items: cart,
+      items: checkoutItems,
       grandTotal: grandTotal,
       dpRequiredAmount: 0,
       status: 'Pending',
@@ -290,6 +357,7 @@ function setupCheckoutForm() {
         cancelButtonColor: '#6c757d',
         customClass: { popup: 'receipt-swal-popup' }
       }).then((result) => {
+        sessionStorage.removeItem('cwh_direct_order');
         clearCart();
         if (result.isConfirmed) {
           window.location.href = 'cart.html?tab=orders';
@@ -315,6 +383,7 @@ function setupCheckoutForm() {
 
       const modal = new bootstrap.Modal(document.getElementById('orderSuccessModal'));
       modal.show();
+      sessionStorage.removeItem('cwh_direct_order');
       clearCart();
     }
   });
