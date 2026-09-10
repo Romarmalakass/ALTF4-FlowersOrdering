@@ -179,8 +179,7 @@ function calculateTotals() {
     const q = Number(item.quantity || 1);
     return sum + (p * q);
   }, 0);
-  const deliveryFee = (subtotal >= 2000 || subtotal === 0) ? 0 : 150;
-  const grandTotal = Math.max(0, subtotal + deliveryFee);
+  const grandTotal = subtotal;
 
   const subtotalEl = document.getElementById('summary-subtotal');
   if (subtotalEl) subtotalEl.textContent = formatCurrency(subtotal);

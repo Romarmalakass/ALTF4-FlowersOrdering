@@ -688,7 +688,7 @@ function handleBuyerLoginSubmit() {
 
   Swal.fire({
     icon: 'success',
-    title: `Welcome back, ${found.name.split(' ')[0]}! 🌸`,
+    title: `Welcome back, ${found.name.split(' ')[0]}!`,
     text: 'Logged in successfully',
     showConfirmButton: false,
     timer: 1500,
@@ -1016,7 +1016,7 @@ function handleBuyerRegisterSubmit() {
 
   Swal.fire({
     icon: 'success',
-    title: `Welcome, ${name.split(' ')[0]}! 🌸`,
+    title: `Welcome, ${name.split(' ')[0]}!`,
     text: 'Account created successfully',
     showConfirmButton: false,
     timer: 1500,
@@ -1490,16 +1490,17 @@ function showToast(message, type = "success") {
     let iconType = 'success';
     if (type === 'info') iconType = 'info';
     if (type === 'danger' || type === 'error') iconType = 'error';
+    if (type === 'warning') iconType = 'warning';
 
     Swal.fire({
-      toast: true,
-      position: 'bottom-end',
       icon: iconType,
       title: message,
+      position: 'center',
       showConfirmButton: false,
-      timer: 2000,
+      timer: 1600,
+      width: '320px',
       customClass: {
-        popup: 'bloom-swal-toast'
+        popup: 'compact-swal-popup'
       }
     });
   } else {
