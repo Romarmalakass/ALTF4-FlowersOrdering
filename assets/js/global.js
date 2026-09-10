@@ -251,7 +251,7 @@ function removeFromCart(index) {
   if (index >= 0 && index < cart.length) {
     const removed = cart.splice(index, 1);
     saveCart(cart);
-    showToast(`Removed item from cart.`, "info");
+    showToast(`Item removed from cart`, "success");
   }
 }
 

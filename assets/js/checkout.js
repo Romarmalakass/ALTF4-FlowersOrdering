@@ -225,7 +225,7 @@ function removeCheckoutItem(index) {
 
   renderCheckoutSummary();
   if (typeof updateCartBadge === 'function') updateCartBadge();
-  showToast("Item removed from order", "info");
+  showToast("Item removed from order", "success");
 }
 
 function clearAllCheckoutItems() {
@@ -233,7 +233,7 @@ function clearAllCheckoutItems() {
   clearCart();
   renderCheckoutSummary();
   if (typeof updateCartBadge === 'function') updateCartBadge();
-  showToast("Order items cleared", "info");
+  showToast("Order items cleared", "success");
 }
 
 function setupCheckoutForm() {

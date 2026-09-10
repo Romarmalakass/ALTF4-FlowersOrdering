@@ -542,7 +542,7 @@ function deleteOrder(orderId) {
       orders = orders.filter(o => o.orderId !== orderId);
       saveOrders(orders);
       renderAdminDashboard();
-      showToast(`Order #${orderId} deleted.`, "info");
+      showToast(`Order #${orderId} deleted.`, "success");
     }
   });
 }

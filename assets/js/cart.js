@@ -225,14 +225,14 @@ function handleClearCart() {
       if (result.isConfirmed) {
         clearCart();
         renderCart();
-        showToast("Shopping cart cleared.", "info");
+        showToast("Shopping cart cleared", "success");
       }
     });
   } else {
     if (confirm("Are you sure you want to clear your shopping cart?")) {
       clearCart();
       renderCart();
-      showToast("Shopping cart cleared.", "info");
+      showToast("Shopping cart cleared", "success");
     }
   }
 }
