@@ -1333,13 +1333,13 @@ function generateSmartSellerReply(prompt, buyer) {
     return `Yes po! You can fully customize stem count, wrapper shades, and ribbon colors in our Custom Bouquet Builder tab 🪄 Would you like a specific color palette?`;
   }
   if (q.includes('price') || q.includes('magkano') || q.includes('cost') || q.includes('how much')) {
-    return `Our handcrafted stems start at ₱70–₱140 per piece, with free wrappers on custom bouquets! We also have a 50% Down Payment option at checkout ✨`;
+    return `Our handcrafted stems start at ₱70–₱140 per piece, with free wrappers on custom bouquets! Payment is cash upon delivery or pickup ✨`;
   }
   if (q.includes('rush') || q.includes('today') || q.includes('deliver') || q.includes('delivery') || q.includes('location')) {
     return `Standard handcrafted crafting takes 3–7 business days, and we deliver nationwide! We also offer express slots depending on current orders 🚚`;
   }
-  if (q.includes('dp') || q.includes('down payment') || q.includes('gcash') || q.includes('payment') || q.includes('pay')) {
-    return `We accept GCash and Cash on Delivery! A 50% Down Payment is confirmed before crafting starts to secure your slot 💖`;
+  if (q.includes('dp') || q.includes('down payment') || q.includes('cash') || q.includes('payment') || q.includes('pay')) {
+    return `We accept Cash upon delivery and pickup! Direct and hassle-free payment upon receiving your order 💖`;
   }
   if (q.includes('order') || q.includes('track') || q.includes('status')) {
     return `You can track your live crafting & delivery status anytime under the "Track My Orders" tab in your Shopping Cart! 📦`;

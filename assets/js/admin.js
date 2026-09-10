@@ -556,8 +556,8 @@ function seedSampleOrder() {
     fulfillmentMode: 'Delivery',
     location: 'Baliwag, Bulacan',
     contactNumber: '0917-888-9999',
-    paymentMode: 'GCash',
-    dpOption: '50% Down Payment',
+    paymentMode: 'Cash',
+    dpOption: 'Full Payment (Cash)',
     items: [
       {
         name: 'Custom Addons Handcrafted Bouquet',
