@@ -7,7 +7,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const categoryParam = urlParams.get('category');
   const searchParam = urlParams.get('search');
 
-  if (categoryParam) currentCategory = categoryParam;
+  if (categoryParam) {
+    const cp = categoryParam.trim();
+    const cpLower = cp.toLowerCase();
+    if (cpLower === 'fuzzy wire' || cpLower === 'fuzzy-wire' || cpLower === 'fuzzywire') {
+      currentCategory = 'Fuzzy Wire';
+    } else if (cpLower === 'satin ribbon' || cpLower === 'satin-ribbon' || cpLower === 'satinribbon') {
+      currentCategory = 'Satin Ribbon';
+    } else if (cpLower === 'fillers' || cpLower === 'filler') {
+      currentCategory = 'Fillers';
+    } else {
+      currentCategory = cp;
+    }
+  }
+
   if (searchParam) {
     currentSearch = searchParam;
     const searchInput = document.getElementById('shop-search-input');
@@ -26,9 +39,13 @@ function setupCategoryButtons() {
   if (!categoryContainer) return;
 
   const categories = ['All', 'Fuzzy Wire', 'Satin Ribbon', 'Fillers'];
+  const isCustomCategory = !categories.map(c => c.toLowerCase()).includes(currentCategory.toLowerCase());
+  if (isCustomCategory && currentCategory !== '') {
+    categories.push(currentCategory);
+  }
 
   categoryContainer.innerHTML = categories.map(cat => `
-    <button class="category-pill-btn ${cat === currentCategory ? 'active' : ''}" data-category="${cat}">
+    <button class="category-pill-btn ${cat.toLowerCase() === currentCategory.toLowerCase() ? 'active' : ''}" data-category="${cat}">
       ${cat}
     </button>
   `).join('');
@@ -112,7 +129,25 @@ function filterAndRenderProducts() {
   let filtered = getUnifiedCatalog();
 
   if (currentCategory !== 'All') {
-    filtered = filtered.filter(p => p.category.toLowerCase() === currentCategory.toLowerCase());
+    const catLower = currentCategory.toLowerCase();
+    if (catLower === 'fuzzy wire') {
+      filtered = filtered.filter(p => p.category.toLowerCase() === 'fuzzy wire');
+    } else if (catLower === 'satin ribbon') {
+      filtered = filtered.filter(p => p.category.toLowerCase() === 'satin ribbon');
+    } else if (catLower === 'fillers') {
+      filtered = filtered.filter(p => p.category.toLowerCase() === 'fillers');
+    } else {
+      filtered = filtered.filter(p => {
+        const nameLower = p.name.toLowerCase();
+        if (catLower.includes('rose')) return nameLower.includes('rose');
+        if (catLower.includes('sunflower')) return nameLower.includes('sunflower');
+        if (catLower.includes('tulip')) return nameLower.includes('tulip');
+        if (catLower.includes('daisy') || catLower.includes('daisies')) return nameLower.includes('daisy');
+        if (catLower.includes('lily') || catLower.includes('lilies')) return nameLower.includes('lily');
+        if (catLower.includes('lavender')) return nameLower.includes('lavender');
+        return nameLower.includes(catLower) || p.category.toLowerCase().includes(catLower);
+      });
+    }
   }
 
   if (currentSearch !== '') {
