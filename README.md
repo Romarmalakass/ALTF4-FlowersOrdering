@@ -24,15 +24,23 @@ Craft and Wrapped Haven is an ordering website for handcrafted flowers and bouqu
 
 ---
 
-Completed Pages:
-- Home (index.html) - Landing page with hero banner and flower products.
-- Shop (shop.html) - Product catalog with search and category filters.
-- Custom Bouquet (product-details.html) - Customizer page for bouquet selection.
-- Cart (cart.html) - Shopping cart page with item total.
-- Checkout (checkout.html) - Order and delivery form.
-- Contact (contact.html) - Store contact form and information.
-- Account (account.html) - User profile and order history.
-- Admin (admin.html) - Admin dashboard for store orders.
+Project Progress: Week 6 Milestone (~55% Completed - Target: >= 50%)
+
+Completed Screens (Week 6 Scope):
+- Home (index.html) - Landing page with hero banner, quick CTA buttons, and featured products.
+- Shop Catalog (shop.html) - Handcrafted product catalog with live category filters and search.
+- Custom Bouquet Builder (product-details.html) - Interactive stem customizer & dynamic price calculation.
+- Shopping Cart (cart.html) - Cart items review, quantity adjustments, and total computation.
+
+In-Progress & Upcoming Modules (Weeks 7 - 10 Roadmap):
+- Checkout & Order Form (checkout.html) - In-Progress: Delivery/pickup scheduler and Cash payment confirmation.
+- Admin Management Dashboard (admin.html) - In-Progress: Store order status tracker and fulfillment management.
+- User Account & Order History (account.html) - In-Progress: Profile management and customer order tracking.
+- Contact & Customer Inquiries (contact.html) - In-Progress: Store inquiry messaging form and FAQ accordion.
+- Weeks 8 - 9: Backend API integration, database persistence, and invoice generation.
+- Week 10: Final quality assurance, end-to-end user testing, and deployment.
+
+---
 
 Reusable Components:
 - Navigation bar with cart badge
