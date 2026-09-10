@@ -5,11 +5,17 @@ Online flower ordering and custom bouquet website for handcrafted flowers and cu
 Project Details:
 Course Milestone: Week 6 - Frontend Development Checkpoint 1
 Group Name: ALT F4
-Lead Developer & Author: Romar Villafuerte (Romarmalakass)
+Project Manager: Divine Grace Antigo
+Lead Developer: Romar Villafuerte (Romarmalakass)
 Repository Link: https://github.com/Romarmalakass/ALTF4-FlowersOrdering
 
-Project Author & Developer:
-- Romar Villafuerte / Frontend & UI/UX Developer (Lead)
+Group Members:
+- Divine Grace Antigo / Project Manager
+- Romar Villafuerte / Lead Frontend Developer
+- Jann Christopher Abacan / UI/UX Designer
+- Mike Lacebal Jr / QA Tester
+- Ariza Garcia / Systems Analyst
+- Ivan Wayne Biore / QA Tester
 
 ---
 
