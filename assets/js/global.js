@@ -1327,7 +1327,7 @@ function generateSmartSellerReply(prompt, buyer) {
   const firstName = buyer.name.split(' ')[0];
 
   if (q.includes('available') || q.includes('avail') || q.includes('stock')) {
-    return `Yes po ${firstName}! 🌷 All our Fuzzy Wire & Satin Ribbon stems (Rose Bloom, Lady Rose, Tulips, Daisies) are available and handcrafted freshly upon order!`;
+    return `Yes po ${firstName}! 🌷 All our Fuzzy Wire & Satin Ribbon stems (Rose Bloom, Lady Rose, Tulips, Daisies) are available and handcrafted upon order!`;
   }
   if (q.includes('custom') || q.includes('customize') || q.includes('color') || q.includes('wrapper') || q.includes('ribbon')) {
     return `Yes po! You can fully customize stem count, wrapper shades, and ribbon colors in our Custom Bouquet Builder tab 🪄 Would you like a specific color palette?`;

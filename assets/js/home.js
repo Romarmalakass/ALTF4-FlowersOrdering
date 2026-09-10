@@ -32,7 +32,6 @@ function createProductCardHTML(product) {
         <div class="flower-card-img-wrapper" style="height: 175px;">
           <div class="card-badge-container">
             ${product.bestseller ? '<span class="bloom-badge badge-bestseller">Best Seller</span>' : ''}
-            ${product.popular ? '<span class="bloom-badge badge-fresh">Fresh</span>' : ''}
           </div>
           <img src="${product.image}" alt="${product.name}" class="flower-card-img" loading="lazy" />
         </div>
