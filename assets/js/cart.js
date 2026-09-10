@@ -101,18 +101,18 @@ function renderCart() {
       : '';
 
     const flowerDetailsHTML = (item.flowerDetails && item.flowerDetails.length > 0)
-      ? `<div><strong>🌸 Flowers & Stems:</strong> ${item.flowerDetails.join(', ')}</div>`
+      ? `<div><strong>Flowers & Stems:</strong> ${item.flowerDetails.join(', ')}</div>`
       : '';
 
     const fillerDetailsHTML = (item.fillerDetails && item.fillerDetails.length > 0)
-      ? `<div><strong>🌿 Fillers:</strong> ${item.fillerDetails.join(', ')}</div>`
+      ? `<div><strong>Fillers:</strong> ${item.fillerDetails.join(', ')}</div>`
       : '';
 
-    const colorHTML = item.color ? `<div><strong>🎨 Color Palette:</strong> ${item.color}</div>` : '';
-    const wrapperHTML = item.wrapper ? `<div><strong>🎁 Wrapper:</strong> ${item.wrapper}</div>` : '';
-    const ribbonHTML = item.ribbon ? `<div><strong>🎀 Ribbon:</strong> ${item.ribbon}</div>` : '';
-    const notesHTML = item.notes ? `<div class="mt-1"><strong>📝 Instructions:</strong> <em>"${item.notes}"</em></div>` : '';
-    const inspoHTML = item.inspoPhoto ? `<div class="mt-2"><span class="small fw-bold text-dark d-block">📷 Inspo Photo Reference:</span><img src="${item.inspoPhoto}" style="max-height: 80px; border-radius: 8px; border: 1px solid #e8839b;" /></div>` : '';
+    const colorHTML = item.color ? `<div><strong>Color Palette:</strong> ${item.color}</div>` : '';
+    const wrapperHTML = item.wrapper ? `<div><strong>Wrapper:</strong> ${item.wrapper}</div>` : '';
+    const ribbonHTML = item.ribbon ? `<div><strong>Ribbon:</strong> ${item.ribbon}</div>` : '';
+    const notesHTML = item.notes ? `<div class="mt-1"><strong>Instructions:</strong> <em>"${item.notes}"</em></div>` : '';
+    const inspoHTML = item.inspoPhoto ? `<div class="mt-2"><span class="small fw-bold text-dark d-block">Inspo Photo Reference:</span><img src="${item.inspoPhoto}" style="max-height: 80px; border-radius: 8px; border: 1px solid #e8839b;" /></div>` : '';
 
     return `
       <div class="cart-item-card mb-4 p-3.5 rounded" style="background: #fff; border: 1px solid var(--glass-border); box-shadow: var(--shadow-sm);" data-index="${index}">
@@ -142,7 +142,7 @@ function renderCart() {
                 ${colorHTML}
                 ${wrapperHTML}
                 ${ribbonHTML}
-                ${addOnsHTML ? `<div class="mt-1"><strong>✨ Add-ons:</strong> ${addOnsHTML}</div>` : ''}
+                ${addOnsHTML ? `<div class="mt-1"><strong>Add-ons:</strong> ${addOnsHTML}</div>` : ''}
                 ${notesHTML}
                 ${inspoHTML}
               </div>

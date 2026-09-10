@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       Swal.fire({
         icon: 'success',
-        title: 'Welcome Back, Admin! 🌸',
+        title: 'Welcome Back, Admin!',
         text: 'Access to Orders Dashboard Granted',
         showConfirmButton: false,
         timer: 1500,
@@ -204,55 +204,45 @@ function renderAdminDashboard() {
     let quickActionBtn = '';
     if (isOrderPlaced) {
       quickActionBtn = `
-        <button class="btn btn-sm btn-admin-confirm" onclick="quickUpdateStatus('${order.orderId}', 'In Crafting')" title="Confirm 50% DP and Start Crafting">
-          <i class="bi bi-check-circle-fill"></i> Confirm
+        <button class="btn btn-sm btn-admin-confirm" onclick="quickUpdateStatus('${order.orderId}', 'In Crafting')" title="Confirm and Start Crafting">
+          <i class="bi bi-check-circle-fill me-1"></i> Confirm
         </button>
       `;
     } else if (isInCrafting) {
       quickActionBtn = `
         <button class="btn btn-sm btn-primary rounded-pill px-3 py-1" onclick="quickUpdateStatus('${order.orderId}', 'Out for Delivery')" title="Mark as Out for Delivery">
-          <i class="bi bi-truck"></i> Deliver
+          <i class="bi bi-truck me-1"></i> Deliver
         </button>
       `;
     } else if (isOutForDelivery) {
       quickActionBtn = `
         <button class="btn btn-sm btn-success rounded-pill px-3 py-1" onclick="quickUpdateStatus('${order.orderId}', 'Delivered')" title="Mark as Delivered">
-          <i class="bi bi-check2-circle"></i> Complete
+          <i class="bi bi-check2-circle me-1"></i> Complete
         </button>
       `;
     }
 
     return `
-      <div class="order-card-clean">
-        <div class="row align-items-center g-3">
-          <div class="col-12 col-md-3">
+      <div class="order-card-clean p-3 mb-2 rounded-3 bg-white border" style="border-color: #eedde4 !important;">
+        <div class="row align-items-center g-2">
+          <div class="col-12 col-md-5">
             <div class="d-flex align-items-center gap-2 mb-1">
               <span class="fw-bold font-monospace text-dark fs-6">#${order.orderId}</span>
               <span class="status-badge status-${status.replace(/\s+/g, '')}">${status}</span>
             </div>
-            <div class="fw-semibold text-dark" style="font-size: 0.88rem;"><i class="bi bi-person me-1 text-danger"></i>${order.customerName}</div>
-            <div class="small text-muted" style="font-size: 0.76rem;"><i class="bi bi-clock me-1"></i>${formattedDate}</div>
+            <div class="fw-bold text-dark" style="font-size: 0.92rem;">${order.customerName}</div>
+            <div class="small text-muted" style="font-size: 0.78rem;">${formattedDate} • <span class="fw-semibold text-dark-rose">${order.fulfillmentMode || 'Pick Up'}</span></div>
           </div>
 
-          <div class="col-12 col-md-4">
-            <div class="small text-dark mb-1">
-              <i class="bi bi-geo-alt me-1 text-danger"></i><strong>Address:</strong> ${order.location || 'N/A'}
-            </div>
-            <div class="small text-muted" style="font-size: 0.78rem;">
-              <i class="bi bi-calendar-event me-1"></i>Needed: ${order.dateNeeded || 'N/A'} (${order.timeNeeded || 'N/A'}) [${order.fulfillmentMode || 'Delivery'}]
-            </div>
+          <div class="col-6 col-md-3 text-start text-md-center">
+            <div class="small text-muted" style="font-size: 0.74rem;">Total Amount</div>
+            <div class="fw-bold fs-5 text-dark-rose">${formatCurrency(order.grandTotal)}</div>
           </div>
 
-          <div class="col-6 col-md-2">
-            <div class="small text-muted" style="font-size: 0.75rem;">Total / 50% DP</div>
-            <div class="fw-bold text-dark fs-6">${formatCurrency(order.grandTotal)}</div>
-            <div class="small text-muted" style="font-size: 0.75rem;">DP: <strong class="text-danger">${formatCurrency(order.dpRequiredAmount)}</strong></div>
-          </div>
-
-          <div class="col-6 col-md-3 text-end d-flex justify-content-end align-items-center gap-2">
+          <div class="col-6 col-md-4 text-end d-flex justify-content-end align-items-center gap-2">
             ${quickActionBtn}
-            <button class="btn btn-sm btn-admin-view-white" onclick="viewOrderDetails('${order.orderId}')" title="View Full Order Details">
-              <i class="bi bi-eye text-pink"></i> View
+            <button class="btn btn-sm btn-admin-view-white rounded-pill px-3 py-1" onclick="viewOrderDetails('${order.orderId}')" title="View Order Details">
+              <i class="bi bi-eye text-pink me-1"></i> View
             </button>
           </div>
         </div>
@@ -301,7 +291,18 @@ function viewOrderDetails(orderId) {
   let itemsHTML = '';
 
   if (firstItem.flowerDetails && firstItem.flowerDetails.length > 0) {
-    firstItem.flowerDetails.forEach(str => {
+    const rawFlowers = [];
+    firstItem.flowerDetails.forEach(item => {
+      if (typeof item === 'string' && item.includes('),')) {
+        item.split('),').forEach((part, idx, arr) => {
+          rawFlowers.push(idx < arr.length - 1 ? part.trim() + ')' : part.trim());
+        });
+      } else {
+        rawFlowers.push(item);
+      }
+    });
+
+    rawFlowers.forEach(str => {
       const s = parseStem(str);
       itemsHTML += `
         <div class="d-flex justify-content-between align-items-center py-1 text-dark" style="font-size: 0.86rem;">
@@ -370,6 +371,7 @@ function viewOrderDetails(orderId) {
   ` : '';
 
   const currentStatus = order.status || 'Order Placed';
+  const scheduleText = `${order.dateNeeded || 'N/A'}${order.timeNeeded ? ' (' + order.timeNeeded + ')' : ''} • ${order.fulfillmentMode || 'Pick Up'}`;
 
   Swal.fire({
     title: `<div class="d-flex align-items-center justify-content-between w-100 pb-2 border-bottom">
@@ -387,13 +389,13 @@ function viewOrderDetails(orderId) {
             <span class="text-muted">Contact:</span>
             <span class="fw-semibold text-dark text-end">${order.contactNumber || 'N/A'}</span>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
-            <span class="text-muted">Location:</span>
-            <span class="fw-semibold text-dark text-end text-truncate ms-2" style="max-width: 250px;" title="${order.location}">${order.location || 'N/A'}</span>
+          <div class="d-flex justify-content-between py-1 border-bottom gap-2" style="border-color: #f4e8ed !important;">
+            <span class="text-muted" style="white-space: nowrap;">Location:</span>
+            <span class="fw-semibold text-dark text-end" style="word-break: break-word;">${order.location || 'N/A'}</span>
           </div>
-          <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: #f4e8ed !important;">
-            <span class="text-muted">Schedule:</span>
-            <span class="fw-semibold text-dark text-end">${order.dateNeeded || 'N/A'} • ${order.fulfillmentMode || 'Pick Up'}</span>
+          <div class="d-flex justify-content-between py-1 border-bottom gap-2" style="border-color: #f4e8ed !important;">
+            <span class="text-muted" style="white-space: nowrap;">Schedule:</span>
+            <span class="fw-semibold text-dark text-end">${scheduleText}</span>
           </div>
 
           <div class="py-2 border-bottom" style="border-color: #f4e8ed !important;">

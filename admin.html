@@ -554,11 +554,6 @@
           <div>
             <h2 class="h5 fw-bold text-dark mb-0">Orders Dashboard</h2>
           </div>
-          <div>
-            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fw-medium" onclick="seedSampleOrder()" style="font-size: 0.8rem;">
-              <i class="bi bi-plus-circle me-1"></i> Demo Order
-            </button>
-          </div>
         </div>
 
         <div class="row g-3 mb-3">
@@ -573,7 +568,7 @@
           <div class="col-6 col-lg-3">
             <div class="stat-card-clean">
               <div class="stat-card-accent" style="background-color: #ffc107;"></div>
-              <div class="stat-label">PENDING DP</div>
+              <div class="stat-label">PENDING ORDERS</div>
               <div class="stat-value text-warning" id="stat-pending-orders">0</div>
             </div>
           </div>
@@ -668,10 +663,10 @@
             <div class="admin-chat-messages-area" id="admin-chat-messages-body"></div>
 
             <div class="admin-chat-quick-templates">
-              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Yes po! Available lahat ng Fuzzy Wire & Satin Ribbon stems 🌸')">🌸 Available</button>
-              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Maaari pong i-customize ang wrapper color at ribbon shades sa builder ✨')">🎨 Customization</button>
-              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Standard crafting takes 3-7 days po 🚚')">🚚 Delivery Time</button>
-              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Na-confirm na po namin ang down payment, start na po crafting! ✂️💖')">💖 DP Confirmed</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Yes po! Available lahat ng Fuzzy Wire & Satin Ribbon stems')">Available Stems</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Maaari pong i-customize ang wrapper color at ribbon shades sa builder')">Customization</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Standard crafting takes 3-7 days po')">Delivery Time</button>
+              <button type="button" class="admin-quick-chip" onclick="insertAdminQuickReply('Na-confirm na po namin ang order, start na po crafting!')">Order Confirmed</button>
             </div>
 
             <div class="admin-chat-input-footer">
