@@ -252,25 +252,43 @@ function renderAdminDashboard() {
 }
 
 function quickUpdateStatus(orderId, newStatus) {
-  let orders = getOrders();
-  const index = orders.findIndex(o => o.orderId === orderId);
-  if (index !== -1) {
-    orders[index].status = newStatus;
-    saveOrders(orders);
-    renderAdminDashboard();
+  let title = 'Update Order Status?';
+  let text = `Change status of Order #${orderId} to "${newStatus}"?`;
+  let confirmBtnText = 'Yes, Update';
+  let confirmColor = '#e8839b';
 
-    if (typeof Swal !== 'undefined') {
-      Swal.fire({
-        icon: 'success',
-        title: 'Status Updated!',
-        text: `Order #${orderId} is now "${newStatus}"`,
-        showConfirmButton: false,
-        timer: 1500,
-        width: '330px',
-        customClass: { popup: 'compact-swal-popup' }
-      });
-    }
+  if (newStatus === 'In Crafting') {
+    title = 'Accept Order?';
+    text = `Accept Order #${orderId} and start crafting?`;
+    confirmBtnText = 'Yes, Accept Order';
+    confirmColor = '#22c55e';
+  } else if (newStatus === 'Out for Delivery') {
+    title = 'Dispatch for Delivery?';
+    text = `Mark Order #${orderId} as Out for Delivery / Ready for Pickup?`;
+    confirmBtnText = 'Yes, Dispatch';
+    confirmColor = '#0d6efd';
+  } else if (newStatus === 'Delivered') {
+    title = 'Mark as Delivered?';
+    text = `Confirm that Order #${orderId} has been successfully completed and delivered?`;
+    confirmBtnText = 'Yes, Complete Order';
+    confirmColor = '#198754';
   }
+
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: confirmBtnText,
+    confirmButtonColor: confirmColor,
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: '#64748b',
+    customClass: { popup: 'compact-swal-popup' }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      applyOrderStatusChange(orderId, newStatus);
+    }
+  });
 }
 
 function viewOrderDetails(orderId) {
@@ -443,6 +461,59 @@ function viewOrderDetails(orderId) {
 }
 
 function updateOrderStatus(orderId, newStatus) {
+  const orders = getOrders();
+  const order = orders.find(o => o.orderId === orderId);
+  const oldStatus = order ? order.status : 'Order Placed';
+  if (oldStatus === newStatus) return;
+
+  let title = 'Change Order Status?';
+  let text = `Update Order #${orderId} from "${oldStatus}" to "${newStatus}"?`;
+  let confirmBtnText = 'Yes, Update';
+  let confirmColor = '#e8839b';
+
+  if (newStatus === 'In Crafting') {
+    title = 'Accept Order?';
+    text = `Accept Order #${orderId} and start crafting?`;
+    confirmBtnText = 'Yes, Accept Order';
+    confirmColor = '#22c55e';
+  } else if (newStatus === 'Out for Delivery') {
+    title = 'Dispatch for Delivery?';
+    text = `Mark Order #${orderId} as Out for Delivery / Ready for Pickup?`;
+    confirmBtnText = 'Yes, Dispatch';
+    confirmColor = '#0d6efd';
+  } else if (newStatus === 'Delivered') {
+    title = 'Mark as Delivered?';
+    text = `Confirm that Order #${orderId} has been successfully completed and delivered?`;
+    confirmBtnText = 'Yes, Complete Order';
+    confirmColor = '#198754';
+  } else if (newStatus === 'Cancelled') {
+    title = 'Cancel Order?';
+    text = `Are you sure you want to cancel Order #${orderId}?`;
+    confirmBtnText = 'Yes, Cancel Order';
+    confirmColor = '#dc3545';
+  }
+
+  Swal.fire({
+    title: title,
+    text: text,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: confirmBtnText,
+    confirmButtonColor: confirmColor,
+    cancelButtonText: 'No, Keep Current',
+    cancelButtonColor: '#64748b',
+    customClass: { popup: 'compact-swal-popup' }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      applyOrderStatusChange(orderId, newStatus);
+    } else {
+      const select = document.getElementById('modal-status-select');
+      if (select) select.value = oldStatus;
+    }
+  });
+}
+
+function applyOrderStatusChange(orderId, newStatus) {
   let orders = getOrders();
   const index = orders.findIndex(o => o.orderId === orderId);
   if (index !== -1) {
@@ -455,11 +526,25 @@ function updateOrderStatus(orderId, newStatus) {
 }
 
 function deleteOrder(orderId) {
-  let orders = getOrders();
-  orders = orders.filter(o => o.orderId !== orderId);
-  saveOrders(orders);
-  renderAdminDashboard();
-  showToast(`Order ${orderId} deleted.`, "info");
+  Swal.fire({
+    title: 'Delete Order?',
+    text: `Are you sure you want to permanently delete Order #${orderId}? This cannot be undone.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Delete',
+    confirmButtonColor: '#dc3545',
+    cancelButtonText: 'Cancel',
+    cancelButtonColor: '#64748b',
+    customClass: { popup: 'compact-swal-popup' }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let orders = getOrders();
+      orders = orders.filter(o => o.orderId !== orderId);
+      saveOrders(orders);
+      renderAdminDashboard();
+      showToast(`Order #${orderId} deleted.`, "info");
+    }
+  });
 }
 
 function seedSampleOrder() {
