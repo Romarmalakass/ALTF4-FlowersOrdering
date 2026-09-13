@@ -34,16 +34,35 @@ function setupMinDeliveryDate() {
 function setupFulfillmentToggle() {
   const modeSelect = document.getElementById('fulfillment-mode');
   const locationLabel = document.getElementById('location-label');
+  const locationInput = document.getElementById('order-location');
 
   if (modeSelect && locationLabel) {
     modeSelect.addEventListener('change', () => {
       const mode = modeSelect.value;
       if (mode === 'Pick Up') {
-        locationLabel.textContent = 'Pick Up Branch / Address *';
+        locationLabel.textContent = 'Pick Up Branch / Studio Address *';
+        if (locationInput) {
+          locationInput.placeholder = 'Craft & Wrapped Haven Studio - Paralan, Concepcion, Pampanga (Mon-Sat 9AM-7PM)';
+          if (!locationInput.value.trim() || locationInput.value.includes('House No.') || locationInput.value.includes('SM Baliwag')) {
+            locationInput.value = 'Craft & Wrapped Haven Studio, Paralan, Concepcion, Pampanga';
+          }
+        }
       } else if (mode === 'Meet Up') {
-        locationLabel.textContent = 'Meet Up Location (e.g. SM Baliwag Food Court) *';
+        locationLabel.textContent = 'Designated Meet Up Point *';
+        if (locationInput) {
+          locationInput.placeholder = 'e.g. SM Baliwag Main Entrance, Concepcion Town Plaza, or Waltermart';
+          if (locationInput.value.includes('Craft & Wrapped Haven Studio')) {
+            locationInput.value = '';
+          }
+        }
       } else {
         locationLabel.textContent = 'Delivery Address *';
+        if (locationInput) {
+          locationInput.placeholder = 'e.g. House No., Street, Barangay, Municipality/City, Landmark';
+          if (locationInput.value.includes('Craft & Wrapped Haven Studio')) {
+            locationInput.value = '';
+          }
+        }
       }
     });
   }
@@ -262,6 +281,7 @@ function setupCheckoutForm() {
     const fulfillmentMode = document.getElementById('fulfillment-mode').value;
     const location = document.getElementById('order-location').value.trim();
     const contact = document.getElementById('contact-number').value.trim();
+    const notes = document.getElementById('order-notes')?.value.trim() || '';
     const paymentMode = 'Cash';
     const dpOption = 'Cash on Delivery / Pick Up';
 
@@ -293,6 +313,7 @@ function setupCheckoutForm() {
       fulfillmentMode: fulfillmentMode,
       location: location,
       contactNumber: contact,
+      notes: notes,
       paymentMode: paymentMode,
       dpOption: dpOption,
       items: checkoutItems,
@@ -339,6 +360,7 @@ function setupCheckoutForm() {
               </div>
               <div class="small text-muted text-end mt-0.5" style="font-size: 0.8rem;">Wrapper: ${orderWrapper} • Ribbon: ${orderRibbon}</div>
               ${orderAddons !== 'None' ? `<div class="small text-dark-rose text-end mt-0.5" style="font-size: 0.8rem;">Add-ons: ${orderAddons}</div>` : ''}
+              ${notes ? `<div class="small text-secondary text-end mt-1 fst-italic" style="font-size: 0.8rem;"><i class="bi bi-chat-left-quote me-1"></i>Note: "${notes}"</div>` : ''}
             </div>
             <div class="d-flex justify-content-between py-1.5 border-bottom" style="border-color: #f4e8ed !important;">
               <span class="text-muted">Payment:</span>
