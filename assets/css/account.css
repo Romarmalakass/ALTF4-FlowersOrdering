@@ -259,6 +259,22 @@
   color: #d93b68;
 }
 
+.highlight-order-card {
+  border-left: 4px solid var(--pink-primary, #e8839b) !important;
+  background: #fffdfd;
+}
+
+.highlight-order-card:hover {
+  background: #fff6f8;
+  border-color: #eedde4 !important;
+}
+
+.order-icon-box {
+  background: #fdf0f4 !important;
+  color: #7a2236 !important;
+}
+
+
 .danger-arrow {
   color: #d93b68;
 }

@@ -288,13 +288,103 @@ function updateNavbarCartCount() {
 
 const ORDERS_STORAGE_KEY = 'flower_orders';
 
+const DEFAULT_DEMO_ORDERS = [
+  {
+    orderId: 'CWH-892104',
+    customerName: 'Maria Santos',
+    dateNeeded: '2026-09-18',
+    timeNeeded: 'Afternoon (1:00 PM - 5:00 PM)',
+    fulfillmentMode: 'Delivery',
+    location: '123 Sampaguita St., Concepcion, Pampanga',
+    contactNumber: '09171234567',
+    notes: 'Please pack in gift box with greeting card: Happy 21st Birthday!',
+    paymentMode: 'Cash',
+    dpOption: 'Cash on Delivery / Pick Up',
+    items: [
+      {
+        name: 'Pastel Sunset Fuzzy Bouquet',
+        unitPrice: 850,
+        quantity: 1,
+        wrapper: 'Blush Pink Kraft',
+        ribbon: 'Rose Satin Ribbon',
+        flowerDetails: ['5x Fuzzy Tulip Pink', '3x Fuzzy Lavender Purple']
+      }
+    ],
+    grandTotal: 850,
+    dpRequiredAmount: 0,
+    status: 'In Crafting',
+    createdAt: '2026-09-14T09:30:00.000Z'
+  },
+  {
+    orderId: 'CWH-518293',
+    customerName: 'Kuronuma Sawako',
+    dateNeeded: '2026-09-19',
+    timeNeeded: 'Morning (8:00 AM - 12:00 PM)',
+    fulfillmentMode: 'Pick Up',
+    location: 'Craft & Wrapped Haven Studio, Paralan, Concepcion, Pampanga',
+    contactNumber: '09287654321',
+    notes: 'Will pick up at studio around 10:30 AM',
+    paymentMode: 'Cash',
+    dpOption: 'Cash on Delivery / Pick Up',
+    items: [
+      {
+        name: 'Crimson Romance Satin Bouquet',
+        unitPrice: 1250,
+        quantity: 1,
+        wrapper: 'Matte Black Korean Wrap',
+        ribbon: 'Gold Border Wine Ribbon',
+        flowerDetails: ['12x Red Satin Rose', '6x White Baby Breath']
+      }
+    ],
+    grandTotal: 1250,
+    dpRequiredAmount: 0,
+    status: 'Pending',
+    createdAt: '2026-09-13T16:15:00.000Z'
+  },
+  {
+    orderId: 'CWH-341908',
+    customerName: 'Jann Christopher Abacan',
+    dateNeeded: '2026-09-13',
+    timeNeeded: 'Evening (6:00 PM - 9:00 PM)',
+    fulfillmentMode: 'Meet Up',
+    location: 'SM Baliwag Main Entrance, Bulacan',
+    contactNumber: '09391122334',
+    notes: 'Meet up near Starbucks entrance',
+    paymentMode: 'Cash',
+    dpOption: 'Cash on Delivery / Pick Up',
+    items: [
+      {
+        name: 'Sunflower Bliss Hybrid Arrangement',
+        unitPrice: 650,
+        quantity: 1,
+        wrapper: 'Rustic Burlap & Honeycomb',
+        ribbon: 'Olive Green Grosgrain',
+        flowerDetails: ['3x Fuzzy Giant Sunflower', '5x Yellow Button Daisy']
+      }
+    ],
+    grandTotal: 650,
+    dpRequiredAmount: 0,
+    status: 'Delivered',
+    createdAt: '2026-09-12T11:00:00.000Z'
+  }
+];
+
 function getOrders() {
   try {
     const data = localStorage.getItem(ORDERS_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    if (!data) {
+      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(DEFAULT_DEMO_ORDERS));
+      return DEFAULT_DEMO_ORDERS;
+    }
+    const parsed = JSON.parse(data);
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(DEFAULT_DEMO_ORDERS));
+      return DEFAULT_DEMO_ORDERS;
+    }
+    return parsed;
   } catch (e) {
     console.error("Error reading orders from localStorage", e);
-    return [];
+    return DEFAULT_DEMO_ORDERS;
   }
 }
 
