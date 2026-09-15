@@ -62,6 +62,12 @@
   border-color: var(--pink-primary);
 }
 
+.contact-form-card .form-control:focus {
+  border-color: var(--pink-primary);
+  box-shadow: 0 0 0 3px rgba(232, 131, 155, 0.18);
+}
+
+
 @media (max-width: 767.98px) {
   .contact-info-card {
     padding: 1.25rem 0.75rem;
