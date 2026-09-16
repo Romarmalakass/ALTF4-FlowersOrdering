@@ -3,7 +3,7 @@
 Online flower ordering and custom bouquet website for handcrafted flowers and customized floral arrangements.
 
 Project Details:
-Course Milestone: Week 6 - Frontend Development Checkpoint 1
+Course Milestone: Week 7 - Frontend Development Checkpoint 2
 Group Name: ALT F4
 Project Manager: Divine Grace Antigo
 Lead Developer: Romar Villafuerte (Romarmalakass)
@@ -24,21 +24,21 @@ Craft and Wrapped Haven is an ordering website for handcrafted flowers and bouqu
 
 ---
 
-Project Progress: Week 6 Milestone (~55% Completed - Target: >= 50%)
+Project Progress: Week 7 Milestone (~80% Completed - Target: >= 80%)
 
-Completed Screens (Week 6 Scope):
-- Home (index.html) - Landing page with hero banner, quick CTA buttons, and featured products.
-- Shop Catalog (shop.html) - Handcrafted product catalog with live category filters and search.
-- Custom Bouquet Builder (product-details.html) - Interactive stem customizer & dynamic price calculation.
-- Shopping Cart (cart.html) - Cart items review, quantity adjustments, and total computation.
+Completed Screens & Modules (Week 7 Scope):
+- Home (index.html) - Brand landing page with hero banner, quick CTA buttons, and featured floral showcase.
+- Shop Catalog (shop.html) - Handcrafted product catalog with live category filters, search, and quick add-to-cart.
+- Custom Bouquet Builder (product-details.html) - Interactive multi-step stem customizer & dynamic real-time price calculation.
+- Shopping Cart (cart.html) - Cart items review, quantity adjustments, subtotal computation, and instant order transition.
+- Checkout & Order Form (checkout.html) - Delivery, Pick Up, and Meet Up scheduling, customer address details, and Cash payment confirmation.
+- Customer Account & Order Tracking (account.html / cart.html?tab=orders) - Buyer profile settings and live multi-stage order pipeline tracker.
+- Admin Store Management (admin.html) - Order monitoring by status, fulfillment stage transitions, customer chat preview, and printable order slips.
+- Contact & Customer Inquiries (contact.html) - Customer support messaging form with reference ticket generator and FAQ accordion.
 
-In-Progress & Upcoming Modules (Weeks 7 - 10 Roadmap):
-- Checkout & Order Form (checkout.html) - In-Progress: Delivery/pickup scheduler and Cash payment confirmation.
-- Admin Management Dashboard (admin.html) - In-Progress: Store order status tracker and fulfillment management.
-- User Account & Order History (account.html) - In-Progress: Profile management and customer order tracking.
-- Contact & Customer Inquiries (contact.html) - In-Progress: Store inquiry messaging form and FAQ accordion.
-- Weeks 8 - 9: Backend API integration, database persistence, and invoice generation.
-- Week 10: Final quality assurance, end-to-end user testing, and deployment.
+Upcoming Modules (Weeks 8 - 10 Roadmap):
+- Weeks 8 - 9: Backend API integration (PHP / MySQL), relational database persistence, automated email alerts, and PDF invoice generation.
+- Week 10: Final quality assurance, end-to-end user acceptance testing, security hardening, and production deployment.
 
 ---
 
