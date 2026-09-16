@@ -9,3 +9,8 @@ Desktop.ini
 *.sublime-project
 *.sublime-workspace
 *.local
+
+# Course submission reports and PDF exports
+submission/
+*.pdf
+
