@@ -33,12 +33,14 @@ Completed Screens & Modules (Week 7 Scope):
 - Shopping Cart (cart.html) - Cart items review, quantity adjustments, subtotal computation, and instant order transition.
 - Checkout & Order Form (checkout.html) - Delivery, Pick Up, and Meet Up scheduling, customer address details, and Cash payment confirmation.
 - Customer Account & Order Tracking (account.html / cart.html?tab=orders) - Buyer profile settings and live multi-stage order pipeline tracker.
-- Admin Store Management (admin.html) - Order monitoring by status, fulfillment stage transitions, customer chat preview, and printable order slips.
-- Contact & Customer Inquiries (contact.html) - Customer support messaging form with reference ticket generator and FAQ accordion.
+- Admin Store Management (admin.html) - Order monitoring by status, fulfillment stage transitions, customer chat preview, and order details review.
+- Contact & Customer Inquiries (contact.html) - Customer support messaging form and FAQ accordion.
 
-Upcoming Modules (Weeks 8 - 10 Roadmap):
-- Weeks 8 - 9: Backend API integration (PHP / MySQL), relational database persistence, automated email alerts, and PDF invoice generation.
-- Week 10: Final quality assurance, end-to-end user acceptance testing, security hardening, and production deployment.
+Upcoming Design & Polish (Weeks 8 - 10 Roadmap):
+- Design and Layout Polish: Refine button hover states, card drop-shadows, and typography hierarchy across all screens.
+- Interactive Micro-Animations: Smooth transitions and visual feedback in bouquet customizer and order flows.
+- Mobile Viewport Refinement: Layout padding, margin adjustments, and touch optimization for smaller mobile devices.
+- Final Quality Assurance: Cross-browser testing (Chrome, Edge, Safari) and final prototype presentation polish.
 
 ---
 
