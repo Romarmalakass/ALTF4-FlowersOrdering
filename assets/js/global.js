@@ -1164,7 +1164,7 @@ function initFloatingChat() {
     const vvp = window.visualViewport;
     if (!vvp) return;
     const offsetBottom = window.innerHeight - vvp.height - vvp.offsetTop;
-    if (offsetBottom > 30) {
+    if (offsetBottom > 150) {
       panel.style.bottom = offsetBottom + 'px';
       panel.style.top = '0px';
       panel.style.height = vvp.height + 'px';
@@ -1250,6 +1250,7 @@ function openSellerChat() {
   const panel = document.getElementById('floating-chat-panel');
   if (!panel) return;
 
+  document.body.classList.add('chat-modal-open');
   panel.classList.remove('chat-hidden');
   renderChatMessages();
 
@@ -1267,8 +1268,14 @@ function openSellerChat() {
 }
 
 function closeSellerChat() {
+  document.body.classList.remove('chat-modal-open');
   const panel = document.getElementById('floating-chat-panel');
-  if (panel) panel.classList.add('chat-hidden');
+  if (panel) {
+    panel.classList.add('chat-hidden');
+    panel.style.bottom = '';
+    panel.style.top = '';
+    panel.style.height = '';
+  }
 
   const bottomNav = document.getElementById('bloom-mobile-bottom-nav');
   if (bottomNav) {
