@@ -958,7 +958,19 @@ input[type=number] {
   }
 
   .floating-chat-panel .chat-input {
-    font-size: 16px !important;
+    font-size: 15px !important;
+    min-width: 0 !important;
+    flex: 1 1 0% !important;
+  }
+
+  .floating-chat-panel .chat-send-btn {
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 
@@ -1118,14 +1130,17 @@ input[type=number] {
 }
 
 .chat-input-row {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
   gap: 6px;
   background: #faf6f8;
   border: 1.5px solid #fae4ed;
   border-radius: 25px;
   padding: 3px 4px 3px 10px;
   transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .chat-input-row:focus-within {
@@ -1141,10 +1156,14 @@ input[type=number] {
   font-size: 1.05rem;
   padding: 0 4px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: color 0.2s ease;
+  flex-shrink: 0 !important;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
 }
 
 .chat-attach-btn:hover {
@@ -1152,13 +1171,14 @@ input[type=number] {
 }
 
 .chat-input {
-  flex: 1;
+  flex: 1 1 0% !important;
+  min-width: 0 !important;
   border: none;
   background: transparent;
   outline: none;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   color: #2b1820;
-  padding: 5px 6px;
+  padding: 6px 4px;
 }
 
 .chat-input::placeholder {
@@ -1167,19 +1187,23 @@ input[type=number] {
 }
 
 .chat-send-btn {
-  width: 32px;
-  height: 32px;
-  min-width: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #e8839b 0%, #d86c87 100%);
-  border: none;
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.78rem;
-  cursor: pointer;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  flex-shrink: 0 !important;
+  border-radius: 50% !important;
+  background: linear-gradient(135deg, #e8839b 0%, #d86c87 100%) !important;
+  border: none !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 0.82rem !important;
+  cursor: pointer !important;
   transition: transform 0.2s ease;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 .chat-send-btn:hover {

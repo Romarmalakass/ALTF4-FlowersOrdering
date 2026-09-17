@@ -260,13 +260,12 @@
 }
 
 .highlight-order-card {
-  border-left: 4px solid var(--pink-primary, #e8839b) !important;
-  background: #fffdfd;
+  background: #ffffff;
 }
 
 .highlight-order-card:hover {
-  background: #fff6f8;
-  border-color: #eedde4 !important;
+  background: #fff9fb;
+  border-color: #f0a8be;
 }
 
 .order-icon-box {
