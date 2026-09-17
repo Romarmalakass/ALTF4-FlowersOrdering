@@ -218,20 +218,6 @@
   line-height: 1.3;
 }
 
-.flower-rating {
-  font-size: 0.85rem;
-  color: #f59e0b;
-  margin-bottom: 0.85rem;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-}
-
-.flower-rating span {
-  color: var(--text-muted);
-  font-size: 0.8rem;
-}
-
 .flower-price-row {
   margin-top: auto;
   display: flex;

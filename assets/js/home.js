@@ -20,12 +20,6 @@ function renderBestsellers() {
 }
 
 function createProductCardHTML(product) {
-  const ratingStars = Array(5).fill(0).map((_, i) =>
-    i < Math.floor(product.rating)
-      ? '<i class="bi bi-star-fill"></i>'
-      : (i < product.rating ? '<i class="bi bi-star-half"></i>' : '<i class="bi bi-star"></i>')
-  ).join('');
-
   return `
     <div class="col-6 col-md-4 col-lg-3 mb-3">
       <div class="flower-card">
@@ -38,10 +32,6 @@ function createProductCardHTML(product) {
         <div class="flower-card-body p-3">
           <div class="flower-category-tag">${product.category}</div>
           <h5 class="flower-card-title fs-6 fw-bold mb-1">${product.name}</h5>
-          <div class="flower-rating mb-2">
-            ${ratingStars}
-            <span class="small">(${product.reviewsCount})</span>
-          </div>
           <div class="flower-price-row mt-auto pt-2">
             <div>
               <span class="flower-price text-dark-rose">${formatCurrency(product.price)}</span>

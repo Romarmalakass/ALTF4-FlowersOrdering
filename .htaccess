@@ -8,10 +8,24 @@ DirectoryIndex index.html index.php
 # 2. Disable Directory Browsing for Security
 Options -Indexes
 
-# 3. Enable UTF-8 Encoding
+# 3. Clean URLs & Rewrites (Allows accessing /account, /shop, /cart without .html)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # If requested resource exists as a file or directory, serve directly
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Allow access without .html (e.g. /account -> account.html)
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.*)$ $1.html [L,QSA]
+</IfModule>
+
+# 4. Enable UTF-8 Encoding
 AddDefaultCharset UTF-8
 
-# 4. Correct MIME Types
+# 5. Correct MIME Types
 <IfModule mod_mime.c>
   AddType text/html .html .htm
   AddType text/css .css
@@ -27,7 +41,7 @@ AddDefaultCharset UTF-8
   AddType font/otf .otf
 </IfModule>
 
-# 5. Browser Caching & Performance Optimization
+# 6. Browser Caching & Performance Optimization
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresDefault "access plus 1 month"
@@ -51,12 +65,12 @@ AddDefaultCharset UTF-8
   ExpiresByType font/woff "access plus 1 year"
 </IfModule>
 
-# 6. Gzip Compression (if supported by server)
+# 7. Gzip Compression (if supported by server)
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json image/svg+xml
 </IfModule>
 
-# 7. Basic Security Headers
+# 8. Basic Security Headers
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set X-XSS-Protection "1; mode=block"
@@ -64,5 +78,5 @@ AddDefaultCharset UTF-8
   Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# 8. Graceful 404 Fallback
-ErrorDocument 404 index.html
+# 9. Graceful 404 Fallback
+ErrorDocument 404 /index.html

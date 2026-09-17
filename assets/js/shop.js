@@ -161,8 +161,8 @@ function filterAndRenderProducts() {
     filtered.sort((a, b) => a.price - b.price);
   } else if (currentSort === 'price-high') {
     filtered.sort((a, b) => b.price - a.price);
-  } else if (currentSort === 'rating') {
-    filtered.sort((a, b) => b.rating - a.rating);
+  } else if (currentSort === 'bestsellers') {
+    filtered.sort((a, b) => (b.bestseller ? 1 : 0) - (a.bestseller ? 1 : 0));
   }
 
   const countEl = document.getElementById('results-count-text');
