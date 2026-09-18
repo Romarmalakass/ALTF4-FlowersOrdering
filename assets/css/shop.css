@@ -90,11 +90,12 @@
   background: #fff !important;
   border-radius: 14px;
   overflow: hidden;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease !important;
 }
 
 .flower-card:hover {
-  box-shadow: none !important;
-  transform: none !important;
+  box-shadow: 0 6px 18px rgba(122, 34, 54, 0.08) !important;
+  transform: translateY(-3px) !important;
   border-color: var(--pink-primary) !important;
 }
 
