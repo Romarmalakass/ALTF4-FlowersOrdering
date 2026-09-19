@@ -96,6 +96,24 @@ img {
   background-color: var(--bg-cream) !important;
 }
 
+.badge-floral-soft {
+  background-color: #fff0f4 !important;
+  color: #a83250 !important;
+  border: 1px solid #f8ccd7 !important;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.3em 0.75em;
+}
+
+.badge-floral-success {
+  background-color: #f0fdf4 !important;
+  color: #166534 !important;
+  border: 1px solid #bbf7d0 !important;
+  font-weight: 600;
+  border-radius: 50px;
+  padding: 0.3em 0.75em;
+}
+
 .glass-card {
   background: var(--glass-bg);
   backdrop-filter: blur(12px);
@@ -1554,5 +1572,17 @@ div.swal2-popup.fullscreen-auth-popup .swal2-close:hover {
 @media (max-width: 575.98px) {
   .auth-center-title {
     font-size: 1.65rem;
+  }
+  .compact-swal-popup {
+    width: 92% !important;
+    padding: 1.25rem !important;
+  }
+  .bloom-navbar .navbar-collapse {
+    background: #ffffff;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(122, 34, 54, 0.1);
+    margin-top: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #f4e8ed;
   }
 }
