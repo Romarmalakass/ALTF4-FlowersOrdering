@@ -452,7 +452,12 @@ function calculateGrandTotal() {
   }
 
   const grandTotalEl = document.getElementById('craft-grand-total');
-  if (grandTotalEl) grandTotalEl.textContent = formatCurrency(grandTotal);
+  if (grandTotalEl) {
+    grandTotalEl.textContent = formatCurrency(grandTotal);
+    grandTotalEl.classList.remove('price-update-pulse');
+    void grandTotalEl.offsetWidth;
+    grandTotalEl.classList.add('price-update-pulse');
+  }
 
   return {
     flowersTotal,
