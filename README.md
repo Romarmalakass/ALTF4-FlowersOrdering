@@ -3,15 +3,18 @@
 Online flower ordering and custom bouquet website for handcrafted flowers and customized floral arrangements.
 
 Project Details:
-Course Milestone: Week 7 - Frontend Development Checkpoint 2
+Course Milestone: Week 8 - Complete Frontend Prototype and Deployment
 Group Name: ALT F4
 Project Manager: Divine Grace Antigo
 Lead Developer: Romar Villafuerte (Romarmalakass)
 Repository Link: https://github.com/Romarmalakass/ALTF4-FlowersOrdering
+Live Prototype URL: https://romarmalakass.github.io/ALTF4-FlowersOrdering/
+Deployment Platform: GitHub Pages
+Deployment Date: September 22, 2026
 
 Group Members:
 - Divine Grace Antigo / Project Manager
-- Romar Villafuerte / Frontend Developer
+- Romar Villafuerte / Lead Frontend Developer
 - Jann Christopher Abacan / UI/UX Designer
 - Mike Lacebal Jr / QA Tester
 - Ariza Garcia / Systems Analyst
@@ -20,27 +23,29 @@ Group Members:
 ---
 
 Project Description:
-Craft and Wrapped Haven is an ordering website for handcrafted flowers and bouquets. Users can choose flowers, select wrappers and ribbons, add them to a cart, and proceed to checkout.
+Craft and Wrapped Haven is a luxury ordering website for handcrafted flowers and customized floral bouquets. Users can browse the catalog, assemble custom bouquets with wrappers and ribbons, manage cart items, and complete order checkout with delivery, pickup, or meetup scheduling.
 
 ---
 
-Project Progress: Week 7 Milestone (~80% Completed - Target: >= 80%)
+Project Progress: Week 8 Milestone (100% Completed Frontend Prototype)
 
-Completed Screens & Modules (Week 7 Scope):
-- Home (index.html) - Brand landing page with hero banner, quick CTA buttons, and featured floral showcase.
+Completed Frontend Prototype Screens & Modules:
+- Home (index.html) - Brand landing page with hero showcase, trust badges, and quick CTA buttons.
 - Shop Catalog (shop.html) - Handcrafted product catalog with live category filters, search, and quick add-to-cart.
-- Custom Bouquet Builder (product-details.html) - Interactive multi-step stem customizer & dynamic real-time price calculation.
-- Shopping Cart (cart.html) - Cart items review, quantity adjustments, subtotal computation, and instant order transition.
+- Custom Bouquet Builder (product-details.html) - Interactive multi-step stem customizer, wrapper/ribbon selection & dynamic real-time price calculation.
+- Shopping Cart (cart.html) - Cart items review, quantity adjustments, subtotal computation, and checkout transition.
 - Checkout & Order Form (checkout.html) - Delivery, Pick Up, and Meet Up scheduling, customer address details, and Cash payment confirmation.
 - Customer Account & Order Tracking (account.html / cart.html?tab=orders) - Buyer profile settings and live multi-stage order pipeline tracker.
 - Admin Store Management (admin.html) - Order monitoring by status, fulfillment stage transitions, customer chat preview, and order details review.
 - Contact & Customer Inquiries (contact.html) - Customer support messaging form and FAQ accordion.
 
-Upcoming Design & Polish (Weeks 8 - 10 Roadmap):
-- Design and Layout Polish: Refine button hover states, card drop-shadows, and typography hierarchy across all screens.
-- Interactive Micro-Animations: Smooth transitions and visual feedback in bouquet customizer and order flows.
-- Mobile Viewport Refinement: Layout padding, margin adjustments, and touch optimization for smaller mobile devices.
-- Final Quality Assurance: Cross-browser testing (Chrome, Edge, Safari) and final prototype presentation polish.
+---
+
+Deployment & Live Demo:
+- Platform: GitHub Pages
+- Live Website URL: https://romarmalakass.github.io/ALTF4-FlowersOrdering/
+- Accessibility: Publicly accessible across all web browsers without local server requirements.
+- Target Devices: Tested & responsive on Mobile (Android / iOS), Tablet, and Desktop resolutions.
 
 ---
 
