@@ -3,6 +3,8 @@ let currentFilter = 'ALL';
 let searchQuery = '';
 let selectedCustomerEmail = null;
 let chatSearchQuery = '';
+let flowerCategoryFilter = 'ALL';
+let flowerSearchQuery = '';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -54,8 +56,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const flowerSearchInput = document.getElementById('admin-flower-search');
+  if (flowerSearchInput) {
+    flowerSearchInput.addEventListener('input', (e) => {
+      flowerSearchQuery = e.target.value.toLowerCase().trim();
+      renderAdminFlowers();
+    });
+  }
+
+  const flowerTabs = document.querySelectorAll('#flower-filter-tabs .nav-link');
+  flowerTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      flowerTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      flowerCategoryFilter = tab.getAttribute('data-cat');
+      renderAdminFlowers();
+    });
+  });
+
   renderAdminDashboard();
   initAdminChatList();
+  renderAdminFlowers();
   updateSidebarBadges();
 
   if (sessionStorage.getItem('cwh_admin_just_logged_in') === 'true') {
@@ -75,11 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard shortcut: Escape key clears active search filter
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && searchQuery) {
+    if (e.key === 'Escape' && (searchQuery || flowerSearchQuery)) {
       searchQuery = '';
-      const searchInput = document.getElementById('admin-order-search');
+      flowerSearchQuery = '';
       if (searchInput) searchInput.value = '';
+      if (flowerSearchInput) flowerSearchInput.value = '';
       renderAdminDashboard();
+      renderAdminFlowers();
     }
   });
 });
@@ -89,21 +112,25 @@ function switchAdminView(view) {
 
   const ordersSec = document.getElementById('orders-view-section');
   const chatSec = document.getElementById('chat-view-section');
+  const productsSec = document.getElementById('products-view-section');
   const navOrdersBtn = document.getElementById('nav-orders-btn');
   const navChatBtn = document.getElementById('nav-chat-btn');
+  const navProductsBtn = document.getElementById('nav-products-btn');
+
+  if (ordersSec) ordersSec.style.display = view === 'orders' ? 'block' : 'none';
+  if (chatSec) chatSec.style.display = view === 'chat' ? 'block' : 'none';
+  if (productsSec) productsSec.style.display = view === 'products' ? 'block' : 'none';
+
+  if (navOrdersBtn) navOrdersBtn.classList.toggle('active', view === 'orders');
+  if (navChatBtn) navChatBtn.classList.toggle('active', view === 'chat');
+  if (navProductsBtn) navProductsBtn.classList.toggle('active', view === 'products');
 
   if (view === 'orders') {
-    if (ordersSec) ordersSec.style.display = 'block';
-    if (chatSec) chatSec.style.display = 'none';
-    if (navOrdersBtn) navOrdersBtn.classList.add('active');
-    if (navChatBtn) navChatBtn.classList.remove('active');
     renderAdminDashboard();
   } else if (view === 'chat') {
-    if (ordersSec) ordersSec.style.display = 'none';
-    if (chatSec) chatSec.style.display = 'block';
-    if (navOrdersBtn) navOrdersBtn.classList.remove('active');
-    if (navChatBtn) navChatBtn.classList.add('active');
     initAdminChatList();
+  } else if (view === 'products') {
+    renderAdminFlowers();
   }
 
   updateSidebarBadges();
@@ -120,6 +147,12 @@ function updateSidebarBadges() {
   const badgeChats = document.getElementById('badge-nav-chats');
   if (badgeChats) {
     badgeChats.textContent = buyers.length;
+  }
+
+  const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
+  const badgeProducts = document.getElementById('badge-nav-products');
+  if (badgeProducts) {
+    badgeProducts.textContent = catalog.length;
   }
 }
 
@@ -833,5 +866,434 @@ function viewActiveCustomerOrders() {
     confirmButtonText: 'Done',
     width: '440px',
     customClass: { popup: 'compact-swal-popup' }
+  });
+}
+
+// ==========================================
+// FLOWER SHOP & CATALOG MANAGEMENT (ADMIN)
+// ==========================================
+
+function getFlowerModalInstance() {
+  const modalEl = document.getElementById('flowerModal');
+  if (!modalEl) return null;
+  if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
+    return bootstrap.Modal.getOrCreateInstance(modalEl);
+  }
+  return {
+    show: () => {
+      modalEl.classList.add('show');
+      modalEl.style.display = 'block';
+      document.body.classList.add('modal-open');
+    },
+    hide: () => {
+      modalEl.classList.remove('show');
+      modalEl.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      const backdrop = document.querySelector('.modal-backdrop');
+      if (backdrop) backdrop.remove();
+    }
+  };
+}
+
+function renderAdminFlowers() {
+  const container = document.getElementById('admin-flowers-grid');
+  if (!container) return;
+
+  const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
+
+  // Update statistics
+  const statTotal = document.getElementById('stat-total-flowers');
+  const statBestsellers = document.getElementById('stat-bestseller-flowers');
+  const statNewArrivals = document.getElementById('stat-newarrival-flowers');
+  const statCategories = document.getElementById('stat-total-categories');
+
+  if (statTotal) statTotal.textContent = catalog.length;
+  if (statBestsellers) statBestsellers.textContent = catalog.filter(p => p.bestseller).length;
+  if (statNewArrivals) statNewArrivals.textContent = catalog.filter(p => p.newArrival).length;
+  if (statCategories) {
+    const cats = new Set(catalog.map(p => p.category ? p.category.trim() : '').filter(Boolean));
+    statCategories.textContent = cats.size;
+  }
+
+  // Filter catalog
+  let filtered = [...catalog];
+
+  if (flowerCategoryFilter === 'BESTSELLER') {
+    filtered = filtered.filter(p => p.bestseller);
+  } else if (flowerCategoryFilter === 'NEWARRIVAL') {
+    filtered = filtered.filter(p => p.newArrival);
+  } else if (flowerCategoryFilter !== 'ALL') {
+    filtered = filtered.filter(p => (p.category || '').toLowerCase() === flowerCategoryFilter.toLowerCase());
+  }
+
+  if (flowerSearchQuery) {
+    filtered = filtered.filter(p =>
+      (p.name || '').toLowerCase().includes(flowerSearchQuery) ||
+      (p.category || '').toLowerCase().includes(flowerSearchQuery) ||
+      (p.description || '').toLowerCase().includes(flowerSearchQuery)
+    );
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="col-12 py-5 text-center">
+        <div class="p-4 rounded-4" style="background: #faf6f8; border: 1.5px dashed #f0cdd8;">
+          <i class="bi bi-flower3" style="font-size: 2.5rem; color: #e8839b;"></i>
+          <h5 class="fw-bold mt-2 text-dark">No Flowers Found</h5>
+          <p class="text-muted small mb-3">No handcrafted flowers match your search or filter criteria.</p>
+          <button class="btn btn-sm btn-bloom-primary rounded-pill px-3 py-1.5" onclick="openAddFlowerModal()" style="background: #e8839b; border: none; color: #fff;">
+            <i class="bi bi-plus-circle me-1"></i> Add New Flower
+          </button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(flower => `
+    <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+      <div class="flower-admin-card shadow-sm">
+        <div class="flower-admin-img-box">
+          <div class="admin-card-badges">
+            ${flower.bestseller ? '<span class="admin-pill-tag tag-bestseller"><i class="bi bi-star-fill text-warning"></i> Best Seller</span>' : ''}
+            ${flower.newArrival ? '<span class="admin-pill-tag tag-newarrival"><i class="bi bi-sparkles"></i> New Arrival</span>' : ''}
+          </div>
+          <img src="${flower.image}" alt="${flower.name}" onerror="this.src='assets/images/fw-1.png';" loading="lazy">
+        </div>
+        <div class="p-3 d-flex flex-column flex-grow-1">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <span class="badge bg-pink-soft text-dark-rose rounded-pill" style="font-size: 0.7rem; font-weight: 600;">
+              ${flower.category || 'Handcrafted'}
+            </span>
+            <span class="text-dark-rose fw-bold" style="font-size: 1rem;">
+              ${formatCurrency(flower.price)}
+            </span>
+          </div>
+          <h6 class="fw-bold text-dark mb-1 text-truncate" title="${flower.name}">${flower.name}</h6>
+          <p class="text-muted small mb-3" style="font-size: 0.74rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2rem;">
+            ${flower.description || 'Artisanal handcrafted flower for bouquets and floral arrangements.'}
+          </p>
+
+          <!-- Quick Toggle Badges -->
+          <div class="d-flex flex-wrap gap-1.5 mb-3 pt-2 border-top">
+            <button type="button" class="btn-toggle-badge ${flower.bestseller ? 'active-bestseller' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'bestseller')" title="Toggle Best Seller status">
+              <i class="bi bi-star${flower.bestseller ? '-fill text-warning' : ''}"></i>
+              <span>${flower.bestseller ? 'Best Seller' : 'Not Best Seller'}</span>
+            </button>
+            <button type="button" class="btn-toggle-badge ${flower.newArrival ? 'active-newarrival' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'newArrival')" title="Toggle New Arrival status">
+              <i class="bi bi-sparkles${flower.newArrival ? ' text-success' : ''}"></i>
+              <span>${flower.newArrival ? 'New Arrival' : 'Not New'}</span>
+            </button>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="d-flex justify-content-between align-items-center mt-auto pt-2 border-top">
+            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" onclick="openEditFlowerModal('${flower.id}')" style="font-size: 0.76rem; font-weight: 600;">
+              <i class="bi bi-pencil-square me-1"></i> Edit
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1" onclick="confirmDeleteFlower('${flower.id}')" title="Delete flower" style="font-size: 0.76rem;">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openAddFlowerModal() {
+  const form = document.getElementById('flower-manage-form');
+  if (form) form.reset();
+
+  const editIdInput = document.getElementById('flower-edit-id');
+  if (editIdInput) editIdInput.value = '';
+
+  const modalTitle = document.getElementById('flowerModalTitle');
+  if (modalTitle) modalTitle.innerHTML = '<i class="bi bi-flower1" style="color: #e8839b;"></i> <span>Add New Flower</span>';
+
+  const defaultImg = 'assets/images/fw-1.png';
+  const previewImg = document.getElementById('flower-modal-preview-img');
+  const imgData = document.getElementById('flower-image-data');
+  if (previewImg) previewImg.src = defaultImg;
+  if (imgData) imgData.value = defaultImg;
+
+  const customCatInput = document.getElementById('flower-input-custom-cat');
+  if (customCatInput) {
+    customCatInput.classList.add('d-none');
+    customCatInput.value = '';
+  }
+
+  const modal = getFlowerModalInstance();
+  if (modal) modal.show();
+}
+
+function openEditFlowerModal(id) {
+  const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
+  const flower = catalog.find(p => String(p.id) === String(id));
+  if (!flower) return;
+
+  const editIdInput = document.getElementById('flower-edit-id');
+  if (editIdInput) editIdInput.value = flower.id;
+
+  const modalTitle = document.getElementById('flowerModalTitle');
+  if (modalTitle) modalTitle.innerHTML = `<i class="bi bi-pencil-square" style="color: #e8839b;"></i> <span>Edit: ${flower.name}</span>`;
+
+  const nameInput = document.getElementById('flower-input-name');
+  if (nameInput) nameInput.value = flower.name || '';
+
+  const catSelect = document.getElementById('flower-input-category');
+  const customCatInput = document.getElementById('flower-input-custom-cat');
+  if (catSelect) {
+    const knownCats = ['Fuzzy Wire', 'Satin Ribbon', 'Fillers', 'Bouquets'];
+    if (knownCats.includes(flower.category)) {
+      catSelect.value = flower.category;
+      if (customCatInput) customCatInput.classList.add('d-none');
+    } else {
+      catSelect.value = '__custom__';
+      if (customCatInput) {
+        customCatInput.classList.remove('d-none');
+        customCatInput.value = flower.category || '';
+      }
+    }
+  }
+
+  const priceInput = document.getElementById('flower-input-price');
+  if (priceInput) priceInput.value = flower.price || 90;
+
+  const descInput = document.getElementById('flower-input-description');
+  if (descInput) descInput.value = flower.description || '';
+
+  const checkBestseller = document.getElementById('flower-check-bestseller');
+  if (checkBestseller) checkBestseller.checked = Boolean(flower.bestseller);
+
+  const checkNewArrival = document.getElementById('flower-check-newarrival');
+  if (checkNewArrival) checkNewArrival.checked = Boolean(flower.newArrival);
+
+  const previewImg = document.getElementById('flower-modal-preview-img');
+  const imgData = document.getElementById('flower-image-data');
+  if (previewImg) previewImg.src = flower.image || 'assets/images/fw-1.png';
+  if (imgData) imgData.value = flower.image || 'assets/images/fw-1.png';
+
+  const modal = getFlowerModalInstance();
+  if (modal) modal.show();
+}
+
+function handleFlowerFileSelected(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  if (typeof compressImageFile === 'function') {
+    compressImageFile(file, 640, 640, 0.82).then(dataUrl => {
+      const previewImg = document.getElementById('flower-modal-preview-img');
+      const imgData = document.getElementById('flower-image-data');
+      if (previewImg) previewImg.src = dataUrl;
+      if (imgData) imgData.value = dataUrl;
+
+      const presetSelect = document.getElementById('flower-preset-select');
+      if (presetSelect) presetSelect.value = '';
+      const urlInput = document.getElementById('flower-url-input');
+      if (urlInput) urlInput.value = '';
+    }).catch(err => {
+      console.error("Error compressing image:", err);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const previewImg = document.getElementById('flower-modal-preview-img');
+        const imgData = document.getElementById('flower-image-data');
+        if (previewImg) previewImg.src = e.target.result;
+        if (imgData) imgData.value = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+function handlePresetSelectChange() {
+  const presetSelect = document.getElementById('flower-preset-select');
+  if (!presetSelect || !presetSelect.value) return;
+
+  const val = presetSelect.value;
+  const previewImg = document.getElementById('flower-modal-preview-img');
+  const imgData = document.getElementById('flower-image-data');
+  if (previewImg) previewImg.src = val;
+  if (imgData) imgData.value = val;
+
+  const fileInput = document.getElementById('flower-file-upload');
+  if (fileInput) fileInput.value = '';
+  const urlInput = document.getElementById('flower-url-input');
+  if (urlInput) urlInput.value = '';
+}
+
+function handleUrlInputChange() {
+  const urlInput = document.getElementById('flower-url-input');
+  if (!urlInput || !urlInput.value.trim()) return;
+
+  const val = urlInput.value.trim();
+  const previewImg = document.getElementById('flower-modal-preview-img');
+  const imgData = document.getElementById('flower-image-data');
+  if (previewImg) previewImg.src = val;
+  if (imgData) imgData.value = val;
+
+  const fileInput = document.getElementById('flower-file-upload');
+  if (fileInput) fileInput.value = '';
+  const presetSelect = document.getElementById('flower-preset-select');
+  if (presetSelect) presetSelect.value = '';
+}
+
+function handleCategorySelectChange() {
+  const catSelect = document.getElementById('flower-input-category');
+  const customCatInput = document.getElementById('flower-input-custom-cat');
+  if (!catSelect || !customCatInput) return;
+
+  if (catSelect.value === '__custom__') {
+    customCatInput.classList.remove('d-none');
+    customCatInput.focus();
+  } else {
+    customCatInput.classList.add('d-none');
+  }
+}
+
+function handleSaveFlowerSubmit() {
+  const editId = (document.getElementById('flower-edit-id')?.value || '').trim();
+  const name = (document.getElementById('flower-input-name')?.value || '').trim();
+  const price = Number(document.getElementById('flower-input-price')?.value) || 0;
+  const desc = (document.getElementById('flower-input-description')?.value || '').trim();
+  const image = (document.getElementById('flower-image-data')?.value || '').trim() || 'assets/images/fw-1.png';
+  const bestseller = Boolean(document.getElementById('flower-check-bestseller')?.checked);
+  const newArrival = Boolean(document.getElementById('flower-check-newarrival')?.checked);
+
+  let category = document.getElementById('flower-input-category')?.value || 'Fuzzy Wire';
+  if (category === '__custom__') {
+    const customCat = (document.getElementById('flower-input-custom-cat')?.value || '').trim();
+    category = customCat || 'Special';
+  }
+
+  if (!name) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Missing Flower Name',
+      text: 'Please enter a name for the handcrafted flower.',
+      confirmButtonColor: '#e8839b',
+      customClass: { popup: 'compact-swal-popup' }
+    });
+    return;
+  }
+
+  if (price <= 0) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Invalid Price',
+      text: 'Please enter a valid price greater than ₱0.',
+      confirmButtonColor: '#e8839b',
+      customClass: { popup: 'compact-swal-popup' }
+    });
+    return;
+  }
+
+  const flowerPayload = {
+    name,
+    category,
+    price,
+    description: desc || `Artisanal handcrafted ${name} for bouquets and flower arrangements.`,
+    image,
+    bestseller,
+    newArrival,
+    featured: bestseller || newArrival
+  };
+
+  if (editId) {
+    updateStoreProduct(editId, flowerPayload);
+    Swal.fire({
+      icon: 'success',
+      title: 'Flower Updated!',
+      text: `"${name}" has been updated in the shop catalog.`,
+      timer: 1600,
+      showConfirmButton: false,
+      customClass: { popup: 'compact-swal-popup' }
+    });
+  } else {
+    addStoreProduct(flowerPayload);
+    Swal.fire({
+      icon: 'success',
+      title: 'Flower Added!',
+      text: `"${name}" is now live in the shop catalog!`,
+      timer: 1800,
+      showConfirmButton: false,
+      customClass: { popup: 'compact-swal-popup' }
+    });
+  }
+
+  const modal = getFlowerModalInstance();
+  if (modal) modal.hide();
+
+  renderAdminFlowers();
+  updateSidebarBadges();
+}
+
+function quickToggleFlowerFlag(id, flagName) {
+  const newVal = toggleProductFlag(id, flagName);
+  renderAdminFlowers();
+  updateSidebarBadges();
+
+  const label = flagName === 'bestseller' ? 'Best Seller' : 'New Arrival';
+  if (typeof showToast === 'function') {
+    showToast(`${label} ${newVal ? 'Activated' : 'Removed'}!`, 'info');
+  }
+}
+
+function confirmDeleteFlower(id) {
+  const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
+  const flower = catalog.find(p => String(p.id) === String(id));
+  const flowerName = flower ? flower.name : 'this flower';
+
+  Swal.fire({
+    title: 'Remove Flower?',
+    text: `Are you sure you want to remove "${flowerName}" from the shop? Customers won't be able to buy it anymore.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#dc3545',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, Delete',
+    customClass: { popup: 'compact-swal-popup' }
+  }).then(result => {
+    if (result.isConfirmed) {
+      deleteStoreProduct(id);
+      renderAdminFlowers();
+      updateSidebarBadges();
+      Swal.fire({
+        icon: 'success',
+        title: 'Flower Removed',
+        text: `"${flowerName}" has been removed.`,
+        timer: 1400,
+        showConfirmButton: false,
+        customClass: { popup: 'compact-swal-popup' }
+      });
+    }
+  });
+}
+
+function promptResetCatalog() {
+  Swal.fire({
+    title: 'Reset Flower Catalog?',
+    text: 'This will restore all default 20 handcrafted flowers and clear any custom additions.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#e8839b',
+    cancelButtonColor: '#6c757d',
+    confirmButtonText: 'Yes, Reset',
+    customClass: { popup: 'compact-swal-popup' }
+  }).then(result => {
+    if (result.isConfirmed) {
+      resetStoreCatalogToDefault();
+      renderAdminFlowers();
+      updateSidebarBadges();
+      Swal.fire({
+        icon: 'success',
+        title: 'Catalog Restored!',
+        text: 'Flower catalog has been restored to default handcrafted stems.',
+        timer: 1500,
+        showConfirmButton: false,
+        customClass: { popup: 'compact-swal-popup' }
+      });
+    }
   });
 }

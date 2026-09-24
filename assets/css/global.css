@@ -1586,3 +1586,45 @@ div.swal2-popup.fullscreen-auth-popup .swal2-close:hover {
     border: 1px solid #f4e8ed;
   }
 }
+
+/* Dynamic Catalog & Card Badges */
+.card-badge-container {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.bloom-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.22rem 0.55rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  width: fit-content;
+}
+
+.badge-bestseller {
+  background: linear-gradient(135deg, #7a2236, #a6324d) !important;
+  color: #ffffff !important;
+}
+
+.badge-new-arrival {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  color: #ffffff !important;
+}
+
+.badge-featured {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+  color: #ffffff !important;
+}
+

@@ -102,7 +102,7 @@ const CRAFT_ADDONS = [
 
 const PRODUCTS_DATA = [
   {
-    id: 1,
+    id: 'fw-1',
     name: "Fuzzy Wire Rose Bloom",
     category: "Fuzzy Wire",
     price: 90,
@@ -111,10 +111,11 @@ const PRODUCTS_DATA = [
     image: "assets/images/fw-1.png",
     description: "Soft velvet fuzzy wire rose stem handcrafted with intricate petal detailing. Long-lasting keepsake.",
     popular: true,
-    bestseller: true
+    bestseller: true,
+    newArrival: false
   },
   {
-    id: 2,
+    id: 'sr-4',
     name: "Satin Ribbon Sunflower",
     category: "Satin Ribbon",
     price: 150,
@@ -123,10 +124,11 @@ const PRODUCTS_DATA = [
     image: "assets/images/sr-4.png",
     description: "Shimmering satin ribbon sunflower with handcrafted woven center. Perfect for graduation and birthdays.",
     popular: true,
-    bestseller: true
+    bestseller: true,
+    newArrival: false
   },
   {
-    id: 3,
+    id: 'fw-2',
     name: "Fuzzy Wire Lady Rose",
     category: "Fuzzy Wire",
     price: 130,
@@ -135,10 +137,11 @@ const PRODUCTS_DATA = [
     image: "assets/images/fw-2.png",
     description: "Elegant crimson lady rose created with ultra-soft wire plush. Never wilts.",
     popular: false,
-    bestseller: true
+    bestseller: true,
+    newArrival: false
   },
   {
-    id: 4,
+    id: 'sr-3',
     name: "Satin Ribbon Tulips",
     category: "Satin Ribbon",
     price: 90,
@@ -147,10 +150,11 @@ const PRODUCTS_DATA = [
     image: "assets/images/sr-3.png",
     description: "Shiny satin tulips stem handcrafted for long lasting beauty.",
     popular: true,
-    bestseller: false
+    bestseller: false,
+    newArrival: true
   },
   {
-    id: 5,
+    id: 'fw-6',
     name: "Fuzzy Wire Calla Lily",
     category: "Fuzzy Wire",
     price: 100,
@@ -159,10 +163,11 @@ const PRODUCTS_DATA = [
     image: "assets/images/fw-6.png",
     description: "Pure white fuzzy wire calla lily with golden center.",
     popular: false,
-    bestseller: false
+    bestseller: false,
+    newArrival: true
   },
   {
-    id: 6,
+    id: 'sr-2',
     name: "Satin Ribbon 2-Colored Rose",
     category: "Satin Ribbon",
     price: 75,
@@ -171,9 +176,214 @@ const PRODUCTS_DATA = [
     image: "assets/images/sr-2.png",
     description: "Dual-tone satin ribbon rose handcrafted with contrasting inner and outer petals.",
     popular: true,
-    bestseller: true
+    bestseller: true,
+    newArrival: false
   }
 ];
+
+const CATALOG_STORAGE_KEY = 'cwh_flower_catalog';
+
+function getDefaultFlowerCatalog() {
+  const items = [];
+
+  // Fuzzy Wire Stems
+  if (typeof FUZZY_WIRE_FLOWERS !== 'undefined') {
+    FUZZY_WIRE_FLOWERS.forEach((item, idx) => {
+      items.push({
+        id: item.id || `fw-${idx + 1}`,
+        name: item.name,
+        category: 'Fuzzy Wire',
+        price: Number(item.price) || 90,
+        rating: 4.9,
+        reviewsCount: 25 + (idx * 3),
+        image: item.image || `assets/images/fw-${(idx % 10) + 1}.png`,
+        description: `Handcrafted ${item.name} made with premium plush fuzzy wire. Everlasting floral keepsake.`,
+        bestseller: item.price >= 130 || idx === 0,
+        newArrival: idx === 2 || idx === 6 || idx === 9,
+        featured: idx < 4,
+        createdAt: Date.now() - (idx * 3600000)
+      });
+    });
+  }
+
+  // Satin Ribbon Stems
+  if (typeof SATIN_RIBBON_FLOWERS !== 'undefined') {
+    SATIN_RIBBON_FLOWERS.forEach((item, idx) => {
+      items.push({
+        id: item.id || `sr-${idx + 1}`,
+        name: item.name,
+        category: 'Satin Ribbon',
+        price: Number(item.price) || 80,
+        rating: 5.0,
+        reviewsCount: 30 + (idx * 4),
+        image: item.image || `assets/images/sr-${(idx % 5) + 1}.png`,
+        description: `Artisanal ${item.name} woven from lustrous satin ribbons for a silky and vibrant finish.`,
+        bestseller: item.price >= 140 || idx === 1,
+        newArrival: idx === 2 || idx === 4,
+        featured: idx === 1 || idx === 3,
+        createdAt: Date.now() - ((idx + 10) * 3600000)
+      });
+    });
+  }
+
+  // Fillers
+  if (typeof FILLERS_DATA !== 'undefined') {
+    FILLERS_DATA.forEach((item, idx) => {
+      items.push({
+        id: item.id || `fl-${idx + 1}`,
+        name: item.name,
+        category: 'Fillers',
+        price: Number(item.price) || 20,
+        rating: 4.8,
+        reviewsCount: 15 + (idx * 2),
+        image: item.image || `assets/images/fl-${(idx % 5) + 1}.png`,
+        description: `Delicate ${item.name} greenery and floral foliage to enhance custom bouquets.`,
+        bestseller: idx === 0,
+        newArrival: idx === 4,
+        featured: false,
+        createdAt: Date.now() - ((idx + 20) * 3600000)
+      });
+    });
+  }
+
+  return items;
+}
+
+function getStoreCatalog() {
+  try {
+    const data = localStorage.getItem(CATALOG_STORAGE_KEY);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.error("Error reading catalog from localStorage:", e);
+  }
+
+  const defaults = getDefaultFlowerCatalog();
+  saveStoreCatalog(defaults);
+  return defaults;
+}
+
+function saveStoreCatalog(catalog) {
+  try {
+    localStorage.setItem(CATALOG_STORAGE_KEY, JSON.stringify(catalog));
+    window.dispatchEvent(new CustomEvent('cwh_catalog_updated', { detail: { catalog } }));
+    return true;
+  } catch (e) {
+    console.error("Error saving catalog to localStorage:", e);
+    return false;
+  }
+}
+
+function addStoreProduct(productData) {
+  const catalog = getStoreCatalog();
+  const newProduct = {
+    id: `cwh-fl-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+    name: productData.name.trim(),
+    category: productData.category.trim() || 'Fuzzy Wire',
+    price: Math.max(1, Number(productData.price) || 100),
+    rating: 5.0,
+    reviewsCount: 1,
+    image: productData.image || 'assets/images/fw-1.png',
+    description: productData.description ? productData.description.trim() : 'Bespoke handcrafted flower from Craft and Wrapped Haven.',
+    bestseller: Boolean(productData.bestseller),
+    newArrival: Boolean(productData.newArrival),
+    featured: Boolean(productData.featured),
+    createdAt: Date.now()
+  };
+
+  catalog.unshift(newProduct);
+  saveStoreCatalog(catalog);
+  return newProduct;
+}
+
+function updateStoreProduct(id, updatedFields) {
+  const catalog = getStoreCatalog();
+  const index = catalog.findIndex(p => String(p.id) === String(id));
+  if (index === -1) return null;
+
+  catalog[index] = {
+    ...catalog[index],
+    ...updatedFields,
+    price: updatedFields.price !== undefined ? Math.max(1, Number(updatedFields.price)) : catalog[index].price,
+    updatedAt: Date.now()
+  };
+
+  saveStoreCatalog(catalog);
+  return catalog[index];
+}
+
+function deleteStoreProduct(id) {
+  let catalog = getStoreCatalog();
+  const initialLength = catalog.length;
+  catalog = catalog.filter(p => String(p.id) !== String(id));
+
+  if (catalog.length === initialLength) return false;
+  saveStoreCatalog(catalog);
+  return true;
+}
+
+function toggleProductFlag(id, flagName) {
+  const catalog = getStoreCatalog();
+  const product = catalog.find(p => String(p.id) === String(id));
+  if (!product) return null;
+
+  product[flagName] = !product[flagName];
+  product.updatedAt = Date.now();
+  saveStoreCatalog(catalog);
+  return product[flagName];
+}
+
+function resetStoreCatalogToDefault() {
+  const defaults = getDefaultFlowerCatalog();
+  saveStoreCatalog(defaults);
+  return defaults;
+}
+
+function compressImageFile(file, maxWidth = 640, maxHeight = 640, quality = 0.8) {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error("No file provided"));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = (err) => reject(err);
+      img.src = event.target.result;
+    };
+    reader.onerror = (err) => reject(err);
+    reader.readAsDataURL(file);
+  });
+}
 
 const CART_STORAGE_KEY = 'craft_wrapped_haven_cart';
 

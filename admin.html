@@ -464,8 +464,112 @@
       flex-shrink: 0;
       transition: all 0.2s ease;
     }
-    .btn-admin-send:hover {
-      background: #d86c87;
+    /* Flower Management Styles */
+    .flower-admin-card {
+      background: #ffffff;
+      border: 1px solid #f0e2e7;
+      border-radius: 14px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    .flower-admin-card:hover {
+      border-color: #e8839b;
+      box-shadow: 0 6px 18px rgba(122, 34, 54, 0.08);
+    }
+    .flower-admin-img-box {
+      width: 100%;
+      height: 175px;
+      position: relative;
+      background: #faf6f8;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .flower-admin-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .admin-card-badges {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      z-index: 2;
+    }
+    .admin-pill-tag {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+    }
+    .tag-bestseller {
+      background: #7a2236;
+      color: #ffffff;
+    }
+    .tag-newarrival {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .btn-toggle-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.28rem 0.65rem;
+      border-radius: 50px;
+      border: 1px solid #e0cfd6;
+      background: #ffffff;
+      color: #634a54;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+    .btn-toggle-badge.active-bestseller {
+      background: #fff0f3;
+      border-color: #7a2236;
+      color: #7a2236;
+      font-weight: 700;
+    }
+    .btn-toggle-badge.active-newarrival {
+      background: #ecfdf5;
+      border-color: #10b981;
+      color: #047857;
+      font-weight: 700;
+    }
+    .btn-toggle-badge:hover {
+      transform: translateY(-1px);
+    }
+    .flower-preview-box {
+      width: 100%;
+      height: 175px;
+      border: 2px dashed #f0cdd8;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #faf6f8;
+      overflow: hidden;
+      margin-top: 6px;
+      position: relative;
+    }
+    .flower-preview-box img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
     }
 
     @media (max-width: 991.98px) {
@@ -517,6 +621,14 @@
               <span>Orders</span>
             </div>
             <span class="badge bg-light text-dark rounded-pill" id="badge-nav-orders">0</span>
+          </a>
+
+          <a class="admin-nav-item" id="nav-products-btn" onclick="switchAdminView('products')">
+            <div>
+              <span class="admin-nav-icon"><i class="bi bi-flower1"></i></span>
+              <span>Flower Shop</span>
+            </div>
+            <span class="badge bg-pink-soft text-dark-rose rounded-pill" id="badge-nav-products">0</span>
           </a>
 
           <a class="admin-nav-item" id="nav-chat-btn" onclick="switchAdminView('chat')">
@@ -667,12 +779,183 @@
         </div>
       </div>
 
+      <!-- PRODUCTS / FLOWER SHOP VIEW SECTION -->
+      <div id="products-view-section" style="display: none;">
+        <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <h2 class="h5 fw-bold text-dark mb-0">Flower Shop & Catalog Management</h2>
+            <p class="text-muted small mb-0">Add new handcrafted flowers, upload photos, set prices, and toggle Best Seller or New Arrival badges.</p>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5" onclick="promptResetCatalog()" title="Reset to default items">
+              <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Catalog
+            </button>
+            <button class="btn btn-sm rounded-pill px-3 py-1.5 fw-semibold shadow-sm text-white" onclick="openAddFlowerModal()" style="background: #e8839b; border: none;">
+              <i class="bi bi-plus-circle-fill me-1"></i> Add New Flower
+            </button>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-label">TOTAL FLOWERS</div>
+              <div class="stat-value text-dark" id="stat-total-flowers">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-label">BEST SELLERS</div>
+              <div class="stat-value text-danger" id="stat-bestseller-flowers">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-label">NEW ARRIVALS</div>
+              <div class="stat-value text-success" id="stat-newarrival-flowers">0</div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card-clean">
+              <div class="stat-label">CATEGORIES</div>
+              <div class="stat-value text-primary" id="stat-total-categories">0</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 rounded-3 mb-3 p-2.5" style="background: #ffffff; border: 1px solid #f0e2e7 !important;">
+          <div class="row align-items-center g-2">
+            <div class="col-12 col-md-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control bg-light border-start-0 ps-0" id="admin-flower-search" placeholder="Search flower name, category, or description...">
+              </div>
+            </div>
+            <div class="col-12 col-md-7">
+              <ul class="nav nav-pills gap-1 justify-content-md-end" id="flower-filter-tabs">
+                <li class="nav-item">
+                  <button class="nav-link active rounded-pill" data-cat="ALL">All</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-cat="BESTSELLER"><i class="bi bi-star-fill text-warning me-1"></i> Best Sellers</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-cat="NEWARRIVAL"><i class="bi bi-sparkles text-success me-1"></i> New Arrivals</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-cat="Fuzzy Wire">Fuzzy Wire</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-cat="Satin Ribbon">Satin Ribbon</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill" data-cat="Fillers">Fillers</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="admin-flowers-grid" class="row g-3">
+          <!-- Flower cards rendered here by admin.js -->
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <script src="assets/js/global.js">
-</script>
-  <script src="assets/js/admin.js">
-</script>
+  <!-- ADD / EDIT FLOWER MODAL -->
+  <div class="modal fade" id="flowerModal" tabindex="-1" aria-labelledby="flowerModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+        <div class="modal-header border-bottom py-3 px-4" style="background: #fff5f8;">
+          <h5 class="modal-title fw-bold text-dark-rose d-flex align-items-center gap-2" id="flowerModalTitle" style="color: #7a2236; font-size: 1.1rem;">
+            <i class="bi bi-flower1" style="color: #e8839b;"></i>
+            <span>Add New Flower</span>
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="flower-manage-form" onsubmit="event.preventDefault(); handleSaveFlowerSubmit();">
+          <input type="hidden" id="flower-edit-id" value="">
+          <div class="modal-body p-4">
+            <div class="row g-3">
+              <div class="col-md-7">
+                <div class="mb-3">
+                  <label for="flower-input-name" class="form-label fw-semibold text-dark small mb-1">Flower Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="flower-input-name" placeholder="e.g. Fuzzy Wire Lavender Bloom" required>
+                </div>
+
+                <div class="row g-2 mb-3">
+                  <div class="col-sm-6">
+                    <label for="flower-input-category" class="form-label fw-semibold text-dark small mb-1">Category <span class="text-danger">*</span></label>
+                    <select class="form-select" id="flower-input-category" onchange="handleCategorySelectChange()">
+                      <option value="Fuzzy Wire">Fuzzy Wire</option>
+                      <option value="Satin Ribbon">Satin Ribbon</option>
+                      <option value="Fillers">Fillers</option>
+                      <option value="Bouquets">Bouquets</option>
+                      <option value="__custom__">+ Custom Category</option>
+                    </select>
+                    <input type="text" class="form-control mt-1 d-none" id="flower-input-custom-cat" placeholder="Enter custom category name">
+                  </div>
+                  <div class="col-sm-6">
+                    <label for="flower-input-price" class="form-label fw-semibold text-dark small mb-1">Price (₱) <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light">₱</span>
+                      <input type="number" class="form-control" id="flower-input-price" min="1" step="1" placeholder="90" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="flower-input-description" class="form-label fw-semibold text-dark small mb-1">Short Description</label>
+                  <textarea class="form-control" id="flower-input-description" rows="2" placeholder="Handcrafted arrangement details, materials used, etc."></textarea>
+                </div>
+
+                <div class="p-3 rounded-3" style="background: #faf6f8; border: 1px solid #f2e1e7;">
+                  <label class="form-label fw-bold text-dark small mb-2 d-block">Badges:</label>
+                  <div class="d-flex flex-column gap-2">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="flower-check-bestseller" style="cursor: pointer;">
+                      <label class="form-check-label small fw-semibold text-dark" for="flower-check-bestseller" style="cursor: pointer;">
+                        Mark as <strong>Best Seller</strong>
+                      </label>
+                    </div>
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" id="flower-check-newarrival" style="cursor: pointer;">
+                      <label class="form-check-label small fw-semibold text-dark" for="flower-check-newarrival" style="cursor: pointer;">
+                        Mark as <strong>New Arrival</strong>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                <label class="form-label fw-semibold text-dark small mb-1">Flower Picture <span class="text-danger">*</span></label>
+                
+                <div class="mb-2">
+                  <input type="file" class="form-control form-control-sm" id="flower-file-upload" accept="image/*" onchange="handleFlowerFileSelected(event)">
+                </div>
+
+                <div class="flower-preview-box" id="flower-modal-preview-box" style="height: 200px;">
+                  <img id="flower-modal-preview-img" src="assets/images/fw-1.png" alt="Flower Preview">
+                  <input type="hidden" id="flower-image-data" value="assets/images/fw-1.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top py-2.5 px-4 bg-light d-flex justify-content-end">
+            <button type="submit" class="btn btn-sm rounded-pill px-4 fw-bold text-white shadow-sm" id="flower-btn-save" style="background: #e8839b; border: none;">
+              <i class="bi bi-check-circle-fill me-1"></i> Save Flower
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/global.js"></script>
+  <script src="assets/js/admin.js"></script>
 </body>
 </html>

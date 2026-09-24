@@ -38,9 +38,14 @@ function setupCategoryButtons() {
   const categoryContainer = document.getElementById('category-pills-container');
   if (!categoryContainer) return;
 
-  const categories = ['All', 'Fuzzy Wire', 'Satin Ribbon', 'Fillers'];
-  const isCustomCategory = !categories.map(c => c.toLowerCase()).includes(currentCategory.toLowerCase());
-  if (isCustomCategory && currentCategory !== '') {
+  const catalog = getUnifiedCatalog();
+  const dynamicCats = new Set(['Fuzzy Wire', 'Satin Ribbon', 'Fillers']);
+  catalog.forEach(p => {
+    if (p.category && p.category.trim()) dynamicCats.add(p.category.trim());
+  });
+
+  const categories = ['All', ...Array.from(dynamicCats)];
+  if (currentCategory && !categories.some(c => c.toLowerCase() === currentCategory.toLowerCase())) {
     categories.push(currentCategory);
   }
 
@@ -81,47 +86,25 @@ function setupSortSelect() {
 }
 
 function getUnifiedCatalog() {
+  if (typeof getStoreCatalog === 'function') {
+    return getStoreCatalog();
+  }
+
   let list = [];
-
-  FUZZY_WIRE_FLOWERS.forEach(item => {
-    list.push({
-      id: item.id,
-      name: item.name,
-      category: 'Fuzzy Wire',
-      price: item.price,
-      rating: 4.9,
-      reviewsCount: 35,
-      image: item.image,
-      bestseller: item.price >= 130
+  if (typeof FUZZY_WIRE_FLOWERS !== 'undefined') {
+    FUZZY_WIRE_FLOWERS.forEach(item => {
+      list.push({
+        id: item.id,
+        name: item.name,
+        category: 'Fuzzy Wire',
+        price: item.price,
+        rating: 4.9,
+        reviewsCount: 35,
+        image: item.image,
+        bestseller: item.price >= 130
+      });
     });
-  });
-
-  SATIN_RIBBON_FLOWERS.forEach(item => {
-    list.push({
-      id: item.id,
-      name: item.name,
-      category: 'Satin Ribbon',
-      price: item.price,
-      rating: 5.0,
-      reviewsCount: 42,
-      image: item.image,
-      bestseller: item.price >= 140
-    });
-  });
-
-  FILLERS_DATA.forEach(item => {
-    list.push({
-      id: item.id,
-      name: item.name,
-      category: 'Fillers',
-      price: item.price,
-      rating: 4.8,
-      reviewsCount: 20,
-      image: item.image,
-      bestseller: false
-    });
-  });
-
+  }
   return list;
 }
 
@@ -131,29 +114,32 @@ function filterAndRenderProducts() {
   if (currentCategory !== 'All') {
     const catLower = currentCategory.toLowerCase();
     if (catLower === 'fuzzy wire') {
-      filtered = filtered.filter(p => p.category.toLowerCase() === 'fuzzy wire');
+      filtered = filtered.filter(p => p.category && p.category.toLowerCase() === 'fuzzy wire');
     } else if (catLower === 'satin ribbon') {
-      filtered = filtered.filter(p => p.category.toLowerCase() === 'satin ribbon');
+      filtered = filtered.filter(p => p.category && p.category.toLowerCase() === 'satin ribbon');
     } else if (catLower === 'fillers') {
-      filtered = filtered.filter(p => p.category.toLowerCase() === 'fillers');
+      filtered = filtered.filter(p => p.category && p.category.toLowerCase() === 'fillers');
     } else {
       filtered = filtered.filter(p => {
-        const nameLower = p.name.toLowerCase();
+        const nameLower = (p.name || '').toLowerCase();
+        const pCat = (p.category || '').toLowerCase();
+        if (pCat === catLower) return true;
         if (catLower.includes('rose')) return nameLower.includes('rose');
         if (catLower.includes('sunflower')) return nameLower.includes('sunflower');
         if (catLower.includes('tulip')) return nameLower.includes('tulip');
         if (catLower.includes('daisy') || catLower.includes('daisies')) return nameLower.includes('daisy');
         if (catLower.includes('lily') || catLower.includes('lilies')) return nameLower.includes('lily');
         if (catLower.includes('lavender')) return nameLower.includes('lavender');
-        return nameLower.includes(catLower) || p.category.toLowerCase().includes(catLower);
+        return nameLower.includes(catLower) || pCat.includes(catLower);
       });
     }
   }
 
   if (currentSearch !== '') {
     filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(currentSearch) ||
-      p.category.toLowerCase().includes(currentSearch)
+      (p.name || '').toLowerCase().includes(currentSearch) ||
+      (p.category || '').toLowerCase().includes(currentSearch) ||
+      (p.description || '').toLowerCase().includes(currentSearch)
     );
   }
 
@@ -189,16 +175,22 @@ function filterAndRenderProducts() {
     return;
   }
 
-  const buyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;
-
   gridContainer.innerHTML = filtered.map(product => `
     <div class="col-6 col-md-4 col-lg-3 mb-3 mb-md-4">
       <div class="flower-card h-100 d-flex flex-column justify-content-between">
         <div>
-          <div class="flower-card-img-wrapper">
+          <div class="flower-card-img-wrapper position-relative">
+            <div class="card-badge-container">
+              ${product.bestseller ? '<span class="bloom-badge badge-bestseller"><i class="bi bi-star-fill"></i> Best Seller</span>' : ''}
+              ${product.newArrival ? '<span class="bloom-badge badge-new-arrival"><i class="bi bi-sparkles"></i> New Arrival</span>' : ''}
+              ${product.featured && !product.bestseller && !product.newArrival ? '<span class="bloom-badge badge-featured"><i class="bi bi-award-fill"></i> Featured</span>' : ''}
+            </div>
             <img src="${product.image}" alt="${product.name}" class="flower-card-img" loading="lazy" />
           </div>
           <div class="flower-card-body p-3">
+            <div class="flower-category-tag" style="font-size: 0.72rem; text-transform: uppercase; color: #e8839b; font-weight: 600; margin-bottom: 2px;">
+              ${product.category || 'Handcrafted'}
+            </div>
             <h5 class="flower-card-title fs-6 fw-bold mb-0" title="${product.name}">${product.name}</h5>
           </div>
         </div>
@@ -216,6 +208,11 @@ function filterAndRenderProducts() {
     </div>
   `).join('');
 }
+
+window.addEventListener('cwh_catalog_updated', () => {
+  setupCategoryButtons();
+  filterAndRenderProducts();
+});
 
 function quickAddToCart(productId) {
   const buyer = getActiveBuyer();

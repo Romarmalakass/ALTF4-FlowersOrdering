@@ -15,20 +15,33 @@ document.addEventListener('DOMContentLoaded', () => {
   if (catParam) flowerCategory = catParam;
 
   if (flowerId) {
-    const fw = typeof FUZZY_WIRE_FLOWERS !== 'undefined' ? FUZZY_WIRE_FLOWERS.find(f => f.id === flowerId) : null;
-    if (fw) {
-      flowerCategory = 'Fuzzy Wire';
-      selectedFlowers[fw.id] = { flowerObj: fw, qty: 1 };
-    }
-    const sr = typeof SATIN_RIBBON_FLOWERS !== 'undefined' ? SATIN_RIBBON_FLOWERS.find(f => f.id === flowerId) : null;
-    if (sr) {
-      flowerCategory = 'Satin Ribbon';
-      selectedFlowers[sr.id] = { flowerObj: sr, qty: 1 };
-    }
-    const fl = typeof FILLERS_DATA !== 'undefined' ? FILLERS_DATA.find(f => f.id === flowerId) : null;
-    if (fl) {
-      flowerCategory = 'Fillers';
-      selectedFillers[fl.id] = { fillerObj: fl, qty: 1 };
+    const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
+    const foundFlower = catalog.find(f => String(f.id) === String(flowerId));
+
+    if (foundFlower) {
+      if ((foundFlower.category || '').toLowerCase() === 'fillers') {
+        flowerCategory = 'Fillers';
+        selectedFillers[foundFlower.id] = { fillerObj: foundFlower, qty: 1 };
+      } else {
+        flowerCategory = foundFlower.category || 'Fuzzy Wire';
+        selectedFlowers[foundFlower.id] = { flowerObj: foundFlower, qty: 1 };
+      }
+    } else {
+      const fw = typeof FUZZY_WIRE_FLOWERS !== 'undefined' ? FUZZY_WIRE_FLOWERS.find(f => f.id === flowerId) : null;
+      if (fw) {
+        flowerCategory = 'Fuzzy Wire';
+        selectedFlowers[fw.id] = { flowerObj: fw, qty: 1 };
+      }
+      const sr = typeof SATIN_RIBBON_FLOWERS !== 'undefined' ? SATIN_RIBBON_FLOWERS.find(f => f.id === flowerId) : null;
+      if (sr) {
+        flowerCategory = 'Satin Ribbon';
+        selectedFlowers[sr.id] = { flowerObj: sr, qty: 1 };
+      }
+      const fl = typeof FILLERS_DATA !== 'undefined' ? FILLERS_DATA.find(f => f.id === flowerId) : null;
+      if (fl) {
+        flowerCategory = 'Fillers';
+        selectedFillers[fl.id] = { fillerObj: fl, qty: 1 };
+      }
     }
   }
 
@@ -84,18 +97,30 @@ function updateBuilderView() {
   calculateGrandTotal();
 }
 
+function getCategoryFlowers(categoryName) {
+  if (typeof getStoreCatalog === 'function') {
+    const catalog = getStoreCatalog();
+    const items = catalog.filter(p => (p.category || '').toLowerCase() === (categoryName || '').toLowerCase());
+    if (items.length > 0) return items;
+  }
+  if ((categoryName || '').toLowerCase() === 'fuzzy wire') return typeof FUZZY_WIRE_FLOWERS !== 'undefined' ? FUZZY_WIRE_FLOWERS : [];
+  if ((categoryName || '').toLowerCase() === 'satin ribbon') return typeof SATIN_RIBBON_FLOWERS !== 'undefined' ? SATIN_RIBBON_FLOWERS : [];
+  if ((categoryName || '').toLowerCase() === 'fillers') return typeof FILLERS_DATA !== 'undefined' ? FILLERS_DATA : [];
+  return [];
+}
+
 function renderUnifiedSelectionGrid() {
   const container = document.getElementById('flower-selection-grid');
   if (!container) return;
 
   if (flowerCategory === 'Fuzzy Wire') {
-    renderItemsGrid(container, FUZZY_WIRE_FLOWERS, selectedFlowers, 'flower');
+    renderItemsGrid(container, getCategoryFlowers('Fuzzy Wire'), selectedFlowers, 'flower');
   } else if (flowerCategory === 'Satin Ribbon') {
-    renderItemsGrid(container, SATIN_RIBBON_FLOWERS, selectedFlowers, 'flower');
+    renderItemsGrid(container, getCategoryFlowers('Satin Ribbon'), selectedFlowers, 'flower');
   } else if (flowerCategory === 'Colors') {
     renderFuzzyColorsTab(container);
   } else if (flowerCategory === 'Fillers') {
-    renderItemsGrid(container, FILLERS_DATA, selectedFillers, 'filler');
+    renderItemsGrid(container, getCategoryFlowers('Fillers'), selectedFillers, 'filler');
   } else if (flowerCategory === 'Wrappers') {
     renderWrappersTab(container);
   } else if (flowerCategory === 'Ribbons') {
@@ -137,7 +162,7 @@ function renderItemsGrid(container, dataset, selectedMap, type) {
   container.querySelectorAll('.item-select-card').forEach(card => {
     card.addEventListener('click', () => {
       const id = card.getAttribute('data-id');
-      const item = dataset.find(i => i.id === id);
+      const item = dataset.find(i => String(i.id) === String(id));
 
       if (selectedMap[id]) {
         delete selectedMap[id];
@@ -152,13 +177,13 @@ function renderItemsGrid(container, dataset, selectedMap, type) {
 
 function updateItemQuantity(type, id, newQty) {
   const selectedMap = (type === 'filler') ? selectedFillers : selectedFlowers;
-  const dataset = (type === 'filler') ? FILLERS_DATA : ((flowerCategory === 'Fuzzy Wire') ? FUZZY_WIRE_FLOWERS : SATIN_RIBBON_FLOWERS);
+  const dataset = (type === 'filler') ? getCategoryFlowers('Fillers') : getCategoryFlowers(flowerCategory);
 
   if (newQty <= 0) {
     delete selectedMap[id];
   } else {
     if (!selectedMap[id]) {
-      const item = dataset.find(i => i.id === id);
+      const item = dataset.find(i => String(i.id) === String(id));
       selectedMap[id] = { [type === 'filler' ? 'fillerObj' : 'flowerObj']: item, qty: newQty };
     } else {
       selectedMap[id].qty = newQty;
