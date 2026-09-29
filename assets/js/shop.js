@@ -67,12 +67,32 @@ function setupCategoryButtons() {
 
 function setupSearchInput() {
   const searchInput = document.getElementById('shop-search-input');
+  const clearBtn = document.getElementById('shop-search-clear');
   if (!searchInput) return;
+
+  const updateClearBtnState = () => {
+    if (clearBtn) {
+      clearBtn.style.display = searchInput.value.trim().length > 0 ? 'inline-block' : 'none';
+    }
+  };
 
   searchInput.addEventListener('input', (e) => {
     currentSearch = e.target.value.trim().toLowerCase();
+    updateClearBtnState();
     filterAndRenderProducts();
   });
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      updateClearBtnState();
+      searchInput.focus();
+      filterAndRenderProducts();
+    });
+  }
+
+  updateClearBtnState();
 }
 
 function setupSortSelect() {
@@ -153,7 +173,28 @@ function filterAndRenderProducts() {
 
   const countEl = document.getElementById('results-count-text');
   if (countEl) {
-    countEl.textContent = `Showing ${filtered.length} handcrafted stem${filtered.length === 1 ? '' : 's'}`;
+    let countMsg = `Showing ${filtered.length} handcrafted stem${filtered.length === 1 ? '' : 's'}`;
+    if (currentSearch) {
+      countMsg += ` matching "${currentSearch}"`;
+    }
+    if (currentCategory !== 'All') {
+      countMsg += ` in ${currentCategory}`;
+    }
+    countEl.textContent = countMsg;
+  }
+
+  const activeBadge = document.getElementById('active-filter-badge');
+  const activeName = document.getElementById('active-filter-name');
+  if (activeBadge && activeName) {
+    if (currentCategory !== 'All' || currentSearch !== '') {
+      let filterDesc = [];
+      if (currentCategory !== 'All') filterDesc.push(`Category: ${currentCategory}`);
+      if (currentSearch !== '') filterDesc.push(`Keyword: "${currentSearch}"`);
+      activeName.textContent = filterDesc.join(' | ');
+      activeBadge.style.display = 'inline-flex';
+    } else {
+      activeBadge.style.display = 'none';
+    }
   }
 
   const gridContainer = document.getElementById('shop-products-grid');
@@ -272,6 +313,9 @@ function resetShopFilters() {
 
   const searchInput = document.getElementById('shop-search-input');
   if (searchInput) searchInput.value = '';
+
+  const clearBtn = document.getElementById('shop-search-clear');
+  if (clearBtn) clearBtn.style.display = 'none';
 
   setupCategoryButtons();
   filterAndRenderProducts();

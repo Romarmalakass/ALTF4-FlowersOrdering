@@ -418,6 +418,18 @@ function calculateGrandTotal() {
         </div>
       `;
     } else {
+      const totalStemsCount = flowerEntries.reduce((sum, item) => sum + (item.qty || 1), 0) + fillerEntries.reduce((sum, item) => sum + (item.qty || 1), 0);
+      html += `
+        <div class="d-flex justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
+          <span class="badge bg-pink-soft text-dark-rose fw-semibold px-2 py-1" style="font-size: 0.78rem;">
+            <i class="bi bi-flower1 me-1"></i> ${totalStemsCount} Stems Selected
+          </span>
+          <button type="button" class="btn btn-link text-danger p-0 border-0 text-decoration-none small" onclick="resetCustomizerWithConfirm()" style="font-size: 0.76rem;" title="Reset all selections">
+            <i class="bi bi-arrow-counterclockwise me-1"></i>Clear All
+          </button>
+        </div>
+      `;
+
       // List each selected flower item with name, quantity, and cost
       flowerEntries.forEach(item => {
         const itemCost = item.flowerObj.price * item.qty;
@@ -506,11 +518,14 @@ function renderActionButtons() {
 
   if (buyer) {
     container.innerHTML = `
-      <button class="btn-bloom-primary py-3" id="btn-craft-add-cart">
+      <button class="btn-bloom-primary py-2.5" id="btn-craft-add-cart">
         <i class="bi bi-cart-plus-fill me-1"></i> Add Custom Bouquet to Cart
       </button>
       <button class="btn-bloom-dark py-2.5" id="btn-craft-buy-now">
         <i class="bi bi-lightning-charge-fill me-1"></i> Proceed to Order Form
+      </button>
+      <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 w-100 fw-semibold" onclick="resetCustomizerWithConfirm()" style="font-size: 0.82rem; border-color: #e2e8f0;">
+        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Bouquet Customizer
       </button>
     `;
     setupActionButtons();
@@ -519,8 +534,64 @@ function renderActionButtons() {
       <button class="btn btn-bloom-outline py-2.5 w-100 rounded-pill fw-semibold" onclick="openBuyerLoginModal()" style="font-size: 0.88rem; border-width: 1.5px;">
         <i class="bi bi-lock-fill me-1 text-pink"></i> Log In to Add to Cart
       </button>
+      <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 w-100 fw-semibold mt-1" onclick="resetCustomizerWithConfirm()" style="font-size: 0.82rem; border-color: #e2e8f0;">
+        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Bouquet Customizer
+      </button>
     `;
   }
+}
+
+function resetCustomizerWithConfirm() {
+  const flowerCount = Object.keys(selectedFlowers).length + Object.keys(selectedFillers).length;
+  if (flowerCount === 0 && Object.keys(selectedAddons).length === 0) {
+    if (typeof showToast === 'function') {
+      showToast("Customizer is already empty.", "info");
+    }
+    return;
+  }
+
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: 'Reset Custom Bouquet?',
+      text: 'This will clear all your selected flower stems, fillers, and decorative add-ons.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e8839b',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, reset builder',
+      cancelButtonText: 'Cancel',
+      customClass: { popup: 'compact-swal-popup' }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        resetCustomizerState();
+        Swal.fire({
+          icon: 'success',
+          title: 'Customizer Reset',
+          text: 'Bouquet configuration cleared successfully.',
+          timer: 1400,
+          showConfirmButton: false,
+          customClass: { popup: 'compact-swal-popup' }
+        });
+      }
+    });
+  } else {
+    if (confirm('Reset all selected flowers and add-ons?')) {
+      resetCustomizerState();
+    }
+  }
+}
+
+function resetCustomizerState() {
+  selectedFlowers = {};
+  selectedFillers = {};
+  selectedColors = [];
+  selectedWrapper = (typeof WRAPPER_OPTIONS !== 'undefined' && WRAPPER_OPTIONS.length > 0) ? WRAPPER_OPTIONS[0] : null;
+  selectedRibbon = (typeof SATIN_COLORS_DATA !== 'undefined' && SATIN_COLORS_DATA.length > 0) ? SATIN_COLORS_DATA[0] : null;
+  selectedAddons = {};
+  inspoPhotoData = null;
+  const notesInput = document.getElementById('custom-notes-input');
+  if (notesInput) notesInput.value = '';
+  updateBuilderView();
 }
 
 function setupActionButtons() {

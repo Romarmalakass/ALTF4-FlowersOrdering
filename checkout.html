@@ -91,22 +91,28 @@
                 <div class="col-md-6">
                   <label for="fulfillment-mode" class="form-label fw-semibold small">MODE OF FULFILLMENT *</label>
                   <select id="fulfillment-mode" class="form-select" required>
-                    <option value="Delivery" selected>Delivery</option>
-                    <option value="Pick Up">Pick Up</option>
-                    <option value="Meet Up">Meet Up</option>
+                    <option value="Delivery" selected>Delivery (Doorstep Rider)</option>
+                    <option value="Pick Up">Pick Up (Haven Studio)</option>
+                    <option value="Meet Up">Meet Up (Designated Landmark)</option>
                   </select>
+                  <div class="form-text small text-muted" id="fulfillment-helper-text" style="font-size: 0.76rem;">
+                    <i class="bi bi-truck text-pink me-1"></i> Orders delivered directly to your doorstep.
+                  </div>
                 </div>
 
                 <div class="col-md-6">
                   <label for="contact-number" class="form-label fw-semibold small">CONTACT NUMBER *</label>
                   <input type="tel" id="contact-number" class="form-control" placeholder="0912 345 6789" required>
-                  <div class="invalid-feedback">Please enter your contact number.</div>
+                  <div class="invalid-feedback">Please enter your active contact number.</div>
                 </div>
 
                 <div class="col-md-6">
-                  <label for="order-date" class="form-label fw-semibold small">DATE OF MEET UP / PICK UP / DELIVERY *</label>
+                  <label for="order-date" class="form-label fw-semibold small">DATE OF FULFILLMENT *</label>
                   <input type="date" id="order-date" class="form-control" required>
-                  <div class="invalid-feedback">Please select date.</div>
+                  <div class="invalid-feedback">Please select a valid fulfillment date.</div>
+                  <div class="form-text small text-muted" style="font-size: 0.74rem;">
+                    <i class="bi bi-calendar-check text-success me-1"></i> Past dates disabled for scheduling.
+                  </div>
                 </div>
 
                 <div class="col-md-6">
@@ -119,8 +125,8 @@
                 </div>
 
                 <div class="col-12">
-                  <label for="order-location" class="form-label fw-semibold small" id="location-label">LOCATION OF MEET UP / PICK UP / DELIVERY *</label>
-                  <textarea id="order-location" class="form-control" rows="2" placeholder="e.g. House No., Street, Barangay, Municipality or Meet Up Point" required></textarea>
+                  <label for="order-location" class="form-label fw-semibold small" id="location-label">DELIVERY ADDRESS *</label>
+                  <textarea id="order-location" class="form-control" rows="2" placeholder="e.g. House No., Street, Barangay, Municipality/City, Landmark" required></textarea>
                   <div class="invalid-feedback">Please enter location details.</div>
                 </div>
 

@@ -74,9 +74,12 @@
       <div class="shop-filter-card">
         <div class="row g-3 align-items-center mb-3">
           <div class="col-md-7 col-lg-8">
-            <div class="search-input-group">
+            <div class="search-input-group position-relative">
               <i class="bi bi-search search-input-icon"></i>
-              <input type="text" id="shop-search-input" class="form-control" placeholder="Search bouquet by flower name, keyword, or meaning..." aria-label="Search flower catalog">
+              <input type="text" id="shop-search-input" class="form-control pe-5" placeholder="Search bouquet by flower name, keyword, or meaning..." aria-label="Search flower catalog">
+              <button class="btn btn-sm btn-link text-muted position-absolute end-0 top-50 translate-middle-y me-2 p-1 text-decoration-none" id="shop-search-clear" type="button" style="display: none; z-index: 5;" title="Clear search">
+                <i class="bi bi-x-circle-fill fs-6"></i>
+              </button>
             </div>
           </div>
           <div class="col-md-5 col-lg-4 d-flex justify-content-md-end">
@@ -93,6 +96,16 @@
         </div>
 
         <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light" id="category-pills-container">
+        </div>
+
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 pt-2.5 mt-2 border-top border-light text-muted small" id="shop-filter-feedback-bar">
+          <div id="results-count-text" class="fw-semibold text-dark-rose">
+            <!-- Populated via JS: Showing X handcrafted stems -->
+          </div>
+          <div id="active-filter-badge" class="badge bg-light text-dark border px-2.5 py-1.5 fw-normal" style="display: none;">
+            Active Filter: <span class="fw-bold" id="active-filter-name"></span>
+            <button type="button" class="btn-close btn-close-sm ms-1.5 align-middle" aria-label="Clear filter" onclick="resetShopFilters()" style="font-size: 0.6rem;"></button>
+          </div>
         </div>
       </div>
 

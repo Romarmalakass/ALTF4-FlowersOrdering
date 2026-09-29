@@ -35,12 +35,16 @@ function setupFulfillmentToggle() {
   const modeSelect = document.getElementById('fulfillment-mode');
   const locationLabel = document.getElementById('location-label');
   const locationInput = document.getElementById('order-location');
+  const helperText = document.getElementById('fulfillment-helper-text');
 
   if (modeSelect && locationLabel) {
     modeSelect.addEventListener('change', () => {
       const mode = modeSelect.value;
       if (mode === 'Pick Up') {
         locationLabel.textContent = 'Pick Up Branch / Studio Address *';
+        if (helperText) {
+          helperText.innerHTML = '<i class="bi bi-shop text-pink me-1"></i> Pick up directly at our studio (Mon-Sat 9AM-7PM). Zero shipping fee.';
+        }
         if (locationInput) {
           locationInput.placeholder = 'Craft & Wrapped Haven Studio - Paralan, Concepcion, Pampanga (Mon-Sat 9AM-7PM)';
           if (!locationInput.value.trim() || locationInput.value.includes('House No.') || locationInput.value.includes('SM Baliwag')) {
@@ -49,6 +53,9 @@ function setupFulfillmentToggle() {
         }
       } else if (mode === 'Meet Up') {
         locationLabel.textContent = 'Designated Meet Up Point *';
+        if (helperText) {
+          helperText.innerHTML = '<i class="bi bi-geo-alt text-pink me-1"></i> Meet up with our representative at a verified public landmark.';
+        }
         if (locationInput) {
           locationInput.placeholder = 'e.g. SM Baliwag Main Entrance, Concepcion Town Plaza, or Waltermart';
           if (locationInput.value.includes('Craft & Wrapped Haven Studio')) {
@@ -57,6 +64,9 @@ function setupFulfillmentToggle() {
         }
       } else {
         locationLabel.textContent = 'Delivery Address *';
+        if (helperText) {
+          helperText.innerHTML = '<i class="bi bi-truck text-pink me-1"></i> Orders delivered directly to your doorstep via trusted rider.';
+        }
         if (locationInput) {
           locationInput.placeholder = 'e.g. House No., Street, Barangay, Municipality/City, Landmark';
           if (locationInput.value.includes('Craft & Wrapped Haven Studio')) {
