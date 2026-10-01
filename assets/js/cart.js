@@ -100,19 +100,48 @@ function renderCart() {
       ? item.addOns.map(a => `<span class="addon-badge">+ ${a.name} (${formatCurrency(a.price)})</span>`).join(' ')
       : '';
 
-    const flowerDetailsHTML = (item.flowerDetails && item.flowerDetails.length > 0)
-      ? `<div><strong>Flowers & Stems:</strong> ${item.flowerDetails.join(', ')}</div>`
-      : '';
+    let flowerDetailsHTML = '';
+    if (item.flowerDetails && item.flowerDetails.length > 0) {
+      flowerDetailsHTML = `
+        <div class="mb-2">
+          <div class="fw-bold text-dark mb-1"><i class="bi bi-flower1 text-pink me-1"></i> Flowers & Stems:</div>
+          <div class="ps-2">
+            ${item.flowerDetails.map(f => `
+              <div class="d-flex align-items-center mb-1 text-dark" style="font-size: 0.84rem;">
+                <span class="text-pink me-2" style="font-size: 1.1rem; line-height: 1;">•</span>
+                <span>${f}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
 
-    const fillerDetailsHTML = (item.fillerDetails && item.fillerDetails.length > 0)
-      ? `<div><strong>Fillers:</strong> ${item.fillerDetails.join(', ')}</div>`
-      : '';
+    let fillerDetailsHTML = '';
+    if (item.fillerDetails && item.fillerDetails.length > 0) {
+      const validFillers = item.fillerDetails.filter(f => f && f.toLowerCase() !== 'none');
+      if (validFillers.length > 0) {
+        fillerDetailsHTML = `
+          <div class="mb-2">
+            <div class="fw-bold text-dark mb-1"><i class="bi bi-leaf text-pink me-1"></i> Fillers:</div>
+            <div class="ps-2">
+              ${validFillers.map(f => `
+                <div class="d-flex align-items-center mb-1 text-dark" style="font-size: 0.84rem;">
+                  <span class="text-pink me-2" style="font-size: 1.1rem; line-height: 1;">•</span>
+                  <span>${f}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
 
-    const colorHTML = item.color ? `<div><strong>Color Palette:</strong> ${item.color}</div>` : '';
-    const wrapperHTML = item.wrapper ? `<div><strong>Wrapper:</strong> ${item.wrapper}</div>` : '';
-    const ribbonHTML = item.ribbon ? `<div><strong>Ribbon:</strong> ${item.ribbon}</div>` : '';
-    const notesHTML = item.notes ? `<div class="mt-1"><strong>Instructions:</strong> <em>"${item.notes}"</em></div>` : '';
-    const inspoHTML = item.inspoPhoto ? `<div class="mt-2"><span class="small fw-bold text-dark d-block">Inspo Photo Reference:</span><img src="${item.inspoPhoto}" style="max-height: 80px; border-radius: 8px; border: 1px solid #e8839b;" /></div>` : '';
+    const colorHTML = item.color ? `<div class="mb-1"><strong>Color Palette:</strong> ${item.color}</div>` : '';
+    const wrapperHTML = item.wrapper ? `<div class="mb-1"><strong>Wrapper:</strong> ${item.wrapper}</div>` : '';
+    const ribbonHTML = item.ribbon ? `<div class="mb-1"><strong>Ribbon:</strong> ${item.ribbon}</div>` : '';
+    const notesHTML = item.notes ? `<div class="mt-2 pt-2 border-top"><strong>Instructions:</strong> <em>"${item.notes}"</em></div>` : '';
+    const inspoHTML = item.inspoPhoto ? `<div class="mt-2"><span class="small fw-bold text-dark d-block mb-1">Inspo Photo Reference:</span><img src="${item.inspoPhoto}" style="max-height: 80px; border-radius: 8px; border: 1px solid #e8839b;" /></div>` : '';
 
     return `
       <div class="cart-item-card mb-4 p-3.5 rounded" style="background: #fff; border: 1px solid var(--glass-border); box-shadow: var(--shadow-sm);" data-index="${index}">

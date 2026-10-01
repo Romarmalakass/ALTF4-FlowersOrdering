@@ -414,7 +414,7 @@ function addToCart(cartItem) {
   }
 
   const cart = getCart();
-  cart.push(cartItem);
+  cart.unshift(cartItem);
   saveCart(cart);
   showToast(`Added "${cartItem.name}" to your shopping cart!`, "success");
   return true;
