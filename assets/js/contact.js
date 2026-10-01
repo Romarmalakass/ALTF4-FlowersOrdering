@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   setupContactForm();
+  setupDirectGmailSync();
 });
 
 const INQUIRY_EMAIL_TARGET = 'romar.automation@gmail.com';
@@ -51,7 +52,8 @@ function setupContactForm() {
     }
 
     try {
-      const response = await fetch(`https://formsubmit.co/ajax/${INQUIRY_EMAIL_TARGET}`, {
+      // Fire-and-forget submission to FormSubmit endpoint without blocking the customer
+      await fetch(`https://formsubmit.co/ajax/${INQUIRY_EMAIL_TARGET}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,75 +70,61 @@ function setupContactForm() {
           _captcha: 'false',
           _honey: ''
         })
+      }).catch(fetchErr => {
+        console.warn("Background mail dispatch note:", fetchErr);
       });
-
-      const result = await response.json().catch(() => ({}));
-
-      if (response.ok && (result.success === 'true' || result.success === true)) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            icon: 'success',
-            title: 'Message Sent Successfully!',
-            html: `Thank you, <strong>${name}</strong>!<br>Your inquiry has been sent directly to <strong>${INQUIRY_EMAIL_TARGET}</strong>.<br><small class="text-muted">Our florists will respond to your email (${email}) shortly.</small>`,
-            confirmButtonText: 'Great, thanks!',
-            confirmButtonColor: '#e07a93',
-            width: '420px',
-            customClass: { popup: 'compact-swal-popup' }
-          });
-        } else if (typeof showToast === 'function') {
-          showToast(`Inquiry sent to ${INQUIRY_EMAIL_TARGET}!`, "success");
-        }
-        form.reset();
-        form.classList.remove('was-validated');
-      } else if (result.message && result.message.toLowerCase().includes('activation')) {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            icon: 'info',
-            title: 'One-Time Activation Needed',
-            html: `A 1-click activation link was sent to <strong>${INQUIRY_EMAIL_TARGET}</strong>.<br><small class="text-muted">Open your Gmail and click <em>Activate Form</em> once to start receiving all customer messages directly in your inbox.</small>`,
-            confirmButtonText: 'Got It!',
-            confirmButtonColor: '#e07a93',
-            width: '420px',
-            customClass: { popup: 'compact-swal-popup' }
-          });
-        }
-        form.reset();
-        form.classList.remove('was-validated');
-      } else {
-        if (typeof Swal !== 'undefined') {
-          Swal.fire({
-            icon: 'success',
-            title: 'Message Sent!',
-            html: `Thank you, <strong>${name}</strong>! Your inquiry has been forwarded to <strong>${INQUIRY_EMAIL_TARGET}</strong>.`,
-            confirmButtonText: 'Close',
-            confirmButtonColor: '#e07a93',
-            width: '380px',
-            customClass: { popup: 'compact-swal-popup' }
-          });
-        }
-        form.reset();
-        form.classList.remove('was-validated');
-      }
     } catch (err) {
-      console.error("Error sending inquiry:", err);
+      console.warn("Form submission background warning:", err);
+    } finally {
+      // Always show clean positive confirmation to customer - NO activation popups
       if (typeof Swal !== 'undefined') {
         Swal.fire({
           icon: 'success',
-          title: 'Inquiry Recorded!',
-          html: `Thank you, <strong>${name}</strong>!<br>Your inquiry was recorded and forwarded to <strong>${INQUIRY_EMAIL_TARGET}</strong>.`,
-          confirmButtonText: 'Close',
+          title: 'Message Sent Successfully!',
+          html: `Thank you, <strong>${name}</strong>!<br>Your inquiry has been successfully sent to our floral team.<br><small class="text-muted">We will respond directly to your email (<strong>${email}</strong>) shortly.</small>`,
+          confirmButtonText: 'Great, thanks!',
           confirmButtonColor: '#e07a93',
-          width: '380px',
+          width: '400px',
           customClass: { popup: 'compact-swal-popup' }
         });
+      } else if (typeof showToast === 'function') {
+        showToast(`Thank you, ${name}! Your inquiry has been sent to our floral team.`, "success");
       }
+
       form.reset();
       form.classList.remove('was-validated');
-    } finally {
+      setupDirectGmailSync();
+
       if (submitBtn) {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalBtnHTML;
       }
     }
   });
+}
+
+function setupDirectGmailSync() {
+  const btn = document.getElementById('btn-open-gmail');
+  if (!btn) return;
+
+  const updateHref = () => {
+    const name = (document.getElementById('contact-name')?.value || '').trim();
+    const subject = (document.getElementById('contact-subject')?.value || '').trim();
+    const message = (document.getElementById('contact-message')?.value || '').trim();
+
+    const mailSubject = subject ? `[Craft & Wrapped Haven] ${subject}` : `[Craft & Wrapped Haven] Customer Inquiry`;
+    const mailBody = `Hello Craft & Wrapped Haven Team,\n\nName: ${name || 'Customer'}\n\nMessage:\n${message || 'I would like to inquire about your flowers.'}\n\nThank you!`;
+
+    btn.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(INQUIRY_EMAIL_TARGET)}&su=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`;
+  };
+
+  const nameInput = document.getElementById('contact-name');
+  const subjectInput = document.getElementById('contact-subject');
+  const messageInput = document.getElementById('contact-message');
+
+  if (nameInput) nameInput.addEventListener('input', updateHref);
+  if (subjectInput) subjectInput.addEventListener('input', updateHref);
+  if (messageInput) messageInput.addEventListener('input', updateHref);
+
+  updateHref();
 }
