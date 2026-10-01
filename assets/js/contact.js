@@ -60,11 +60,13 @@ function setupContactForm() {
         body: JSON.stringify({
           name: name,
           email: email,
+          _replyto: email,
           subject: subject,
           message: message,
-          _subject: `New Customer Inquiry: ${subject} (${name})`,
-          _template: 'table',
-          _captcha: 'false'
+          _subject: `[Customer Inquiry] ${name}: ${subject}`,
+          _template: 'box',
+          _captcha: 'false',
+          _honey: ''
         })
       });
 
