@@ -390,7 +390,32 @@ const CART_STORAGE_KEY = 'craft_wrapped_haven_cart';
 function getCart() {
   try {
     const data = localStorage.getItem(CART_STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    const cart = data ? JSON.parse(data) : [];
+    let mutated = false;
+    cart.forEach(item => {
+      if (Array.isArray(item.flowerDetails)) {
+        item.flowerDetails = item.flowerDetails.map(f => {
+          if (typeof f === 'string' && f.includes('@')) {
+            mutated = true;
+            return f.replace(/\s*@\s*/g, ' - ');
+          }
+          return f;
+        });
+      }
+      if (Array.isArray(item.fillerDetails)) {
+        item.fillerDetails = item.fillerDetails.map(f => {
+          if (typeof f === 'string' && f.includes('@')) {
+            mutated = true;
+            return f.replace(/\s*@\s*/g, ' - ');
+          }
+          return f;
+        });
+      }
+    });
+    if (mutated) {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    }
+    return cart;
   } catch (e) {
     console.error("Error reading cart from localStorage", e);
     return [];

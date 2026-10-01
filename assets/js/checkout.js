@@ -119,12 +119,24 @@ function renderCheckoutSummary() {
   let subtotal = 0;
 
   const parseStem = (str) => {
-    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:[@\-]\s*([^)]+))?\))?$/);
-    if (!match) return { name: str, qty: '1x', price: '' };
-    const name = match[1].trim();
-    const qty = match[2] ? match[2].trim() : '1x';
-    const price = match[3] ? match[3].trim() : '';
-    return { name, qty, price };
+    if (!str) return { name: '', qty: '1x', price: '' };
+    let match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:[@\-]\s*([^)]+))?\))$/);
+    if (match) {
+      return {
+        name: match[1].trim(),
+        qty: match[2] ? match[2].trim() : '1x',
+        price: match[3] ? match[3].trim() : ''
+      };
+    }
+    match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))\))?\s*(?:[-@]\s*(.+))?$/);
+    if (match) {
+      return {
+        name: match[1].trim(),
+        qty: match[2] ? match[2].trim() : '1x',
+        price: match[3] ? match[3].trim() : ''
+      };
+    }
+    return { name: str, qty: '1x', price: '' };
   };
 
   const clearMultiNotice = checkoutItems.length > 1 ? `

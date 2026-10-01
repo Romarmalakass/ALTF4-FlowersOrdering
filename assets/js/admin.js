@@ -334,12 +334,24 @@ function viewOrderDetails(orderId) {
 
   const firstItem = order.items && order.items[0] ? order.items[0] : {};
   const parseStem = (str) => {
-    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
-    if (!match) return { name: str, qty: '1x', price: '' };
-    const name = match[1].trim();
-    const qty = match[2] ? match[2].trim() : '1x';
-    const price = match[3] ? match[3].trim() : '';
-    return { name, qty, price };
+    if (!str) return { name: '', qty: '1x', price: '' };
+    let match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:[@\-]\s*([^)]+))?\))$/);
+    if (match) {
+      return {
+        name: match[1].trim(),
+        qty: match[2] ? match[2].trim() : '1x',
+        price: match[3] ? match[3].trim() : ''
+      };
+    }
+    match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))\))?\s*(?:[-@]\s*(.+))?$/);
+    if (match) {
+      return {
+        name: match[1].trim(),
+        qty: match[2] ? match[2].trim() : '1x',
+        price: match[3] ? match[3].trim() : ''
+      };
+    }
+    return { name: str, qty: '1x', price: '' };
   };
 
   let itemsHTML = '';
@@ -600,8 +612,8 @@ function seedSampleOrder() {
         category: 'Fuzzy Wire',
         unitPrice: 520,
         quantity: 1,
-        flowerDetails: ['Rose Bloom (2x @ ₱90)', 'Tulips (1x @ ₱80)'],
-        fillerDetails: ['Baby\'s Breath (1x @ ₱80)', 'Spiral (2x @ ₱5)'],
+        flowerDetails: ['Rose Bloom (2x - ₱90)', 'Tulips (1x - ₱80)'],
+        fillerDetails: ['Baby\'s Breath (1x - ₱80)', 'Spiral (2x - ₱5)'],
         color: 'Light Pink, Cream',
         wrapper: 'Kraft Paper',
         ribbon: 'Light Yellow Satin Ribbon',
