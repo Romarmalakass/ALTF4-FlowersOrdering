@@ -119,7 +119,7 @@ function renderCheckoutSummary() {
   let subtotal = 0;
 
   const parseStem = (str) => {
-    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
+    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:[@\-]\s*([^)]+))?\))?$/);
     if (!match) return { name: str, qty: '1x', price: '' };
     const name = match[1].trim();
     const qty = match[2] ? match[2].trim() : '1x';

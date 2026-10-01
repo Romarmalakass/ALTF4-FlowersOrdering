@@ -377,7 +377,7 @@ function calculateGrandTotal() {
   Object.values(selectedFlowers).forEach(item => {
     const cost = item.flowerObj.price * item.qty;
     flowersTotal += cost;
-    flowerItemsList.push(`${item.flowerObj.name} (${item.qty}x @ ${formatCurrency(item.flowerObj.price)})`);
+    flowerItemsList.push(`${item.flowerObj.name} (${item.qty}x - ${formatCurrency(item.flowerObj.price)})`);
   });
 
   let fillersTotal = 0;
@@ -385,7 +385,7 @@ function calculateGrandTotal() {
   Object.values(selectedFillers).forEach(item => {
     const cost = item.fillerObj.price * item.qty;
     fillersTotal += cost;
-    fillerItemsList.push(`${item.fillerObj.name} (${item.qty}x @ ${formatCurrency(item.fillerObj.price)})`);
+    fillerItemsList.push(`${item.fillerObj.name} (${item.qty}x - ${formatCurrency(item.fillerObj.price)})`);
   });
 
   const wrapperCost = selectedWrapper ? selectedWrapper.price : 0;

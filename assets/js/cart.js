@@ -106,12 +106,15 @@ function renderCart() {
         <div class="mb-2">
           <div class="fw-bold text-dark mb-1"><i class="bi bi-flower1 text-pink me-1"></i> Flowers & Stems:</div>
           <div class="ps-2">
-            ${item.flowerDetails.map(f => `
+            ${item.flowerDetails.map(f => {
+              const cleanF = (f || '').replace(/\s*@\s*/g, ' - ');
+              return `
               <div class="d-flex align-items-center mb-1 text-dark" style="font-size: 0.84rem;">
                 <span class="text-pink me-2" style="font-size: 1.1rem; line-height: 1;">•</span>
-                <span>${f}</span>
+                <span>${cleanF}</span>
               </div>
-            `).join('')}
+              `;
+            }).join('')}
           </div>
         </div>
       `;
@@ -125,12 +128,15 @@ function renderCart() {
           <div class="mb-2">
             <div class="fw-bold text-dark mb-1"><i class="bi bi-leaf text-pink me-1"></i> Fillers:</div>
             <div class="ps-2">
-              ${validFillers.map(f => `
+              ${validFillers.map(f => {
+                const cleanF = (f || '').replace(/\s*@\s*/g, ' - ');
+                return `
                 <div class="d-flex align-items-center mb-1 text-dark" style="font-size: 0.84rem;">
                   <span class="text-pink me-2" style="font-size: 1.1rem; line-height: 1;">•</span>
-                  <span>${f}</span>
+                  <span>${cleanF}</span>
                 </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         `;
@@ -457,7 +463,7 @@ function viewCustomerReceipt(orderId) {
   const firstItem = order.items && order.items[0] ? order.items[0] : {};
 
   const parseStem = (str) => {
-    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:@\s*([^)]+))?\))?$/);
+    const match = str.match(/^(.+?)(?:\s*\((?:(\d+x|\d+\s*pcs?))?\s*(?:[@\-]\s*([^)]+))?\))?$/);
     if (!match) return { name: str, qty: '1x', price: '' };
     const name = match[1].trim();
     const qty = match[2] ? match[2].trim() : '1x';

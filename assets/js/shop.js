@@ -271,7 +271,7 @@ function createCartItemFromProduct(product) {
     quantity: 1,
     image: product.image,
     stemCount: 1,
-    flowerDetails: [`${product.name} (1x @ ${formatCurrency(product.price)})`],
+    flowerDetails: [`${product.name} (1x - ${formatCurrency(product.price)})`],
     fillerDetails: ['None'],
     wrapper: 'Standard Wrap',
     ribbon: 'Standard Ribbon',
