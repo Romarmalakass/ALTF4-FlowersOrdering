@@ -139,6 +139,50 @@
   transform: none !important;
 }
 
+.flower-card-btn-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  width: 100% !important;
+}
+
+.flower-card-btn-group .btn {
+  flex: 1 1 0 !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  padding: 0.38rem 0.6rem !important;
+  border-radius: 50px !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+}
+
+.flower-card-btn-group .btn-cart {
+  background: #fff !important;
+  color: #e8839b !important;
+  border: 1.5px solid #e8839b !important;
+}
+
+.flower-card-btn-group .btn-cart:hover {
+  background: #fdf2f4 !important;
+  color: #d15d78 !important;
+  border-color: #d15d78 !important;
+}
+
+.flower-card-btn-group .btn-buy {
+  background: #e8839b !important;
+  color: #fff !important;
+  border: 1.5px solid #e8839b !important;
+}
+
+.flower-card-btn-group .btn-buy:hover {
+  background: #d15d78 !important;
+  border-color: #d15d78 !important;
+  color: #fff !important;
+}
+
 @media (max-width: 767.98px) {
   .shop-filter-card {
     padding: 1rem;

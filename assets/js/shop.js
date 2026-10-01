@@ -236,12 +236,17 @@ function filterAndRenderProducts() {
           </div>
         </div>
         <div class="flower-card-footer p-3 pt-0">
-          <div class="d-flex align-items-center justify-content-between flex-wrap gap-1 pt-2 border-top">
+          <div class="d-flex align-items-center justify-content-between pt-2 border-top mb-2">
             <span class="flower-price text-dark-rose fw-bold" style="font-size: 0.95rem;">
               ${formatCurrency(product.price)}
             </span>
-            <button class="btn btn-sm btn-bloom-primary rounded-pill px-3 py-1 fw-semibold" onclick="quickAddToCart('${product.id}')" title="Add to Cart" style="font-size: 0.78rem;">
-              Buy
+          </div>
+          <div class="flower-card-btn-group">
+            <button class="btn btn-cart" onclick="promptAddToCart('${product.id}')" title="Add to Cart">
+              <i class="bi bi-cart-plus me-1"></i> Cart
+            </button>
+            <button class="btn btn-buy" onclick="promptDirectBuy('${product.id}')" title="Buy Now">
+              <i class="bi bi-bag-check me-1"></i> Buy
             </button>
           </div>
         </div>
@@ -255,19 +260,10 @@ window.addEventListener('cwh_catalog_updated', () => {
   filterAndRenderProducts();
 });
 
-function quickAddToCart(productId) {
-  const buyer = getActiveBuyer();
-  if (!buyer) {
-    openBuyerLoginModal();
-    return;
-  }
-
-  const allProducts = getUnifiedCatalog();
-  const product = allProducts.find(p => p.id === productId);
-  if (!product) return;
-
-  const cartItem = {
+function createCartItemFromProduct(product) {
+  return {
     id: product.id,
+    productId: product.id,
     name: product.name,
     category: product.category,
     unitPrice: product.price,
@@ -283,27 +279,106 @@ function quickAddToCart(productId) {
     grandTotal: product.price,
     totalPrice: product.price
   };
+}
 
-  const added = addToCart(cartItem);
-  if (!added) return;
+function promptAddToCart(productId) {
+  const buyer = getActiveBuyer();
+  if (!buyer) {
+    openBuyerLoginModal();
+    return;
+  }
+
+  const allProducts = getUnifiedCatalog();
+  const product = allProducts.find(p => String(p.id) === String(productId));
+  if (!product) return;
 
   if (typeof Swal !== 'undefined') {
     Swal.fire({
-      icon: 'success',
-      title: 'Added to Cart!',
-      html: `<div class="text-center font-sans"><strong>${product.name}</strong> (${formatCurrency(product.price)}) has been added to your shopping cart.</div>`,
+      icon: 'question',
+      title: 'Add to Cart?',
+      html: `<div class="text-center font-sans">Do you want to add <strong>${product.name}</strong> (${formatCurrency(product.price)}) to your shopping cart?</div>`,
       showCancelButton: true,
-      confirmButtonText: '<i class="bi bi-bag-check me-1"></i> View Cart',
-      cancelButtonText: 'Continue Shopping',
+      confirmButtonText: 'YES',
+      cancelButtonText: 'NO',
       confirmButtonColor: '#e8839b',
       cancelButtonColor: '#64748b',
-      customClass: { popup: 'compact-swal-popup' }
+      buttonsStyling: true,
+      customClass: {
+        popup: 'compact-swal-popup side-by-side-swal',
+        actions: 'swal-side-by-side-actions'
+      }
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = 'cart.html';
+        const cartItem = createCartItemFromProduct(product);
+        const added = addToCart(cartItem);
+        if (added) {
+          if (typeof showToast === 'function') {
+            showToast(`${product.name} added to cart!`, 'success');
+          } else {
+            Swal.fire({
+              icon: 'success',
+              title: 'Added to Cart!',
+              text: `${product.name} has been added to your shopping cart.`,
+              timer: 1400,
+              showConfirmButton: false,
+              customClass: { popup: 'compact-swal-popup' }
+            });
+          }
+        }
       }
     });
+  } else {
+    if (confirm(`Do you want to add ${product.name} (${formatCurrency(product.price)}) to your cart?`)) {
+      const cartItem = createCartItemFromProduct(product);
+      addToCart(cartItem);
+    }
   }
+}
+
+function promptDirectBuy(productId) {
+  const buyer = getActiveBuyer();
+  if (!buyer) {
+    openBuyerLoginModal();
+    return;
+  }
+
+  const allProducts = getUnifiedCatalog();
+  const product = allProducts.find(p => String(p.id) === String(productId));
+  if (!product) return;
+
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      icon: 'question',
+      title: 'Proceed to Order Form?',
+      html: `<div class="text-center font-sans">Would you like to proceed to the official order form to buy <strong>${product.name}</strong> (${formatCurrency(product.price)})?</div>`,
+      showCancelButton: true,
+      confirmButtonText: 'PROCEED',
+      cancelButtonText: 'CANCEL',
+      confirmButtonColor: '#e8839b',
+      cancelButtonColor: '#64748b',
+      buttonsStyling: true,
+      customClass: {
+        popup: 'compact-swal-popup side-by-side-swal',
+        actions: 'swal-side-by-side-actions'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const directItem = createCartItemFromProduct(product);
+        sessionStorage.setItem('cwh_direct_order', JSON.stringify([directItem]));
+        window.location.href = 'checkout.html?direct=1';
+      }
+    });
+  } else {
+    if (confirm(`Proceed to order form for ${product.name} (${formatCurrency(product.price)})?`)) {
+      const directItem = createCartItemFromProduct(product);
+      sessionStorage.setItem('cwh_direct_order', JSON.stringify([directItem]));
+      window.location.href = 'checkout.html?direct=1';
+    }
+  }
+}
+
+function quickAddToCart(productId) {
+  promptAddToCart(productId);
 }
 
 function resetShopFilters() {
