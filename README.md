@@ -31,7 +31,7 @@ Project Progress: Week 9 Milestone (Usability Testing & Project Refinement)
 
 Key Usability Improvements & Refinements Implemented:
 - Catalog Search & Filter Clarity: Added real-time stem counter ("Showing X handcrafted stems") and an inline one-tap "Clear Search" button (×) in the Floral Catalog.
-- Custom Bouquet Builder Reset Flow: Implemented an intuitive "Reset Bouquet Customizer" button with SweetAlert2 confirmation dialog and a live "Stems Selected" counter badge.
+- Custom Bouquet Builder Streamlined Management: Replaced redundant bottom reset button with an inline one-tap "Clear All" action and instant per-item remove buttons (✕) in the Live Order Total summary for effortless customization without having to search for stems.
 - Checkout Scheduling & Fulfillment UX: Added strict date constraints (min date set to current date to prevent invalid past delivery dates) and dynamic contextual address helpers for Delivery, Studio Pick Up, and Public Meet Up.
 - Interactive Feedback & Ergonomics: Enhanced SweetAlert2 toast notifications, improved mobile drawer touch targets (min 44px), and refined component transitions.
 

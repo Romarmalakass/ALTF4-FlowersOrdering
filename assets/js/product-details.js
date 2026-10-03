@@ -405,10 +405,10 @@ function calculateGrandTotal() {
 
   const breakdownContainer = document.getElementById('craft-itemized-summary');
   if (breakdownContainer) {
-    const flowerEntries = Object.values(selectedFlowers);
-    const fillerEntries = Object.values(selectedFillers);
-    const addonEntries = Object.values(selectedAddons);
-    const hasItems = flowerEntries.length > 0 || fillerEntries.length > 0;
+    const flowerEntries = Object.entries(selectedFlowers);
+    const fillerEntries = Object.entries(selectedFillers);
+    const addonEntries = Object.entries(selectedAddons);
+    const hasItems = flowerEntries.length > 0 || fillerEntries.length > 0 || addonEntries.length > 0;
 
     let html = '';
     if (!hasItems) {
@@ -418,42 +418,54 @@ function calculateGrandTotal() {
         </div>
       `;
     } else {
-      const totalStemsCount = flowerEntries.reduce((sum, item) => sum + (item.qty || 1), 0) + fillerEntries.reduce((sum, item) => sum + (item.qty || 1), 0);
+      const totalStemsCount = flowerEntries.reduce((sum, [_, item]) => sum + (item.qty || 1), 0) + fillerEntries.reduce((sum, [_, item]) => sum + (item.qty || 1), 0);
       html += `
         <div class="d-flex justify-content-between align-items-center mb-2.5 pb-2 border-bottom">
           <span class="badge bg-pink-soft text-dark-rose fw-semibold px-2 py-1" style="font-size: 0.78rem;">
             <i class="bi bi-flower1 me-1"></i> ${totalStemsCount} Stems Selected
           </span>
-          <button type="button" class="btn btn-link text-danger p-0 border-0 text-decoration-none small" onclick="resetCustomizerWithConfirm()" style="font-size: 0.76rem;" title="Reset all selections">
+          <button type="button" class="btn btn-link text-danger p-0 border-0 text-decoration-none small" onclick="resetCustomizerWithConfirm()" style="font-size: 0.76rem;" title="Clear all selections">
             <i class="bi bi-arrow-counterclockwise me-1"></i>Clear All
           </button>
         </div>
       `;
 
-      // List each selected flower item with name, quantity, and cost
-      flowerEntries.forEach(item => {
+      // List each selected flower item with name, quantity, cost, and remove button (X)
+      flowerEntries.forEach(([id, item]) => {
         const itemCost = item.flowerObj.price * item.qty;
         const qtyText = item.qty > 1 ? `${item.qty} pcs` : `1 pc`;
+        const safeName = (item.flowerObj.name || '').replace(/"/g, '&quot;');
         html += `
           <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
-            <span class="text-dark text-truncate me-2" title="${item.flowerObj.name}">
+            <span class="text-dark text-truncate me-2" title="${safeName}">
               ${item.flowerObj.name} <small class="text-muted">(${qtyText})</small>
             </span>
-            <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+            <div class="d-flex align-items-center flex-shrink-0">
+              <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+              <button type="button" class="btn-remove-custom-item" onclick="removeItemFromCustomizer('flower', '${id}')" title="Remove ${safeName}" aria-label="Remove ${safeName}">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
           </div>
         `;
       });
 
-      // List each selected filler item with name, quantity, and cost
-      fillerEntries.forEach(item => {
+      // List each selected filler item with name, quantity, cost, and remove button (X)
+      fillerEntries.forEach(([id, item]) => {
         const itemCost = item.fillerObj.price * item.qty;
         const qtyText = item.qty > 1 ? `${item.qty} pcs` : `1 pc`;
+        const safeName = (item.fillerObj.name || '').replace(/"/g, '&quot;');
         html += `
           <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
-            <span class="text-dark text-truncate me-2" title="${item.fillerObj.name}">
+            <span class="text-dark text-truncate me-2" title="${safeName}">
               ${item.fillerObj.name} <small class="text-muted">(${qtyText})</small>
             </span>
-            <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+            <div class="d-flex align-items-center flex-shrink-0">
+              <span class="fw-bold text-nowrap">${formatCurrency(itemCost)}</span>
+              <button type="button" class="btn-remove-custom-item" onclick="removeItemFromCustomizer('filler', '${id}')" title="Remove ${safeName}" aria-label="Remove ${safeName}">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
           </div>
         `;
       });
@@ -467,11 +479,17 @@ function calculateGrandTotal() {
         `;
       }
 
-      addonEntries.forEach(addon => {
+      addonEntries.forEach(([id, addon]) => {
+        const safeName = (addon.name || '').replace(/"/g, '&quot;');
         html += `
           <div class="itemized-row d-flex justify-content-between align-items-center mb-1.5" style="font-size: 0.86rem;">
             <span class="text-dark text-truncate me-2">${addon.name}</span>
-            <span class="fw-bold text-nowrap">+${formatCurrency(addon.price)}</span>
+            <div class="d-flex align-items-center flex-shrink-0">
+              <span class="fw-bold text-nowrap">+${formatCurrency(addon.price)}</span>
+              <button type="button" class="btn-remove-custom-item" onclick="removeItemFromCustomizer('addon', '${id}')" title="Remove ${safeName}" aria-label="Remove ${safeName}">
+                <i class="bi bi-x-lg"></i>
+              </button>
+            </div>
           </div>
         `;
       });
@@ -510,6 +528,18 @@ function calculateGrandTotal() {
   };
 }
 
+function removeItemFromCustomizer(type, id) {
+  if (type === 'flower') {
+    delete selectedFlowers[id];
+  } else if (type === 'filler') {
+    delete selectedFillers[id];
+  } else if (type === 'addon') {
+    delete selectedAddons[id];
+  }
+  renderUnifiedSelectionGrid();
+  calculateGrandTotal();
+}
+
 function renderActionButtons() {
   const container = document.getElementById('craft-action-buttons-container');
   if (!container) return;
@@ -524,18 +554,12 @@ function renderActionButtons() {
       <button class="btn-bloom-dark py-2.5" id="btn-craft-buy-now">
         <i class="bi bi-lightning-charge-fill me-1"></i> Proceed to Order Form
       </button>
-      <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 w-100 fw-semibold" onclick="resetCustomizerWithConfirm()" style="font-size: 0.82rem; border-color: #e2e8f0;">
-        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Bouquet Customizer
-      </button>
     `;
     setupActionButtons();
   } else {
     container.innerHTML = `
       <button class="btn btn-bloom-outline py-2.5 w-100 rounded-pill fw-semibold" onclick="openBuyerLoginModal()" style="font-size: 0.88rem; border-width: 1.5px;">
         <i class="bi bi-lock-fill me-1 text-pink"></i> Log In to Add to Cart
-      </button>
-      <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill py-2 w-100 fw-semibold mt-1" onclick="resetCustomizerWithConfirm()" style="font-size: 0.82rem; border-color: #e2e8f0;">
-        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Bouquet Customizer
       </button>
     `;
   }
@@ -552,13 +576,13 @@ function resetCustomizerWithConfirm() {
 
   if (typeof Swal !== 'undefined') {
     Swal.fire({
-      title: 'Reset Custom Bouquet?',
+      title: 'Clear Custom Bouquet?',
       text: 'This will clear all your selected flower stems, fillers, and decorative add-ons.',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#e8839b',
       cancelButtonColor: '#64748b',
-      confirmButtonText: 'Yes, reset builder',
+      confirmButtonText: 'Yes, clear all',
       cancelButtonText: 'Cancel',
       customClass: { popup: 'compact-swal-popup' }
     }).then((result) => {
@@ -566,7 +590,7 @@ function resetCustomizerWithConfirm() {
         resetCustomizerState();
         Swal.fire({
           icon: 'success',
-          title: 'Customizer Reset',
+          title: 'Customizer Cleared',
           text: 'Bouquet configuration cleared successfully.',
           timer: 1400,
           showConfirmButton: false,
@@ -575,7 +599,7 @@ function resetCustomizerWithConfirm() {
       }
     });
   } else {
-    if (confirm('Reset all selected flowers and add-ons?')) {
+    if (confirm('Clear all selected flowers and add-ons?')) {
       resetCustomizerState();
     }
   }

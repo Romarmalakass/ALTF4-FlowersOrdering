@@ -313,3 +313,45 @@
   50% { transform: scale(1.08); color: var(--dark-rose); }
   100% { transform: scale(1); }
 }
+
+/* Itemized Summary Remove Item (X) Button */
+.itemized-row {
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.itemized-row:hover {
+  background-color: rgba(254, 226, 226, 0.35);
+}
+
+.btn-remove-custom-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #fecdd3;
+  background-color: #fff1f2;
+  color: #e11d48;
+  font-size: 0.65rem;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.18s ease-in-out;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+.btn-remove-custom-item:hover {
+  background-color: #e11d48;
+  color: #ffffff;
+  border-color: #e11d48;
+  transform: scale(1.15);
+}
+
+.btn-remove-custom-item:active {
+  transform: scale(0.92);
+}
+
