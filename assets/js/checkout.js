@@ -327,9 +327,13 @@ function setupCheckoutForm() {
 
     const orderId = 'CWH-' + Math.floor(100000 + Math.random() * 900000);
 
+    const activeBuyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;
+    const buyerEmail = activeBuyer ? (activeBuyer.email || '').toLowerCase() : '';
+
     const orderRecord = {
       orderId: orderId,
       customerName: name,
+      customerEmail: buyerEmail,
       dateNeeded: date,
       timeNeeded: time,
       fulfillmentMode: fulfillmentMode,
@@ -345,9 +349,13 @@ function setupCheckoutForm() {
       createdAt: new Date().toISOString()
     };
 
-    let existingOrders = JSON.parse(localStorage.getItem('flower_orders') || '[]');
+    let existingOrders = typeof getOrders === 'function' ? getOrders() : JSON.parse(localStorage.getItem('flower_orders') || '[]');
     existingOrders.unshift(orderRecord);
-    localStorage.setItem('flower_orders', JSON.stringify(existingOrders));
+    if (typeof saveOrders === 'function') {
+      saveOrders(existingOrders);
+    } else {
+      localStorage.setItem('flower_orders', JSON.stringify(existingOrders));
+    }
 
     if (typeof Swal !== 'undefined') {
       Swal.fire({

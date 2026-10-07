@@ -232,9 +232,8 @@
     function initAccountPage() {
       let buyer = getActiveBuyer();
       if (!buyer) {
-        const buyers = getRegisteredBuyers();
-        buyer = (buyers && buyers.length > 0) ? buyers[0] : DEFAULT_DEMO_BUYERS[0];
-        setActiveBuyer(buyer);
+        window.location.href = 'index.html';
+        return;
       }
 
       const avatarEl = document.getElementById('buyer-avatar-display');

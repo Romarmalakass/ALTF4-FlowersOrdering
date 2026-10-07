@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewParam = urlParams.get('view');
 
   const cart = getCart();
-  const orders = getOrders();
+  const orders = typeof getBuyerOrders === 'function' ? getBuyerOrders() : getOrders();
 
-  if (tabParam === 'orders' || viewParam === 'orders' || (cart.length === 0 && orders.length > 0)) {
+  if (tabParam === 'orders' || viewParam === 'orders') {
     activeCartTab = 'orders';
   }
 
@@ -63,7 +63,7 @@ function updateTabUI() {
 
 function updateCartAndOrderCounts() {
   const cart = getCart();
-  const orders = getOrders();
+  const orders = typeof getBuyerOrders === 'function' ? getBuyerOrders() : getOrders();
 
   const cartCountEl = document.getElementById('tab-cart-count');
   const ordersCountEl = document.getElementById('tab-orders-count');
@@ -311,7 +311,7 @@ function renderPlacedOrders() {
   const container = document.getElementById('placed-orders-container');
   if (!container) return;
 
-  const orders = getOrders();
+  const orders = typeof getBuyerOrders === 'function' ? getBuyerOrders() : getOrders();
 
   let filtered = orders;
   if (customerOrderSearchQuery !== '') {

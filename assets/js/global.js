@@ -387,9 +387,31 @@ function compressImageFile(file, maxWidth = 640, maxHeight = 640, quality = 0.8)
 
 const CART_STORAGE_KEY = 'craft_wrapped_haven_cart';
 
+function getCartStorageKey(buyer = null) {
+  const activeBuyer = buyer || (typeof getActiveBuyer === 'function' ? getActiveBuyer() : null);
+  if (activeBuyer && activeBuyer.email) {
+    return 'cwh_cart_' + activeBuyer.email.toLowerCase().replace(/[^a-z0-9]/g, '_');
+  }
+  return CART_STORAGE_KEY;
+}
+
 function getCart() {
   try {
-    const data = localStorage.getItem(CART_STORAGE_KEY);
+    const key = getCartStorageKey();
+    let data = localStorage.getItem(key);
+
+    // Legacy migration: If active buyer is Maria and new key doesn't exist yet, migrate old cart
+    if (data === null && key !== CART_STORAGE_KEY) {
+      const activeBuyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;
+      if (activeBuyer && (activeBuyer.email || '').toLowerCase() === 'maria@gmail.com') {
+        const legacyData = localStorage.getItem(CART_STORAGE_KEY);
+        if (legacyData) {
+          data = legacyData;
+          localStorage.setItem(key, legacyData);
+        }
+      }
+    }
+
     const cart = data ? JSON.parse(data) : [];
     let mutated = false;
     cart.forEach(item => {
@@ -413,7 +435,7 @@ function getCart() {
       }
     });
     if (mutated) {
-      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+      localStorage.setItem(key, JSON.stringify(cart));
     }
     return cart;
   } catch (e) {
@@ -424,7 +446,8 @@ function getCart() {
 
 function saveCart(cart) {
   try {
-    localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+    const key = getCartStorageKey();
+    localStorage.setItem(key, JSON.stringify(cart));
     updateNavbarCartCount();
   } catch (e) {
     console.error("Error saving cart to localStorage", e);
@@ -503,7 +526,8 @@ function updateCartQuantity(index, newQty) {
 }
 
 function clearCart() {
-  localStorage.removeItem(CART_STORAGE_KEY);
+  const key = getCartStorageKey();
+  localStorage.removeItem(key);
   updateNavbarCartCount();
 }
 
@@ -527,6 +551,7 @@ const DEFAULT_DEMO_ORDERS = [
   {
     orderId: 'CWH-892104',
     customerName: 'Maria Santos',
+    customerEmail: 'maria@gmail.com',
     dateNeeded: '2026-09-18',
     timeNeeded: 'Afternoon (1:00 PM - 5:00 PM)',
     fulfillmentMode: 'Delivery',
@@ -553,6 +578,7 @@ const DEFAULT_DEMO_ORDERS = [
   {
     orderId: 'CWH-518293',
     customerName: 'Kuronuma Sawako',
+    customerEmail: 'sawako@gmail.com',
     dateNeeded: '2026-09-19',
     timeNeeded: 'Morning (8:00 AM - 12:00 PM)',
     fulfillmentMode: 'Pick Up',
@@ -579,6 +605,7 @@ const DEFAULT_DEMO_ORDERS = [
   {
     orderId: 'CWH-341908',
     customerName: 'Jann Christopher Abacan',
+    customerEmail: 'jann@gmail.com',
     dateNeeded: '2026-09-13',
     timeNeeded: 'Evening (6:00 PM - 9:00 PM)',
     fulfillmentMode: 'Meet Up',
@@ -616,11 +643,55 @@ function getOrders() {
       localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(DEFAULT_DEMO_ORDERS));
       return DEFAULT_DEMO_ORDERS;
     }
+    let mutated = false;
+    parsed.forEach(o => {
+      if (!o.customerEmail) {
+        const cName = (o.customerName || '').toLowerCase();
+        if (o.orderId === 'CWH-892104' || cName.includes('maria')) {
+          o.customerEmail = 'maria@gmail.com';
+          mutated = true;
+        } else if (o.orderId === 'CWH-518293' || cName.includes('sawako')) {
+          o.customerEmail = 'sawako@gmail.com';
+          mutated = true;
+        } else if (o.orderId === 'CWH-341908' || cName.includes('jann')) {
+          o.customerEmail = 'jann@gmail.com';
+          mutated = true;
+        }
+      }
+    });
+    if (mutated) {
+      localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(parsed));
+    }
     return parsed;
   } catch (e) {
     console.error("Error reading orders from localStorage", e);
     return DEFAULT_DEMO_ORDERS;
   }
+}
+
+function getBuyerOrders(buyer = null) {
+  const activeBuyer = buyer || (typeof getActiveBuyer === 'function' ? getActiveBuyer() : null);
+  if (!activeBuyer) return [];
+
+  const allOrders = getOrders();
+  const buyerEmail = (activeBuyer.email || '').trim().toLowerCase();
+  const buyerName = (activeBuyer.name || '').trim().toLowerCase();
+
+  return allOrders.filter(order => {
+    const orderEmail = (order.customerEmail || '').trim().toLowerCase();
+    const orderName = (order.customerName || '').trim().toLowerCase();
+
+    if (buyerEmail && orderEmail && buyerEmail === orderEmail) {
+      return true;
+    }
+    if (buyerEmail && !orderEmail && orderName && buyerName && orderName === buyerName) {
+      return true;
+    }
+    if (!buyerEmail && orderName && buyerName && orderName === buyerName) {
+      return true;
+    }
+    return false;
+  });
 }
 
 function saveOrders(orders) {
@@ -694,6 +765,7 @@ function getActiveBuyer() {
 function setActiveBuyer(buyer) {
   localStorage.setItem(BUYER_STORAGE_KEY, JSON.stringify(buyer));
   updateNavbarAuth();
+  updateNavbarCartCount();
   if (typeof renderProductsGrid === 'function') renderProductsGrid();
   if (typeof renderActionButtons === 'function') renderActionButtons();
   if (typeof renderCartPage === 'function') renderCartPage();
@@ -702,6 +774,7 @@ function setActiveBuyer(buyer) {
 function logoutBuyer() {
   localStorage.removeItem(BUYER_STORAGE_KEY);
   updateNavbarAuth();
+  updateNavbarCartCount();
   closeSellerChat();
   if (typeof renderProductsGrid === 'function') renderProductsGrid();
   if (typeof renderActionButtons === 'function') renderActionButtons();
@@ -1337,7 +1410,13 @@ function handleBuyerRegisterSubmit() {
   buyers.push(newBuyer);
   saveRegisteredBuyers(buyers);
   closeAuthModal();
+
+  // Initialize fresh, empty cart for the newly registered buyer
+  const newCartKey = getCartStorageKey(newBuyer);
+  localStorage.setItem(newCartKey, JSON.stringify([]));
+
   setActiveBuyer(newBuyer);
+  updateNavbarCartCount();
 
   Swal.fire({
     icon: 'success',
