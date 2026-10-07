@@ -597,9 +597,13 @@ function viewCustomerReceipt(orderId) {
           </div>
         </div>
       `,
+      showCancelButton: false,
       confirmButtonText: 'Close',
       confirmButtonColor: '#e8839b',
-      customClass: { popup: 'receipt-swal-popup' }
+      customClass: {
+        popup: 'receipt-swal-popup',
+        actions: 'receipt-swal-actions'
+      }
     });
   }
 }

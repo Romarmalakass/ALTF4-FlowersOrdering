@@ -243,7 +243,7 @@ function filterAndRenderProducts() {
           </div>
           <div class="flower-card-btn-group">
             <button class="btn btn-cart" onclick="promptAddToCart('${product.id}')" title="Add to Cart">
-              <i class="bi bi-cart-plus me-1"></i> Cart
+              <i class="bi bi-cart-plus me-1"></i> Add to Cart
             </button>
             <button class="btn btn-buy" onclick="promptDirectBuy('${product.id}')" title="Buy Now">
               <i class="bi bi-bag-check me-1"></i> Buy

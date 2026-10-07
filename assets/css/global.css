@@ -614,7 +614,7 @@ input[type=number] {
   letter-spacing: 0.3px;
   min-width: 110px !important;
   margin: 0 !important;
-  display: inline-flex !important;
+  display: inline-flex;
   justify-content: center !important;
   align-items: center !important;
 }
@@ -630,9 +630,27 @@ input[type=number] {
   letter-spacing: 0.3px;
   min-width: 110px !important;
   margin: 0 !important;
-  display: inline-flex !important;
+  display: inline-flex;
   justify-content: center !important;
   align-items: center !important;
+}
+
+.swal2-actions button[style*="display: none"],
+.swal2-cancel[style*="display: none"],
+.swal2-confirm[style*="display: none"] {
+  display: none !important;
+}
+
+.receipt-swal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  margin: 1.25rem 0 0.25rem 0 !important;
+  width: 100% !important;
+  padding-right: 0.25rem !important;
+}
+
+.receipt-swal-actions .swal2-cancel {
+  display: none !important;
 }
 
 .bloom-swal-toast {
