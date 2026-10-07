@@ -235,13 +235,43 @@ function calculateTotals() {
 }
 
 function handleChangeQty(index, newQty) {
+  if (newQty <= 0) {
+    handleRemoveItem(index);
+    return;
+  }
   updateCartQuantity(index, newQty);
   renderCart();
 }
 
 function handleRemoveItem(index) {
-  removeFromCart(index);
-  renderCart();
+  const cart = getCart();
+  const item = cart[index];
+  const itemName = item ? (item.name || 'this item') : 'this item';
+
+  if (typeof Swal !== 'undefined') {
+    Swal.fire({
+      title: 'Remove Item?',
+      text: `Are you sure you want to remove "${itemName}" from your cart?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Remove',
+      cancelButtonText: 'Cancel',
+      customClass: { popup: 'compact-swal-popup' },
+      width: '360px'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        removeFromCart(index);
+        renderCart();
+      }
+    });
+  } else {
+    if (confirm(`Are you sure you want to remove "${itemName}" from your cart?`)) {
+      removeFromCart(index);
+      renderCart();
+    }
+  }
 }
 
 function handleClearCart() {
