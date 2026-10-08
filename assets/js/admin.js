@@ -1520,13 +1520,13 @@ function viewCustomerDetails(email) {
       <div class="text-start font-sans" style="font-size: 0.88rem; color: #374151;">
         <!-- Status Banner -->
         <div class="d-flex align-items-center justify-content-between gap-3 p-2.5 px-3 rounded-3 mb-3" style="background: ${isBanned ? '#fff1f2' : '#f0fdf4'}; border: 1px solid ${isBanned ? '#fecdd3' : '#bbf7d0'};">
-          <div style="min-width: 0;">
-            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: ${isBanned ? '#be123c' : '#15803d'};">Account Status</div>
-            <div class="fw-bold text-nowrap" style="color: ${isBanned ? '#991b1b' : '#166534'}; font-size: 0.92rem;">
-              ${isBanned ? '<i class="bi bi-slash-circle-fill me-1"></i> Banned / Restricted' : '<i class="bi bi-check-circle-fill me-1"></i> Active Customer Account'}
+          <div>
+            <div style="font-size: 0.68rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: ${isBanned ? '#be123c' : '#15803d'};">Account Status</div>
+            <div class="fw-bold" style="color: ${isBanned ? '#991b1b' : '#166534'}; font-size: 0.82rem;">
+              ${isBanned ? '<i class="bi bi-slash-circle-fill me-1"></i> Banned Account' : '<i class="bi bi-check-circle-fill me-1"></i> Active Account'}
             </div>
           </div>
-          <span class="customer-orders-pill" style="font-size: 0.76rem; white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px; padding: 0.32rem 0.75rem;">
+          <span class="customer-orders-pill" style="font-size: 0.72rem; white-space: nowrap; flex-shrink: 0; display: inline-flex; align-items: center; gap: 5px; padding: 0.25rem 0.65rem;">
             <i class="bi bi-bag-check me-0.5"></i> <span>${userOrders.length} ${userOrders.length === 1 ? 'Order' : 'Orders'}</span>
           </span>
         </div>
