@@ -1733,6 +1733,25 @@ function initFloatingChat() {
     }
   });
 
+  // Live polling sync so messages from admin appear immediately without refresh
+  setInterval(() => {
+    const panel = document.getElementById('floating-chat-panel');
+    if (!panel || panel.classList.contains('chat-hidden')) return;
+    const buyer = getActiveBuyer();
+    if (!buyer) return;
+    const cleanEmail = (buyer.email || '').toLowerCase().trim();
+    try {
+      const data = localStorage.getItem(CHAT_STORAGE_PREFIX + cleanEmail);
+      if (data) {
+        const parsed = JSON.parse(data);
+        if (Array.isArray(parsed) && parsed.length !== (window._lastBuyerChatCount || 0)) {
+          window._lastBuyerChatCount = parsed.length;
+          renderChatMessages();
+        }
+      }
+    } catch (e) {}
+  }, 1200);
+
   updateFloatingChatVisibility();
 }
 
@@ -1850,12 +1869,13 @@ function getChatHistory(buyerEmail) {
   } catch (e) {}
 
   const buyer = getActiveBuyer();
-  const buyerName = buyer ? buyer.name.split(' ')[0] : 'Friend';
+  const buyerName = buyer ? (buyer.name || '').split(' ')[0] : 'Friend';
   const initial = [
     {
       sender: 'seller',
       text: `Hi ${buyerName}! Welcome to Craft & Wrapped Haven 🌸 How can we help you with your handcrafted flower bouquet today?`,
-      time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: Date.now()
     }
   ];
   localStorage.setItem(CHAT_STORAGE_PREFIX + cleanEmail, JSON.stringify(initial));
@@ -1908,7 +1928,8 @@ function handleChatSubmit(e) {
   history.push({
     sender: 'buyer',
     text: text,
-    time: nowTime
+    time: nowTime,
+    timestamp: Date.now()
   });
   saveChatHistory(cleanEmail, history);
   renderChatMessages();
@@ -1956,7 +1977,8 @@ function showSellerTypingIndicator(userPrompt) {
     history.push({
       sender: 'seller',
       text: responseText,
-      time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })
+      time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }),
+      timestamp: Date.now()
     });
     saveChatHistory(cleanEmail, history);
     renderChatMessages();

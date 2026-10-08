@@ -670,26 +670,60 @@ function seedSampleOrder() {
 
 function getAdminAllChatUsers() {
   const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
+  const usersMap = new Map();
 
-  return buyers.map(buyer => {
-    let history = [];
+  // 1. Add all registered buyers
+  buyers.forEach(buyer => {
     const cleanEmail = (buyer.email || '').toLowerCase().trim();
+    if (cleanEmail) {
+      usersMap.set(cleanEmail, {
+        name: buyer.name || cleanEmail.split('@')[0],
+        email: cleanEmail,
+        mobile: buyer.mobile || ''
+      });
+    }
+  });
+
+  // 2. Discover any other customers who have chat records in localStorage
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('cwh_chat_history_')) {
+      const email = key.replace('cwh_chat_history_', '').toLowerCase().trim();
+      if (email && !usersMap.has(email)) {
+        usersMap.set(email, {
+          name: email.split('@')[0],
+          email: email,
+          mobile: ''
+        });
+      }
+    }
+  }
+
+  // 3. Populate chat histories, last message, and timestamps
+  const userList = Array.from(usersMap.values()).map(user => {
+    let history = [];
     try {
-      const data = localStorage.getItem('cwh_chat_history_' + cleanEmail);
+      const data = localStorage.getItem('cwh_chat_history_' + user.email);
       if (data) history = JSON.parse(data);
     } catch (e) {}
 
     const lastMsg = history.length > 0 ? history[history.length - 1] : null;
 
     return {
-      name: buyer.name,
-      email: cleanEmail,
-      mobile: buyer.mobile || '',
+      name: user.name,
+      email: user.email,
+      mobile: user.mobile,
       lastMessage: lastMsg ? (lastMsg.text.replace(/<[^>]*>?/gm, '')) : 'Started a conversation',
       lastTime: lastMsg ? (lastMsg.time || '') : '',
+      lastTimestamp: lastMsg ? (lastMsg.timestamp || 0) : 0,
       history: history
     };
   });
+
+  // Sort by latest message timestamp so most active conversation stays at the top
+  userList.sort((a, b) => (b.lastTimestamp || 0) - (a.lastTimestamp || 0));
+
+  return userList;
 }
 
 function initAdminChatList() {
@@ -706,6 +740,8 @@ function initAdminChatList() {
 
   if (!window._adminChatSyncInitialized) {
     window._adminChatSyncInitialized = true;
+
+    // Real-time storage listener across tabs
     window.addEventListener('storage', (e) => {
       if (e.key && e.key.startsWith('cwh_chat_history_')) {
         const u = getAdminAllChatUsers();
@@ -713,6 +749,26 @@ function initAdminChatList() {
         renderActiveAdminConversation();
       }
     });
+
+    // Auto-sync polling every 1.2s when admin is viewing chat
+    setInterval(() => {
+      const chatSection = document.getElementById('chat-view-section');
+      if (!chatSection || chatSection.style.display === 'none') return;
+      if (!selectedCustomerEmail) return;
+
+      const cleanEmail = selectedCustomerEmail.toLowerCase().trim();
+      try {
+        const data = localStorage.getItem('cwh_chat_history_' + cleanEmail);
+        if (data) {
+          const parsed = JSON.parse(data);
+          if (Array.isArray(parsed) && parsed.length !== (window._lastAdminChatCount || 0)) {
+            window._lastAdminChatCount = parsed.length;
+            renderActiveAdminConversation();
+            renderAdminChatUserItems(getAdminAllChatUsers());
+          }
+        }
+      } catch (e) {}
+    }, 1200);
   }
 }
 
@@ -768,9 +824,19 @@ function selectAdminChatUser(email) {
 }
 
 function renderActiveAdminConversation() {
-  const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
+  const allUsers = getAdminAllChatUsers();
   const cleanSelected = (selectedCustomerEmail || '').toLowerCase().trim();
-  const buyer = buyers.find(b => (b.email || '').toLowerCase().trim() === cleanSelected) || (buyers.length > 0 ? buyers[0] : null);
+  let buyer = allUsers.find(u => (u.email || '').toLowerCase().trim() === cleanSelected);
+
+  if (!buyer) {
+    const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
+    buyer = buyers.find(b => (b.email || '').toLowerCase().trim() === cleanSelected);
+  }
+
+  if (!buyer && allUsers.length > 0) {
+    buyer = allUsers[0];
+    selectedCustomerEmail = buyer.email;
+  }
 
   if (!buyer) return;
 
@@ -780,7 +846,7 @@ function renderActiveAdminConversation() {
 
   if (avatarEl) avatarEl.textContent = (buyer.name || 'C').charAt(0).toUpperCase();
   if (nameEl) nameEl.textContent = buyer.name;
-  if (emailEl) emailEl.textContent = `${buyer.email} • ${buyer.mobile || 'Registered Customer'}`;
+  if (emailEl) emailEl.textContent = `${buyer.email}${buyer.mobile ? ' • ' + buyer.mobile : ''}`;
 
   let history = [];
   const cleanEmail = (buyer.email || '').toLowerCase().trim();
@@ -792,8 +858,9 @@ function renderActiveAdminConversation() {
       const initial = [
         {
           sender: 'seller',
-          text: `Hi ${buyer.name.split(' ')[0]}! Welcome to Craft & Wrapped Haven 🌸 How can we help you today?`,
-          time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' })
+          text: `Hi ${(buyer.name || '').split(' ')[0]}! Welcome to Craft & Wrapped Haven 🌸 How can we help you today?`,
+          time: new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' }),
+          timestamp: Date.now()
         }
       ];
       localStorage.setItem('cwh_chat_history_' + cleanEmail, JSON.stringify(initial));
@@ -845,12 +912,15 @@ function handleAdminChatSend() {
     if (data) history = JSON.parse(data);
   } catch (e) {}
 
+  if (!Array.isArray(history)) history = [];
+
   const nowTime = new Date().toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit' });
 
   history.push({
     sender: 'seller',
     text: text,
-    time: nowTime
+    time: nowTime,
+    timestamp: Date.now()
   });
 
   localStorage.setItem('cwh_chat_history_' + cleanEmail, JSON.stringify(history));
