@@ -717,6 +717,7 @@ function cancelCustomerOrder(orderId, reason = "Customer requested cancellation"
 
 const BUYER_STORAGE_KEY = 'cwh_active_buyer';
 const BUYERS_DB_KEY = 'cwh_registered_buyers';
+const BANNED_EMAILS_KEY = 'cwh_banned_emails';
 const CHAT_STORAGE_PREFIX = 'cwh_chat_history_';
 
 const DEFAULT_DEMO_BUYERS = [
@@ -725,16 +726,151 @@ const DEFAULT_DEMO_BUYERS = [
     email: 'maria@gmail.com',
     mobile: '09171234567',
     password: 'password123',
-    registeredAt: '2026-08-01T10:00:00Z'
+    registeredAt: '2026-08-01T10:00:00Z',
+    isBanned: false
   },
   {
     name: 'Juan Dela Cruz',
     email: 'juan@gmail.com',
     mobile: '09189876543',
     password: 'password123',
-    registeredAt: '2026-08-10T14:30:00Z'
+    registeredAt: '2026-08-10T14:30:00Z',
+    isBanned: false
   }
 ];
+
+function getBannedEmails() {
+  try {
+    const data = localStorage.getItem(BANNED_EMAILS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveBannedEmails(bannedList) {
+  try {
+    localStorage.setItem(BANNED_EMAILS_KEY, JSON.stringify(bannedList));
+  } catch (e) {
+    console.error("Error saving banned emails:", e);
+  }
+}
+
+function isEmailBanned(email) {
+  if (!email) return false;
+  const cleanEmail = email.trim().toLowerCase();
+  const bannedList = getBannedEmails();
+  if (bannedList.some(item => (typeof item === 'string' ? item.toLowerCase() : (item.email || '').toLowerCase()) === cleanEmail)) {
+    return true;
+  }
+  const buyers = getRegisteredBuyers();
+  const foundBuyer = buyers.find(b => (b.email || '').trim().toLowerCase() === cleanEmail);
+  return !!(foundBuyer && foundBuyer.isBanned);
+}
+
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function getCustomerBanReason(email) {
+  if (!email) return 'Deactivated by store owner';
+  const cleanEmail = email.trim().toLowerCase();
+
+  // 1. Check registered buyers first
+  const buyers = getRegisteredBuyers();
+  const foundBuyer = buyers.find(b => (b.email || '').trim().toLowerCase() === cleanEmail);
+  if (foundBuyer && foundBuyer.banReason) {
+    return foundBuyer.banReason;
+  }
+
+  // 2. Check banned list
+  const bannedList = getBannedEmails();
+  const foundBanned = bannedList.find(item => (typeof item === 'string' ? item.toLowerCase() : (item.email || '').toLowerCase()) === cleanEmail);
+  if (foundBanned && typeof foundBanned === 'object' && foundBanned.reason) {
+    return foundBanned.reason;
+  }
+
+  return 'Deactivated by store owner';
+}
+window.escapeHtml = escapeHtml;
+window.getCustomerBanReason = getCustomerBanReason;
+
+function banCustomerEmail(email, reason = 'Deactivated by store owner') {
+  if (!email) return false;
+  const cleanEmail = email.trim().toLowerCase();
+
+  const bannedList = getBannedEmails();
+  const existingIdx = bannedList.findIndex(item => (typeof item === 'string' ? item.toLowerCase() : (item.email || '').toLowerCase()) === cleanEmail);
+  if (existingIdx >= 0) {
+    bannedList[existingIdx] = {
+      email: cleanEmail,
+      reason: reason,
+      bannedAt: new Date().toISOString()
+    };
+  } else {
+    bannedList.push({
+      email: cleanEmail,
+      reason: reason,
+      bannedAt: new Date().toISOString()
+    });
+  }
+  saveBannedEmails(bannedList);
+
+  const buyers = getRegisteredBuyers();
+  const buyerIdx = buyers.findIndex(b => (b.email || '').trim().toLowerCase() === cleanEmail);
+  if (buyerIdx >= 0) {
+    buyers[buyerIdx].isBanned = true;
+    buyers[buyerIdx].banReason = reason;
+    buyers[buyerIdx].bannedAt = new Date().toISOString();
+    saveRegisteredBuyers(buyers);
+  }
+
+  const activeBuyer = getActiveBuyer();
+  if (activeBuyer && (activeBuyer.email || '').trim().toLowerCase() === cleanEmail) {
+    logoutBuyer();
+  }
+  return true;
+}
+
+function unbanCustomerEmail(email) {
+  if (!email) return false;
+  const cleanEmail = email.trim().toLowerCase();
+
+  let bannedList = getBannedEmails();
+  bannedList = bannedList.filter(item => (typeof item === 'string' ? item.toLowerCase() : (item.email || '').toLowerCase()) !== cleanEmail);
+  saveBannedEmails(bannedList);
+
+  const buyers = getRegisteredBuyers();
+  const buyerIdx = buyers.findIndex(b => (b.email || '').trim().toLowerCase() === cleanEmail);
+  if (buyerIdx >= 0) {
+    buyers[buyerIdx].isBanned = false;
+    delete buyers[buyerIdx].banReason;
+    delete buyers[buyerIdx].bannedAt;
+    saveRegisteredBuyers(buyers);
+  }
+  return true;
+}
+
+function deleteCustomerUser(email) {
+  if (!email) return false;
+  const cleanEmail = email.trim().toLowerCase();
+
+  let buyers = getRegisteredBuyers();
+  buyers = buyers.filter(b => (b.email || '').trim().toLowerCase() !== cleanEmail);
+  saveRegisteredBuyers(buyers);
+
+  const activeBuyer = getActiveBuyer();
+  if (activeBuyer && (activeBuyer.email || '').trim().toLowerCase() === cleanEmail) {
+    logoutBuyer();
+  }
+  return true;
+}
 
 function getRegisteredBuyers() {
   try {
@@ -756,7 +892,13 @@ function saveRegisteredBuyers(buyers) {
 function getActiveBuyer() {
   try {
     const data = localStorage.getItem(BUYER_STORAGE_KEY);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+    const buyer = JSON.parse(data);
+    if (buyer && buyer.email && isEmailBanned(buyer.email)) {
+      localStorage.removeItem(BUYER_STORAGE_KEY);
+      return null;
+    }
+    return buyer;
   } catch (e) {
     return null;
   }
@@ -1000,6 +1142,7 @@ function openBuyerLoginModal() {
             <span class="input-icon"><i class="bi bi-envelope"></i></span>
             <input type="email" id="buyer-login-email" placeholder="maria@gmail.com" value="maria@gmail.com" required autocomplete="email">
           </div>
+          <div id="buyer-login-email-indicator" class="small mt-1" style="font-size: 0.72rem; text-align: left;"></div>
         </div>
 
         <!-- Password -->
@@ -1046,6 +1189,37 @@ function openBuyerLoginModal() {
   modal.style.display = 'flex';
   modal.classList.add('active');
   document.body.style.overflow = 'hidden';
+  setupLoginLiveValidation();
+}
+
+function setupLoginLiveValidation() {
+  const emailInput = document.getElementById('buyer-login-email');
+  const indicator = document.getElementById('buyer-login-email-indicator');
+  if (!emailInput || !indicator) return;
+
+  const validate = () => {
+    const val = emailInput.value.trim().toLowerCase();
+    const box = emailInput.closest('.auth-field-box');
+    if (!val) {
+      indicator.innerHTML = '';
+      emailInput.classList.remove('is-invalid');
+      if (box) box.classList.remove('is-invalid');
+      return;
+    }
+    if (typeof isEmailBanned === 'function' && isEmailBanned(val)) {
+      indicator.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-slash-circle-fill me-1"></i> This account/email has been banned or deactivated by the admin.</span>`;
+      emailInput.classList.add('is-invalid');
+      if (box) box.classList.add('is-invalid');
+    } else {
+      indicator.innerHTML = '';
+      emailInput.classList.remove('is-invalid');
+      if (box) box.classList.remove('is-invalid');
+    }
+  };
+
+  emailInput.addEventListener('input', validate);
+  emailInput.addEventListener('change', validate);
+  validate();
 }
 
 function handleBuyerLoginSubmit() {
@@ -1060,6 +1234,35 @@ function handleBuyerLoginSubmit() {
       confirmButtonText: 'OK',
       confirmButtonColor: '#e8839b',
       width: '320px',
+      customClass: { popup: 'compact-swal-popup' }
+    });
+    return;
+  }
+
+  if (typeof isEmailBanned === 'function' && isEmailBanned(email)) {
+    const indicator = document.getElementById('buyer-login-email-indicator');
+    const emailInput = document.getElementById('buyer-login-email');
+    const box = emailInput ? emailInput.closest('.auth-field-box') : null;
+    if (indicator) {
+      indicator.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-slash-circle-fill me-1"></i> This account/email has been banned or deactivated by the admin.</span>`;
+    }
+    if (emailInput) emailInput.classList.add('is-invalid');
+    if (box) box.classList.add('is-invalid');
+
+    const banReason = (typeof getCustomerBanReason === 'function' ? getCustomerBanReason(email) : null) || 'Deactivated by store owner';
+
+    Swal.fire({
+      icon: 'error',
+      title: 'Account Banned',
+      html: `
+        <p class="mb-2" style="font-size: 0.92rem; color: #495057; line-height: 1.45;">This email account has been deactivated or banned by the administrator. You cannot log in with this account.</p>
+        <div style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; word-break: break-word; text-align: center;">
+          Reason: ${escapeHtml(banReason)}
+        </div>
+      `,
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#e8839b',
+      width: '360px',
       customClass: { popup: 'compact-swal-popup' }
     });
     return;
@@ -1288,15 +1491,29 @@ function setupRegisterLiveValidation() {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
       const isExisting = buyers.some(b => (b.email || '').toLowerCase() === val);
+      const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(val);
+      const box = emailInput.closest('.auth-field-box');
 
       if (!val) {
         emailInd.innerHTML = '';
+        emailInput.classList.remove('is-invalid');
+        if (box) box.classList.remove('is-invalid');
+      } else if (isBanned) {
+        emailInd.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-slash-circle-fill me-1"></i> This email address is banned and cannot be used to register.</span>`;
+        emailInput.classList.add('is-invalid');
+        if (box) box.classList.add('is-invalid');
       } else if (!emailRegex.test(val)) {
         emailInd.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-1"></i> Invalid email format</span>`;
+        emailInput.classList.remove('is-invalid');
+        if (box) box.classList.remove('is-invalid');
       } else if (isExisting) {
         emailInd.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-x-circle me-1"></i> Already registered! Please log in instead.</span>`;
+        emailInput.classList.remove('is-invalid');
+        if (box) box.classList.remove('is-invalid');
       } else {
         emailInd.innerHTML = '';
+        emailInput.classList.remove('is-invalid');
+        if (box) box.classList.remove('is-invalid');
       }
     });
   }
@@ -1369,6 +1586,19 @@ function handleBuyerRegisterSubmit() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     showRegisterSweetAlert("Please enter a valid email address.");
+    return;
+  }
+
+  if (typeof isEmailBanned === 'function' && isEmailBanned(email)) {
+    const emailInd = document.getElementById('reg-email-indicator');
+    const emailInput = document.getElementById('reg-email');
+    const box = emailInput ? emailInput.closest('.auth-field-box') : null;
+    if (emailInd) {
+      emailInd.innerHTML = `<span class="text-danger fw-semibold"><i class="bi bi-slash-circle-fill me-1"></i> This email address is banned and cannot be used to register.</span>`;
+    }
+    if (emailInput) emailInput.classList.add('is-invalid');
+    if (box) box.classList.add('is-invalid');
+    showRegisterSweetAlert("This email address has been banned by the administrator and cannot be registered.", "Registration Blocked", "error");
     return;
   }
 
@@ -1959,5 +2189,34 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       openSellerChat();
     }, 450);
+  }
+});
+
+window.addEventListener('storage', (e) => {
+  if (e.key === BANNED_EMAILS_KEY || e.key === BUYERS_DB_KEY) {
+    const raw = localStorage.getItem(BUYER_STORAGE_KEY);
+    if (raw) {
+      try {
+        const buyer = JSON.parse(raw);
+        if (buyer && buyer.email && isEmailBanned(buyer.email)) {
+          const banReason = (typeof getCustomerBanReason === 'function' ? getCustomerBanReason(buyer.email) : null) || 'Deactivated by store owner';
+          logoutBuyer();
+          if (typeof Swal !== 'undefined') {
+            Swal.fire({
+              icon: 'error',
+              title: 'Account Banned',
+              html: `
+                <p class="mb-2" style="font-size: 0.92rem; color: #495057; line-height: 1.45;">This email account has been deactivated or banned by the administrator. You cannot log in with this account.</p>
+                <div style="background-color: #fee2e2; border: 1px solid #fca5a5; color: #991b1b; padding: 10px 14px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; word-break: break-word; text-align: center;">
+                  Reason: ${escapeHtml(banReason)}
+                </div>
+              `,
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#e8839b'
+            });
+          }
+        }
+      } catch (err) {}
+    }
   }
 });

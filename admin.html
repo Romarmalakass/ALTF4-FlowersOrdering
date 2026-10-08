@@ -260,6 +260,224 @@
       padding: 0.35rem 0.85rem;
     }
 
+    /* CUSTOMER MANAGEMENT PREMIUM DESIGN */
+    .cust-stat-card {
+      background: #ffffff;
+      border: 1px solid #f2e2e8;
+      border-radius: 16px;
+      padding: 1.25rem 1.4rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(122, 34, 54, 0.03);
+    }
+    .cust-stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(232, 131, 155, 0.12);
+      border-color: #e8839b;
+    }
+    .cust-stat-card .cust-stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+    .cust-stat-card.total .cust-stat-icon { background: #fdf0f4; color: #7a2236; }
+    .cust-stat-card.active .cust-stat-icon { background: #ecfdf5; color: #059669; }
+    .cust-stat-card.banned .cust-stat-icon { background: #fef2f2; color: #dc2626; }
+
+    .cust-stat-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: #8c7580;
+      margin-bottom: 0.25rem;
+    }
+    .cust-stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #2b1820;
+      line-height: 1.1;
+    }
+
+    .customer-card-premium {
+      background: #ffffff;
+      border: 1px solid #f0e2e7;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.95rem;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 2px 6px rgba(122, 34, 54, 0.02);
+    }
+    .customer-card-premium:hover {
+      border-color: #e8839b;
+      box-shadow: 0 8px 24px rgba(232, 131, 155, 0.12);
+      transform: translateY(-1px);
+    }
+    .customer-card-premium.banned-account {
+      background: #fffafa;
+      border-color: #f7d4dc;
+    }
+    .customer-card-premium.active-account {
+      /* Clean card styling without colored border lines */
+    }
+
+    .customer-avatar-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fdf0f4 0%, #fae1e9 100%);
+      color: #7a2236;
+      font-weight: 700;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #f2cfdc;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(122, 34, 54, 0.06);
+    }
+    .customer-avatar-circle.banned {
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+
+    .customer-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.22rem 0.65rem;
+      border-radius: 20px;
+      letter-spacing: 0.2px;
+    }
+    .customer-status-badge .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .customer-status-badge.badge-active {
+      background-color: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .customer-status-badge.badge-active .status-dot {
+      background-color: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+    }
+    .customer-status-badge.badge-banned {
+      background-color: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .customer-status-badge.badge-banned .status-dot {
+      background-color: #ef4444;
+      box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
+
+    .customer-orders-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.22rem 0.65rem;
+      border-radius: 20px;
+      background-color: #fff1f5;
+      color: #9e2a4b;
+      border: 1px solid #fcd2df;
+    }
+
+    .customer-ban-notice {
+      margin-top: 0.6rem;
+      padding: 0.45rem 0.85rem;
+      background: #fef2f2;
+      border: 1px solid #fee2e2;
+      border-radius: 10px;
+      color: #991b1b;
+      font-size: 0.78rem;
+    }
+
+    /* PREMIUM ACTION BUTTONS */
+    .btn-customer-view {
+      background: #ffffff;
+      color: #7a2236;
+      border: 1.5px solid #f2cfdc;
+      border-radius: 50px;
+      padding: 0.48rem 1.25rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(122, 34, 54, 0.05);
+    }
+    .btn-customer-view:hover {
+      background: #7a2236;
+      color: #ffffff;
+      border-color: #7a2236;
+      box-shadow: 0 4px 14px rgba(122, 34, 54, 0.22);
+      transform: translateY(-1px);
+    }
+
+    .btn-customer-ban {
+      background: #ffffff;
+      color: #dc2626;
+      border: 1.5px solid #fca5a5;
+      border-radius: 50px;
+      padding: 0.48rem 1.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-width: 135px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(220, 38, 38, 0.06);
+    }
+    .btn-customer-ban:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+      box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .btn-customer-unban {
+      background: #ffffff;
+      color: #059669;
+      border: 1.5px solid #a7f3d0;
+      border-radius: 50px;
+      padding: 0.48rem 1.35rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      min-width: 135px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.06);
+    }
+    .btn-customer-unban:hover {
+      background: #059669;
+      color: #ffffff;
+      border-color: #059669;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+      transform: translateY(-1px);
+    }
+
     .admin-messenger-container {
       background: #ffffff;
       border: 1px solid #f0e2e7;
@@ -638,6 +856,14 @@
             </div>
             <span class="badge bg-pink-soft text-dark-rose rounded-pill" id="badge-nav-chats">0</span>
           </a>
+
+          <a class="admin-nav-item" id="nav-customers-btn" onclick="switchAdminView('customers')">
+            <div>
+              <span class="admin-nav-icon"><i class="bi bi-people-fill"></i></span>
+              <span>Customers</span>
+            </div>
+            <span class="badge bg-pink-soft text-dark-rose rounded-pill" id="badge-nav-customers">0</span>
+          </a>
         </nav>
       </div>
 
@@ -858,6 +1084,86 @@
 
         <div id="admin-flowers-grid" class="row g-3">
           <!-- Flower cards rendered here by admin.js -->
+        </div>
+      </div>
+
+      <!-- CUSTOMERS VIEW SECTION -->
+      <div id="customers-view-section" style="display: none;">
+        <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <h2 class="h5 fw-bold text-dark mb-0">Customer Accounts Registry</h2>
+              <span class="badge bg-pink-soft text-dark-rose rounded-pill px-2.5 py-1 font-monospace" style="font-size: 0.72rem;">Permanent Registry</span>
+            </div>
+            <p class="text-muted small mb-0">Saved list of registered customer accounts, email records, and access status.</p>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-md-4">
+            <div class="cust-stat-card total d-flex align-items-center justify-content-between">
+              <div>
+                <div class="cust-stat-label">TOTAL REGISTERED</div>
+                <div class="cust-stat-value text-dark" id="stat-total-customers">0</div>
+                <div class="text-muted small" style="font-size: 0.74rem;">Saved customer accounts</div>
+              </div>
+              <div class="cust-stat-icon">
+                <i class="bi bi-people-fill"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="cust-stat-card active d-flex align-items-center justify-content-between">
+              <div>
+                <div class="cust-stat-label">ACTIVE ACCOUNTS</div>
+                <div class="cust-stat-value text-success" id="stat-active-customers">0</div>
+                <div class="text-muted small" style="font-size: 0.74rem;">Can log in & order</div>
+              </div>
+              <div class="cust-stat-icon">
+                <i class="bi bi-shield-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="cust-stat-card banned d-flex align-items-center justify-content-between">
+              <div>
+                <div class="cust-stat-label">BANNED / RESTRICTED</div>
+                <div class="cust-stat-value text-danger" id="stat-banned-customers">0</div>
+                <div class="text-muted small" style="font-size: 0.74rem;">Restricted from ordering</div>
+              </div>
+              <div class="cust-stat-icon">
+                <i class="bi bi-slash-circle-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card border-0 rounded-4 mb-3 p-2.5 shadow-sm" style="background: #ffffff; border: 1px solid #f0e2e7 !important;">
+          <div class="row align-items-center g-2">
+            <div class="col-12 col-md-5">
+              <div class="input-group input-group-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted ps-3"><i class="bi bi-search text-pink"></i></span>
+                <input type="text" class="form-control bg-white border-start-0 ps-2 py-2" id="admin-customer-search" placeholder="Search customer name, email, phone...">
+              </div>
+            </div>
+            <div class="col-12 col-md-7">
+              <ul class="nav nav-pills gap-1.5 justify-content-md-end" id="customer-filter-tabs">
+                <li class="nav-item">
+                  <button class="nav-link active rounded-pill px-3 py-1.5" data-status="ALL">All Customers</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill px-3 py-1.5" data-status="ACTIVE"><i class="bi bi-check-circle-fill text-success me-1"></i> Active</button>
+                </li>
+                <li class="nav-item">
+                  <button class="nav-link rounded-pill px-3 py-1.5" data-status="BANNED"><i class="bi bi-slash-circle-fill text-danger me-1"></i> Banned</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="customers-list-container">
+          <!-- Rendered by admin.js -->
         </div>
       </div>
 

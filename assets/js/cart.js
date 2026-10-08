@@ -378,7 +378,8 @@ function renderPlacedOrders() {
       statusBadgeHTML = `<span class="badge badge-status-cancelled px-2.5 py-1 rounded-pill fs-8 fw-semibold">Cancelled</span>`;
     }
 
-    const canCancel = !isCancelled && !isDelivered;
+    // Pwede lang i-cancel kapag hindi pa na-aaccept ni admin (Pending / Order Placed). Kapag In Crafting na (accepted na ni admin), bawal na i-cancel!
+    const canCancel = isOrderPlaced && !isCancelled;
 
     return `
       <div class="order-tracker-card mb-3" id="order-card-${order.orderId}">
@@ -447,6 +448,28 @@ function renderPlacedOrders() {
 }
 
 function handleCustomerCancelOrder(orderId) {
+  const orders = getOrders();
+  const order = orders.find(o => o.orderId === orderId);
+
+  // Strict check: Bawal na i-cancel kung na-accept na ni admin
+  const status = order ? order.status : '';
+  const isAccepted = status === 'In Crafting' || status === 'Confirmed' || status === 'Out for Delivery' || status === 'Delivered';
+  if (isAccepted) {
+    if (typeof Swal !== 'undefined') {
+      Swal.fire({
+        icon: 'error',
+        title: 'Cannot Cancel Order',
+        text: 'This order has already been accepted and is being prepared by the florist. Direct cancellation is no longer allowed.',
+        confirmButtonColor: '#e8839b',
+        customClass: { popup: 'compact-swal-popup' },
+        width: '340px'
+      });
+    } else {
+      alert('This order has already been accepted by admin and cannot be cancelled.');
+    }
+    return;
+  }
+
   if (typeof Swal !== 'undefined') {
     Swal.fire({
       title: 'Cancel Order?',
@@ -478,7 +501,7 @@ function handleCustomerCancelOrder(orderId) {
     });
   } else {
     if (confirm(`Cancel Order #${orderId}?`)) {
-      cancelCustomerOrder(orderId);
+      cancelCustomerOrder(orderId, 'Cancelled by customer.');
       renderPlacedOrders();
       updateCartAndOrderCounts();
     }

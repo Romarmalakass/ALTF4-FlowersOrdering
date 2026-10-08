@@ -5,6 +5,8 @@ let selectedCustomerEmail = null;
 let chatSearchQuery = '';
 let flowerCategoryFilter = 'ALL';
 let flowerSearchQuery = '';
+let customerSearchQuery = '';
+let customerFilter = 'ALL';
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -74,9 +76,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const customerSearchInput = document.getElementById('admin-customer-search');
+  if (customerSearchInput) {
+    customerSearchInput.addEventListener('input', (e) => {
+      customerSearchQuery = e.target.value.toLowerCase().trim();
+      renderAdminCustomers();
+    });
+  }
+
+  const customerTabs = document.querySelectorAll('#customer-filter-tabs .nav-link');
+  customerTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      customerTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      customerFilter = tab.getAttribute('data-status');
+      renderAdminCustomers();
+    });
+  });
+
   renderAdminDashboard();
   initAdminChatList();
   renderAdminFlowers();
+  renderAdminCustomers();
   updateSidebarBadges();
 
   if (sessionStorage.getItem('cwh_admin_just_logged_in') === 'true') {
@@ -96,13 +117,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Keyboard shortcut: Escape key clears active search filter
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && (searchQuery || flowerSearchQuery)) {
+    if (e.key === 'Escape' && (searchQuery || flowerSearchQuery || customerSearchQuery)) {
       searchQuery = '';
       flowerSearchQuery = '';
+      customerSearchQuery = '';
       if (searchInput) searchInput.value = '';
       if (flowerSearchInput) flowerSearchInput.value = '';
+      if (customerSearchInput) customerSearchInput.value = '';
       renderAdminDashboard();
       renderAdminFlowers();
+      renderAdminCustomers();
     }
   });
 });
@@ -113,17 +137,21 @@ function switchAdminView(view) {
   const ordersSec = document.getElementById('orders-view-section');
   const chatSec = document.getElementById('chat-view-section');
   const productsSec = document.getElementById('products-view-section');
+  const customersSec = document.getElementById('customers-view-section');
   const navOrdersBtn = document.getElementById('nav-orders-btn');
   const navChatBtn = document.getElementById('nav-chat-btn');
   const navProductsBtn = document.getElementById('nav-products-btn');
+  const navCustomersBtn = document.getElementById('nav-customers-btn');
 
   if (ordersSec) ordersSec.style.display = view === 'orders' ? 'block' : 'none';
   if (chatSec) chatSec.style.display = view === 'chat' ? 'block' : 'none';
   if (productsSec) productsSec.style.display = view === 'products' ? 'block' : 'none';
+  if (customersSec) customersSec.style.display = view === 'customers' ? 'block' : 'none';
 
   if (navOrdersBtn) navOrdersBtn.classList.toggle('active', view === 'orders');
   if (navChatBtn) navChatBtn.classList.toggle('active', view === 'chat');
   if (navProductsBtn) navProductsBtn.classList.toggle('active', view === 'products');
+  if (navCustomersBtn) navCustomersBtn.classList.toggle('active', view === 'customers');
 
   if (view === 'orders') {
     renderAdminDashboard();
@@ -131,6 +159,8 @@ function switchAdminView(view) {
     initAdminChatList();
   } else if (view === 'products') {
     renderAdminFlowers();
+  } else if (view === 'customers') {
+    renderAdminCustomers();
   }
 
   updateSidebarBadges();
@@ -147,6 +177,11 @@ function updateSidebarBadges() {
   const badgeChats = document.getElementById('badge-nav-chats');
   if (badgeChats) {
     badgeChats.textContent = buyers.length;
+  }
+
+  const badgeCustomers = document.getElementById('badge-nav-customers');
+  if (badgeCustomers) {
+    badgeCustomers.textContent = buyers.length;
   }
 
   const catalog = typeof getStoreCatalog === 'function' ? getStoreCatalog() : [];
@@ -1308,4 +1343,351 @@ function promptResetCatalog() {
       });
     }
   });
+}
+
+/* ========================================================
+   CUSTOMER ACCOUNTS & USER MANAGEMENT
+   ======================================================== */
+
+function renderAdminCustomers() {
+  const container = document.getElementById('customers-list-container');
+  if (!container) return;
+
+  const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
+  const orders = getOrders();
+
+  const totalCount = buyers.length;
+  const bannedCount = buyers.filter(b => typeof isEmailBanned === 'function' && isEmailBanned(b.email)).length;
+  const activeCount = totalCount - bannedCount;
+
+  const statTotalEl = document.getElementById('stat-total-customers');
+  const statActiveEl = document.getElementById('stat-active-customers');
+  const statBannedEl = document.getElementById('stat-banned-customers');
+
+  if (statTotalEl) statTotalEl.textContent = totalCount;
+  if (statActiveEl) statActiveEl.textContent = activeCount;
+  if (statBannedEl) statBannedEl.textContent = bannedCount;
+
+  let filtered = buyers.filter(buyer => {
+    const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(buyer.email);
+    if (customerFilter === 'ACTIVE' && isBanned) return false;
+    if (customerFilter === 'BANNED' && !isBanned) return false;
+
+    if (customerSearchQuery) {
+      const q = customerSearchQuery;
+      const matchName = (buyer.name || '').toLowerCase().includes(q);
+      const matchEmail = (buyer.email || '').toLowerCase().includes(q);
+      const matchPhone = (buyer.mobile || '').toLowerCase().includes(q);
+      const matchAddr = (buyer.address || '').toLowerCase().includes(q);
+      if (!matchName && !matchEmail && !matchPhone && !matchAddr) return false;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="text-center py-5 bg-light rounded-4 border p-4 my-2">
+        <i class="bi bi-people display-4 text-muted mb-2 d-block"></i>
+        <h6 class="fw-bold text-dark">No Customer Accounts Found</h6>
+        <p class="text-muted small mb-0">No registered customers match your current filter or search criteria.</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(buyer => {
+    const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(buyer.email);
+    const initial = (buyer.name || 'C').charAt(0).toUpperCase();
+    const cleanEmail = (buyer.email || '').toLowerCase().trim();
+
+    const userOrders = orders.filter(o => {
+      const oEmail = (o.customerEmail || '').toLowerCase().trim();
+      const oName = (o.customerName || '').toLowerCase().trim();
+      return (cleanEmail && oEmail === cleanEmail) || (oName === (buyer.name || '').toLowerCase().trim());
+    });
+
+    const regDate = buyer.registeredAt ? new Date(buyer.registeredAt).toLocaleDateString('en-PH', {
+      month: 'short', day: 'numeric', year: 'numeric'
+    }) : 'Aug 2026';
+
+    return `
+      <div class="customer-card-premium ${isBanned ? 'banned-account' : 'active-account'}">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+          <!-- Left: Customer Details (Name & Status) -->
+          <div class="d-flex align-items-center gap-3">
+            <div class="customer-avatar-circle ${isBanned ? 'banned' : ''}">
+              ${initial}
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="fw-bold text-dark fs-6" style="letter-spacing: -0.2px;">${buyer.name}</span>
+                ${isBanned ? `
+                  <span class="customer-status-badge badge-banned">
+                    <span class="status-dot"></span> Banned
+                  </span>
+                ` : `
+                  <span class="customer-status-badge badge-active">
+                    <span class="status-dot"></span> Active
+                  </span>
+                `}
+                <span class="customer-orders-pill">
+                  <i class="bi bi-bag-check me-1"></i> ${userOrders.length} ${userOrders.length === 1 ? 'Order' : 'Orders'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Ban / Reactivate Action Button + View Info Button at the end -->
+          <div class="ms-auto d-flex align-items-center gap-2 flex-wrap">
+            ${isBanned ? `
+              <button class="btn-customer-unban" onclick="handleToggleBanCustomer('${cleanEmail}')">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span>Reactivate</span>
+              </button>
+            ` : `
+              <button class="btn-customer-ban" onclick="handleToggleBanCustomer('${cleanEmail}')">
+                <i class="bi bi-slash-circle"></i>
+                <span>Ban Customer</span>
+              </button>
+            `}
+            <button class="btn-customer-view" onclick="viewCustomerDetails('${cleanEmail}')">
+              <i class="bi bi-eye"></i>
+              <span>View</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function viewCustomerDetails(email) {
+  if (!email) return;
+  const cleanEmail = email.toLowerCase().trim();
+  const buyers = typeof getRegisteredBuyers === 'function' ? getRegisteredBuyers() : [];
+  let buyer = buyers.find(b => (b.email || '').toLowerCase().trim() === cleanEmail);
+
+  if (!buyer) {
+    const orders = typeof getOrders === 'function' ? getOrders() : [];
+    const matchingOrder = orders.find(o => (o.customerEmail || '').toLowerCase().trim() === cleanEmail);
+    if (matchingOrder) {
+      buyer = {
+        name: matchingOrder.customerName || 'Customer',
+        email: matchingOrder.customerEmail,
+        mobile: matchingOrder.customerPhone || 'None provided',
+        address: matchingOrder.customerAddress || 'None provided',
+        registeredAt: matchingOrder.createdAt || null
+      };
+    } else {
+      buyer = {
+        name: 'Customer Account',
+        email: cleanEmail,
+        mobile: 'None provided',
+        address: 'None provided',
+        registeredAt: null
+      };
+    }
+  }
+
+  const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(cleanEmail);
+  const banReason = (typeof getCustomerBanReason === 'function' ? getCustomerBanReason(cleanEmail) : null) || buyer.banReason || 'Deactivated by store owner';
+
+  const orders = typeof getOrders === 'function' ? getOrders() : [];
+  const userOrders = orders.filter(o => {
+    const oEmail = (o.customerEmail || '').toLowerCase().trim();
+    const oName = (o.customerName || '').toLowerCase().trim();
+    return (cleanEmail && oEmail === cleanEmail) || (oName === (buyer.name || '').toLowerCase().trim());
+  });
+
+  const initial = (buyer.name || 'C').charAt(0).toUpperCase();
+
+  const formattedDate = buyer.registeredAt ? new Date(buyer.registeredAt).toLocaleDateString('en-PH', {
+    month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+  }) : 'Aug 1, 2026';
+
+  const escapeHtmlSafe = (str) => {
+    if (typeof escapeHtml === 'function') return escapeHtml(str);
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  };
+
+  Swal.fire({
+    title: `<div class="d-flex align-items-center gap-2 justify-content-center pt-2">
+      <div style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #7a2236 0%, #e8839b 100%); color: #fff; font-size: 1.05rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center;">${initial}</div>
+      <span style="font-size: 1.15rem; font-weight: 700; color: #2b1820;">Customer Registration Details</span>
+    </div>`,
+    html: `
+      <div class="text-start font-sans" style="font-size: 0.88rem; color: #374151;">
+        <!-- Status Banner -->
+        <div class="d-flex align-items-center justify-content-between p-2.5 px-3 rounded-3 mb-3" style="background: ${isBanned ? '#fff1f2' : '#f0fdf4'}; border: 1px solid ${isBanned ? '#fecdd3' : '#bbf7d0'};">
+          <div>
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; color: ${isBanned ? '#be123c' : '#15803d'};">Account Status</div>
+            <div class="fw-bold" style="color: ${isBanned ? '#991b1b' : '#166534'}; font-size: 0.92rem;">
+              ${isBanned ? '<i class="bi bi-slash-circle-fill me-1"></i> Banned / Restricted' : '<i class="bi bi-check-circle-fill me-1"></i> Active Customer Account'}
+            </div>
+          </div>
+          <span class="customer-orders-pill" style="font-size: 0.78rem;">
+            <i class="bi bi-bag-check me-1"></i> ${userOrders.length} ${userOrders.length === 1 ? 'Order' : 'Orders'}
+          </span>
+        </div>
+
+        <!-- Info Grid -->
+        <div style="display: flex; flex-direction: column; gap: 9px;">
+          <!-- Full Name -->
+          <div class="p-2.5 px-3 rounded-3" style="background: #ffffff; border: 1px solid #f0e2e7;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #9c6e7a; margin-bottom: 2px;">
+              <i class="bi bi-person-fill text-pink me-1"></i> Full Name
+            </div>
+            <div class="fw-bold text-dark" style="font-size: 0.95rem;">
+              ${escapeHtmlSafe(buyer.name)}
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="p-2.5 px-3 rounded-3" style="background: #ffffff; border: 1px solid #f0e2e7;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #9c6e7a; margin-bottom: 2px;">
+              <i class="bi bi-envelope-fill text-pink me-1"></i> Email Address
+            </div>
+            <div class="fw-semibold font-monospace text-dark" style="font-size: 0.9rem;">
+              ${escapeHtmlSafe(buyer.email)}
+            </div>
+          </div>
+
+          <!-- Contact Number -->
+          <div class="p-2.5 px-3 rounded-3" style="background: #ffffff; border: 1px solid #f0e2e7;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #9c6e7a; margin-bottom: 2px;">
+              <i class="bi bi-telephone-fill text-pink me-1"></i> Mobile Contact Number
+            </div>
+            <div class="fw-semibold text-dark" style="font-size: 0.9rem;">
+              ${escapeHtmlSafe(buyer.mobile || 'None provided')}
+            </div>
+          </div>
+
+          <!-- Address -->
+          <div class="p-2.5 px-3 rounded-3" style="background: #ffffff; border: 1px solid #f0e2e7;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #9c6e7a; margin-bottom: 2px;">
+              <i class="bi bi-geo-alt-fill text-pink me-1"></i> Delivery / Home Address
+            </div>
+            <div class="fw-semibold text-dark" style="font-size: 0.9rem; line-height: 1.4;">
+              ${escapeHtmlSafe(buyer.address || 'No address provided')}
+            </div>
+          </div>
+
+          <!-- Date Joined -->
+          <div class="p-2.5 px-3 rounded-3" style="background: #ffffff; border: 1px solid #f0e2e7;">
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #9c6e7a; margin-bottom: 2px;">
+              <i class="bi bi-calendar3 text-pink me-1"></i> Registration Timestamp
+            </div>
+            <div class="fw-semibold text-dark" style="font-size: 0.88rem;">
+              ${formattedDate}
+            </div>
+          </div>
+
+          ${isBanned ? `
+            <!-- Ban Reason if Banned -->
+            <div class="p-2.5 px-3 rounded-3" style="background: #fff5f5; border: 1px solid #fed7d7;">
+              <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #c53030; margin-bottom: 2px;">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> Reason for Ban
+              </div>
+              <div class="fw-semibold text-danger" style="font-size: 0.88rem;">
+                ${escapeHtmlSafe(banReason)}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `,
+    showConfirmButton: true,
+    confirmButtonText: 'Close',
+    confirmButtonColor: '#7a2236',
+    width: '460px',
+    customClass: { popup: 'compact-swal-popup' }
+  });
+}
+window.viewCustomerDetails = viewCustomerDetails;
+
+function handleToggleBanCustomer(email) {
+  const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(email);
+
+  if (!isBanned) {
+    Swal.fire({
+      title: 'Ban / Deactivate Customer?',
+      html: `
+        <div class="text-start font-sans" style="font-size: 0.88rem;">
+          <p class="text-muted mb-2">Are you sure you want to ban customer <strong>${email}</strong>? They will be blocked from logging in and registering.</p>
+          <div class="mb-2">
+            <label class="form-label small fw-semibold text-dark mb-1">Reason for ban:</label>
+            <input type="text" id="swal-ban-reason" class="form-control form-control-sm" placeholder="e.g. Repeated cancellation / bogus order" value="Deactivated by store owner" />
+          </div>
+        </div>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Ban Account',
+      cancelButtonText: 'Cancel',
+      customClass: { popup: 'compact-swal-popup' },
+      width: '400px'
+    }).then((res) => {
+      if (res.isConfirmed) {
+        const reason = document.getElementById('swal-ban-reason')?.value.trim() || 'Deactivated by store owner';
+        banCustomerEmail(email, reason);
+        renderAdminCustomers();
+        updateSidebarBadges();
+        Swal.fire({
+          icon: 'success',
+          title: 'Customer Banned',
+          text: `Account ${email} has been deactivated.`,
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: { popup: 'compact-swal-popup' },
+          width: '320px'
+        });
+      }
+    });
+  } else {
+    Swal.fire({
+      title: 'Reactivate Customer?',
+      text: `Do you want to unban ${email}? They will be able to log in and order again.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#22c55e',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, Reactivate',
+      cancelButtonText: 'Cancel',
+      customClass: { popup: 'compact-swal-popup' },
+      width: '380px'
+    }).then((res) => {
+      if (res.isConfirmed) {
+        unbanCustomerEmail(email);
+        renderAdminCustomers();
+        updateSidebarBadges();
+        Swal.fire({
+          icon: 'success',
+          title: 'Customer Reactivated',
+          text: `${email} is now active.`,
+          timer: 1500,
+          showConfirmButton: false,
+          customClass: { popup: 'compact-swal-popup' },
+          width: '320px'
+        });
+      }
+    });
+  }
+}
+
+function adminFilterOrdersByCustomer(query) {
+  const searchInput = document.getElementById('admin-order-search');
+  if (searchInput) searchInput.value = query;
+  searchQuery = (query || '').toLowerCase().trim();
+  switchAdminView('orders');
+}
+
+function adminOpenChatWithCustomer(email) {
+  selectedCustomerEmail = (email || '').toLowerCase().trim();
+  switchAdminView('chat');
+  const chatSearch = document.getElementById('admin-chat-search');
+  if (chatSearch) chatSearch.value = '';
+  initAdminChatList();
 }
