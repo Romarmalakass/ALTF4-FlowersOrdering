@@ -1,5 +1,5 @@
 let currentAdminView = 'orders';
-let currentFilter = 'ALL';
+let currentFilter = 'Order Placed';
 let searchQuery = '';
 let selectedCustomerEmail = null;
 let chatSearchQuery = '';
@@ -7,6 +7,26 @@ let flowerCategoryFilter = 'ALL';
 let flowerSearchQuery = '';
 let customerSearchQuery = '';
 let customerFilter = 'ALL';
+
+function setOrderFilterTab(status) {
+  let targetStatus = status;
+  if (status === 'Pending') targetStatus = 'Order Placed';
+  if (status === 'Confirmed') targetStatus = 'In Crafting';
+  if (status === 'Delivery' || status === 'Meet up / Pick up' || status === 'Pickup') targetStatus = 'Out for Delivery';
+  if (status === 'Completed') targetStatus = 'Delivered';
+
+  currentFilter = targetStatus;
+  const tabs = document.querySelectorAll('#order-filter-tabs .nav-link');
+  tabs.forEach(tab => {
+    if (tab.getAttribute('data-status') === targetStatus) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+  renderAdminDashboard();
+}
+window.setOrderFilterTab = setOrderFilterTab;
 
 document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -51,10 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabs = document.querySelectorAll('#order-filter-tabs .nav-link');
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      tabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      currentFilter = tab.getAttribute('data-status');
-      renderAdminDashboard();
+      setOrderFilterTab(tab.getAttribute('data-status'));
     });
   });
 
@@ -226,18 +243,16 @@ function renderAdminDashboard() {
   if (statConfirmed) statConfirmed.textContent = confirmedOrders;
   if (statRevenue) statRevenue.textContent = formatCurrency(totalRevenue);
 
-  let filtered = orders;
-  if (currentFilter !== 'ALL') {
-    filtered = filtered.filter(o => {
-      const st = o.status || 'Order Placed';
-      if (currentFilter === 'Order Placed') return st === 'Order Placed' || st === 'Pending';
-      if (currentFilter === 'In Crafting') return st === 'In Crafting' || st === 'Confirmed';
-      if (currentFilter === 'Out for Delivery') return st === 'Out for Delivery' || st === 'Delivery' || st === 'Meet up / Pick up' || st === 'Pickup';
-      if (currentFilter === 'Delivered') return st === 'Delivered' || st === 'Completed';
-      if (currentFilter === 'Cancelled') return st === 'Cancelled';
-      return st === currentFilter;
-    });
-  }
+  let filtered = orders.filter(o => {
+    const st = o.status || 'Order Placed';
+    if (currentFilter === 'Order Placed') return st === 'Order Placed' || st === 'Pending';
+    if (currentFilter === 'In Crafting') return st === 'In Crafting' || st === 'Confirmed';
+    if (currentFilter === 'Out for Delivery') return st === 'Out for Delivery' || st === 'Delivery' || st === 'Meet up / Pick up' || st === 'Pickup';
+    if (currentFilter === 'Delivered') return st === 'Delivered' || st === 'Completed';
+    if (currentFilter === 'Cancelled') return st === 'Cancelled';
+    return st === currentFilter;
+  });
+
   if (searchQuery !== '') {
     filtered = filtered.filter(o => {
       const matchId = (o.orderId || '').toLowerCase().includes(searchQuery);
@@ -252,11 +267,28 @@ function renderAdminDashboard() {
   if (!container) return;
 
   if (filtered.length === 0) {
+    let searchHint = '';
+    if (searchQuery) {
+      const matchInOther = orders.filter(o => {
+        const matchId = (o.orderId || '').toLowerCase().includes(searchQuery);
+        const matchName = (o.customerName || '').toLowerCase().includes(searchQuery);
+        const matchContact = (o.contactNumber || '').toLowerCase().includes(searchQuery);
+        const matchLocation = (o.location || '').toLowerCase().includes(searchQuery);
+        return matchId || matchName || matchContact || matchLocation;
+      });
+      if (matchInOther.length > 0) {
+        const otherSt = matchInOther[0].status || 'Order Placed';
+        const targetTab = (otherSt === 'Pending' ? 'Order Placed' : (otherSt === 'Confirmed' ? 'In Crafting' : (otherSt === 'Delivery' || otherSt === 'Meet up / Pick up' || otherSt === 'Pickup' ? 'Out for Delivery' : (otherSt === 'Completed' ? 'Delivered' : otherSt))));
+        searchHint = `<div class="mt-2 text-muted small">Found matching order under <strong>${targetTab}</strong>. <button class="btn btn-sm btn-outline-dark rounded-pill ms-2 px-2.5 py-0.5" style="font-size: 0.78rem;" onclick="setOrderFilterTab('${targetTab}')">Switch to ${targetTab}</button></div>`;
+      }
+    }
+
     container.innerHTML = `
       <div class="text-center py-5 bg-white rounded-3 border p-4" style="border-color: #f0e2e7 !important;">
         <i class="bi bi-inbox text-muted display-6"></i>
-        <h5 class="fw-semibold text-dark mt-2 mb-1">No Orders Found</h5>
-        <p class="text-muted small mb-3">${searchQuery ? 'No results matched your search query.' : 'Customer orders will appear here automatically.'}</p>
+        <h5 class="fw-semibold text-dark mt-2 mb-1">No Orders in ${currentFilter}</h5>
+        <p class="text-muted small mb-0">${searchQuery ? 'No results matched your search in this category.' : `There are currently no orders under the "${currentFilter}" category.`}</p>
+        ${searchHint}
       </div>
     `;
     return;

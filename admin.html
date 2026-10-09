@@ -171,6 +171,15 @@
       padding: 1rem 1.15rem;
       position: relative;
     }
+    .stat-card-clean.clickable {
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .stat-card-clean.clickable:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(232, 131, 155, 0.12);
+      border-color: #e8839b;
+    }
 
     .stat-label {
       font-size: 0.72rem;
@@ -897,21 +906,21 @@
           </div>
 
           <div class="col-6 col-lg-3">
-            <div class="stat-card-clean">
+            <div class="stat-card-clean clickable" onclick="setOrderFilterTab('Order Placed')" title="Filter by Order Placed">
               <div class="stat-label">PENDING ORDERS</div>
               <div class="stat-value text-warning" id="stat-pending-orders">0</div>
             </div>
           </div>
 
           <div class="col-6 col-lg-3">
-            <div class="stat-card-clean">
+            <div class="stat-card-clean clickable" onclick="setOrderFilterTab('In Crafting')" title="Filter by In Crafting">
               <div class="stat-label">IN CRAFTING</div>
               <div class="stat-value text-primary" id="stat-confirmed-orders">0</div>
             </div>
           </div>
 
           <div class="col-6 col-lg-3">
-            <div class="stat-card-clean">
+            <div class="stat-card-clean clickable" onclick="setOrderFilterTab('Delivered')" title="Filter by Delivered">
               <div class="stat-label">DELIVERED SALES</div>
               <div class="stat-value text-success" id="stat-total-revenue">₱0</div>
             </div>
@@ -929,10 +938,7 @@
             <div class="col-12 col-md-7">
               <ul class="nav nav-pills gap-1 justify-content-md-end" id="order-filter-tabs">
                 <li class="nav-item">
-                  <button class="nav-link active rounded-pill" data-status="ALL">All</button>
-                </li>
-                <li class="nav-item">
-                  <button class="nav-link rounded-pill" data-status="Order Placed">Order Placed</button>
+                  <button class="nav-link active rounded-pill" data-status="Order Placed">Order Placed</button>
                 </li>
                 <li class="nav-item">
                   <button class="nav-link rounded-pill" data-status="In Crafting">In Crafting</button>
