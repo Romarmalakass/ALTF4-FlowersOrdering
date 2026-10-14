@@ -1,3 +1,12 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Customer Inquiries & Contact (contact.js)
+ * ====================================================================
+ * Handles customer contact inquiries, form validation, local storage
+ * backup, and asynchronous mail dispatch to boutique customer support.
+ * ====================================================================
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   setupContactForm();
   setupDirectGmailSync();

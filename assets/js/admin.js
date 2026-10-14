@@ -1,3 +1,15 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Store Administration Console (admin.js)
+ * ====================================================================
+ * Powers the merchant backend dashboard:
+ * - Order lifecycle tracking across fulfillment pipeline
+ * - Real-time buyer-seller chat coordination
+ * - Catalog flower and filler stock management
+ * - Customer directory, order history, and account moderation
+ * ====================================================================
+ */
+
 let currentAdminView = 'orders';
 let currentFilter = 'Order Placed';
 let searchQuery = '';

@@ -1,3 +1,12 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Floral Catalog & Shop (shop.js)
+ * ====================================================================
+ * Manages product catalog filtering, real-time stem search,
+ * sorting by price/rating/popularity, and quick add-to-cart actions.
+ * ====================================================================
+ */
+
 let currentCategory = 'All';
 let currentSearch = '';
 let currentSort = 'default';

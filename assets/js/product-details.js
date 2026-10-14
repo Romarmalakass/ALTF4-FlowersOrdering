@@ -1,3 +1,15 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Custom Bouquet Builder (product-details.js)
+ * ====================================================================
+ * Drives the interactive custom bouquet workshop:
+ * - Multi-stem selection & quantities
+ * - Real-time price and stem count computations
+ * - Wrapper styles, satin ribbon accents, and add-on greetings
+ * - Live summary and order total updates
+ * ====================================================================
+ */
+
 let flowerCategory = 'Fuzzy Wire';
 let selectedFlowers = {};
 let selectedFillers = {};

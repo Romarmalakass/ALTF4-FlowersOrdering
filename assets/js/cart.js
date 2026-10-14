@@ -1,3 +1,13 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Shopping Cart & Order Tracker (cart.js)
+ * ====================================================================
+ * Manages active bag items, quantity increments/decrements,
+ * dynamic subtotal calculations, tab switching between Cart & Orders,
+ * and live buyer order tracking pipeline.
+ * ====================================================================
+ */
+
 let activeCartTab = 'cart';
 let customerOrderSearchQuery = '';
 

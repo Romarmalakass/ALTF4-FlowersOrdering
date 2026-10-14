@@ -1,3 +1,15 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Global Core Application Scripts (global.js)
+ * ====================================================================
+ * Core services & shared models:
+ * - Floral catalog defaults (Fuzzy Wire, Satin Ribbon, Fillers, Colors)
+ * - Session authentication (Buyer & Merchant / Admin)
+ * - Unified cart state & localStorage sync
+ * - Global notification toasts (SweetAlert2) & Navbar state
+ * ====================================================================
+ */
+
 const FUZZY_WIRE_FLOWERS = [
   { id: 'fw-1', name: "Rose Bloom", price: 90, image: "assets/images/fw-1.png", type: "Fuzzy Wire" },
   { id: 'fw-2', name: "Lady Rose", price: 130, image: "assets/images/fw-2.png", type: "Fuzzy Wire" },

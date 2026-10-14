@@ -1,3 +1,15 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Order Checkout & Scheduling (checkout.js)
+ * ====================================================================
+ * Coordinates checkout submission:
+ * - Fulfillment mode selection (Delivery, Pickup, Meetup)
+ * - Dynamic address inputs & contextual helper text
+ * - Strict date validation (no past dates)
+ * - Order confirmation and transition to buyer order tracker
+ * ====================================================================
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   const buyer = typeof getActiveBuyer === 'function' ? getActiveBuyer() : null;
   if (!buyer) {

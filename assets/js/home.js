@@ -1,3 +1,12 @@
+/**
+ * ====================================================================
+ * Craft & Wrapped Haven - Homepage Scripts (home.js)
+ * ====================================================================
+ * Handles rendering featured bouquets, bestsellers, and dynamic
+ * product showcase cards on the landing page (index.html).
+ * ====================================================================
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   renderFeaturedProducts();
   renderBestsellers();
