@@ -792,7 +792,7 @@
     }
     .flower-admin-img-box {
       width: 100%;
-      height: 175px;
+      height: 250px;
       position: relative;
       background: #faf6f8;
       overflow: hidden;
@@ -804,7 +804,12 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center center;
       display: block;
+      transition: transform 0.25s ease;
+    }
+    .flower-admin-card:hover .flower-admin-img-box img {
+      transform: scale(1.02);
     }
     .admin-card-badges {
       position: absolute;

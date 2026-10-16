@@ -1180,13 +1180,10 @@ function renderAdminFlowers() {
               ${formatCurrency(flower.price)}
             </span>
           </div>
-          <h6 class="fw-bold text-dark mb-1 text-truncate" title="${flower.name}">${flower.name}</h6>
-          <p class="text-muted small mb-3" style="font-size: 0.74rem; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 2rem;">
-            ${flower.description || 'Artisanal handcrafted flower for bouquets and floral arrangements.'}
-          </p>
+          <h6 class="fw-bold text-dark mb-2 text-truncate" title="${flower.name}">${flower.name}</h6>
 
           <!-- Quick Toggle Badges -->
-          <div class="d-flex flex-wrap gap-1.5 mb-3 pt-2 border-top">
+          <div class="d-flex flex-wrap gap-1.5 mb-2.5 pt-2 border-top">
             <button type="button" class="btn-toggle-badge ${flower.bestseller ? 'active-bestseller' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'bestseller')" title="${flower.bestseller ? 'Best Seller (Click to remove)' : 'Click to make Best Seller'}">
               <i class="bi bi-star${flower.bestseller ? '-fill text-warning' : ' text-muted'}"></i>
               <span>Best Seller</span>
