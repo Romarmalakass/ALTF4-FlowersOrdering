@@ -212,6 +212,8 @@ function switchAdminView(view) {
     window.history.replaceState(null, '', url);
   } catch (e) {}
 
+  document.documentElement.setAttribute('data-admin-view', view);
+
   const ordersSec = document.getElementById('orders-view-section');
   const chatSec = document.getElementById('chat-view-section');
   const productsSec = document.getElementById('products-view-section');
@@ -845,8 +847,7 @@ function initAdminChatList() {
 
     // Auto-sync polling every 1.2s when admin is viewing chat
     setInterval(() => {
-      const chatSection = document.getElementById('chat-view-section');
-      if (!chatSection || chatSection.style.display === 'none') return;
+      if (currentAdminView !== 'chat') return;
       if (!selectedCustomerEmail) return;
 
       const cleanEmail = selectedCustomerEmail.toLowerCase().trim();
