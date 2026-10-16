@@ -6,6 +6,12 @@
   <title>Admin Portal | Craft & Wrapped Haven</title>
   <meta name="description" content="Official Admin Order Management & Live Customer Chat for Craft & Wrapped Haven">
 
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/images/favicon.png?v=2">
+  <link rel="icon" type="image/png" href="assets/images/logo.png?v=2">
+  <link rel="apple-touch-icon" href="assets/images/logo.png?v=2">
+  <link rel="shortcut icon" href="favicon.ico?v=2">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -297,6 +303,22 @@
     .cust-stat-card.total .cust-stat-icon { background: #fdf0f4; color: #7a2236; }
     .cust-stat-card.active .cust-stat-icon { background: #ecfdf5; color: #059669; }
     .cust-stat-card.banned .cust-stat-icon { background: #fef2f2; color: #dc2626; }
+    .cust-stat-card.active-tab-selected {
+      border-color: #10b981 !important;
+      box-shadow: 0 6px 18px rgba(16, 185, 129, 0.16) !important;
+    }
+    .cust-stat-card.banned-tab-selected {
+      border-color: #ef4444 !important;
+      box-shadow: 0 6px 18px rgba(239, 68, 68, 0.16) !important;
+    }
+    #customer-filter-tabs .nav-link[data-status="BANNED"].active {
+      background-color: #dc2626 !important;
+      border-color: #dc2626 !important;
+      color: #ffffff !important;
+    }
+    #customer-filter-tabs .nav-link[data-status="BANNED"].active i {
+      color: #ffffff !important;
+    }
 
     .cust-stat-label {
       font-size: 0.72rem;
@@ -762,18 +784,28 @@
       border-radius: 50px;
       border: 1px solid #e0cfd6;
       background: #ffffff;
-      color: #634a54;
+      color: #7a656f;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       transition: all 0.15s ease;
       cursor: pointer;
+      user-select: none;
+    }
+    .btn-toggle-badge:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(122, 34, 54, 0.08);
+      border-color: #d1b8c3;
     }
     .btn-toggle-badge.active-bestseller {
-      background: #fff0f3;
-      border-color: #7a2236;
-      color: #7a2236;
+      background: #fff8eb;
+      border-color: #f59e0b;
+      color: #b45309;
       font-weight: 700;
+    }
+    .btn-toggle-badge.active-bestseller:hover {
+      background: #fef3c7;
+      border-color: #d97706;
     }
     .btn-toggle-badge.active-newarrival {
       background: #ecfdf5;
@@ -781,8 +813,9 @@
       color: #047857;
       font-weight: 700;
     }
-    .btn-toggle-badge:hover {
-      transform: translateY(-1px);
+    .btn-toggle-badge.active-newarrival:hover {
+      background: #d1fae5;
+      border-color: #059669;
     }
     .flower-preview-box {
       width: 100%;
@@ -1119,7 +1152,7 @@
             </div>
           </div>
           <div class="col-12 col-md-4">
-            <div class="cust-stat-card active d-flex align-items-center justify-content-between">
+            <div class="cust-stat-card active d-flex align-items-center justify-content-between" role="button" onclick="setCustomerFilterTab('ACTIVE')" title="Filter to Active Accounts" style="cursor: pointer;">
               <div>
                 <div class="cust-stat-label">ACTIVE ACCOUNTS</div>
                 <div class="cust-stat-value text-success" id="stat-active-customers">0</div>
@@ -1131,7 +1164,7 @@
             </div>
           </div>
           <div class="col-12 col-md-4">
-            <div class="cust-stat-card banned d-flex align-items-center justify-content-between">
+            <div class="cust-stat-card banned d-flex align-items-center justify-content-between" role="button" onclick="setCustomerFilterTab('BANNED')" title="Filter to Banned Accounts" style="cursor: pointer;">
               <div>
                 <div class="cust-stat-label">BANNED / RESTRICTED</div>
                 <div class="cust-stat-value text-danger" id="stat-banned-customers">0</div>
@@ -1155,10 +1188,7 @@
             <div class="col-12 col-md-7">
               <ul class="nav nav-pills gap-1.5 justify-content-md-end" id="customer-filter-tabs">
                 <li class="nav-item">
-                  <button class="nav-link active rounded-pill px-3 py-1.5" data-status="ALL">All Customers</button>
-                </li>
-                <li class="nav-item">
-                  <button class="nav-link rounded-pill px-3 py-1.5" data-status="ACTIVE"><i class="bi bi-check-circle-fill text-success me-1"></i> Active</button>
+                  <button class="nav-link active rounded-pill px-3 py-1.5" data-status="ACTIVE"><i class="bi bi-check-circle-fill text-success me-1"></i> Active</button>
                 </li>
                 <li class="nav-item">
                   <button class="nav-link rounded-pill px-3 py-1.5" data-status="BANNED"><i class="bi bi-slash-circle-fill text-danger me-1"></i> Banned</button>

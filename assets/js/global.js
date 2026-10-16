@@ -943,6 +943,25 @@ function closeMobileNav() {
   }
 }
 
+// Ensure Craft & Wrapped Haven logo is always set as favicon and clears browser cache
+function ensureCraftAndWrappedFavicon() {
+  try {
+    let icon = document.querySelector("link[rel*='icon']");
+    if (!icon) {
+      icon = document.createElement('link');
+      icon.rel = 'icon';
+      document.head.appendChild(icon);
+    }
+    icon.type = 'image/png';
+    icon.href = 'assets/images/favicon.png?v=2';
+  } catch (e) {}
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', ensureCraftAndWrappedFavicon);
+} else {
+  ensureCraftAndWrappedFavicon();
+}
+
 // QA: Automatically close mobile navigation drawer when a nav link is selected
 document.addEventListener('DOMContentLoaded', () => {
   const navLinks = document.querySelectorAll('.bloom-navbar .nav-link');

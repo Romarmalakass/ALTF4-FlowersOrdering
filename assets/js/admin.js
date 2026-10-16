@@ -11,14 +11,30 @@
  */
 
 let currentAdminView = 'orders';
-let currentFilter = 'Order Placed';
+let currentFilter = sessionStorage.getItem('cwh_admin_order_filter') || 'Order Placed';
 let searchQuery = '';
 let selectedCustomerEmail = null;
 let chatSearchQuery = '';
-let flowerCategoryFilter = 'ALL';
+let flowerCategoryFilter = sessionStorage.getItem('cwh_admin_flower_filter') || 'ALL';
 let flowerSearchQuery = '';
 let customerSearchQuery = '';
-let customerFilter = 'ALL';
+let customerFilter = sessionStorage.getItem('cwh_admin_customer_filter') || 'ACTIVE';
+
+function setCustomerFilterTab(status) {
+  const targetStatus = (status === 'BANNED') ? 'BANNED' : 'ACTIVE';
+  customerFilter = targetStatus;
+  try { sessionStorage.setItem('cwh_admin_customer_filter', targetStatus); } catch (e) {}
+  const tabs = document.querySelectorAll('#customer-filter-tabs .nav-link');
+  tabs.forEach(tab => {
+    if (tab.getAttribute('data-status') === targetStatus) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+  renderAdminCustomers();
+}
+window.setCustomerFilterTab = setCustomerFilterTab;
 
 function setOrderFilterTab(status) {
   let targetStatus = status;
@@ -28,6 +44,7 @@ function setOrderFilterTab(status) {
   if (status === 'Completed') targetStatus = 'Delivered';
 
   currentFilter = targetStatus;
+  try { sessionStorage.setItem('cwh_admin_order_filter', targetStatus); } catch (e) {}
   const tabs = document.querySelectorAll('#order-filter-tabs .nav-link');
   tabs.forEach(tab => {
     if (tab.getAttribute('data-status') === targetStatus) {
@@ -101,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       flowerTabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       flowerCategoryFilter = tab.getAttribute('data-cat');
+      try { sessionStorage.setItem('cwh_admin_flower_filter', flowerCategoryFilter); } catch (e) {}
       renderAdminFlowers();
     });
   });
@@ -116,18 +134,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const customerTabs = document.querySelectorAll('#customer-filter-tabs .nav-link');
   customerTabs.forEach(tab => {
     tab.addEventListener('click', () => {
-      customerTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      customerFilter = tab.getAttribute('data-status');
-      renderAdminCustomers();
+      const status = tab.getAttribute('data-status') === 'BANNED' ? 'BANNED' : 'ACTIVE';
+      setCustomerFilterTab(status);
     });
   });
 
-  renderAdminDashboard();
-  initAdminChatList();
-  renderAdminFlowers();
-  renderAdminCustomers();
-  updateSidebarBadges();
+  // Restore sub-filter active states in DOM
+  const orderTabs = document.querySelectorAll('#order-filter-tabs .nav-link');
+  orderTabs.forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-status') === currentFilter);
+  });
+
+  flowerTabs.forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-cat') === flowerCategoryFilter);
+  });
+
+  customerTabs.forEach(tab => {
+    tab.classList.toggle('active', tab.getAttribute('data-status') === customerFilter);
+  });
+
+  // Determine which page/tab the admin was on before refreshing
+  const validViews = ['orders', 'products', 'chat', 'customers'];
+  let initialView = urlParams.get('tab') || urlParams.get('view') || window.location.hash.replace('#', '') || sessionStorage.getItem('cwh_admin_active_view') || localStorage.getItem('cwh_admin_active_view') || 'orders';
+  if (!validViews.includes(initialView)) {
+    if (initialView === 'flowers' || initialView === 'shop') initialView = 'products';
+    else if (initialView === 'messages') initialView = 'chat';
+    else initialView = 'orders';
+  }
+
+  // Switch to the preserved view
+  switchAdminView(initialView);
 
   if (sessionStorage.getItem('cwh_admin_just_logged_in') === 'true') {
     sessionStorage.removeItem('cwh_admin_just_logged_in');
@@ -161,7 +197,20 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function switchAdminView(view) {
+  const validViews = ['orders', 'products', 'chat', 'customers'];
+  if (!validViews.includes(view)) {
+    view = 'orders';
+  }
   currentAdminView = view;
+
+  try {
+    sessionStorage.setItem('cwh_admin_active_view', view);
+    localStorage.setItem('cwh_admin_active_view', view);
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('tab', view);
+    window.history.replaceState(null, '', url);
+  } catch (e) {}
 
   const ordersSec = document.getElementById('orders-view-section');
   const chatSec = document.getElementById('chat-view-section');
@@ -1137,13 +1186,13 @@ function renderAdminFlowers() {
 
           <!-- Quick Toggle Badges -->
           <div class="d-flex flex-wrap gap-1.5 mb-3 pt-2 border-top">
-            <button type="button" class="btn-toggle-badge ${flower.bestseller ? 'active-bestseller' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'bestseller')" title="Toggle Best Seller status">
-              <i class="bi bi-star${flower.bestseller ? '-fill text-warning' : ''}"></i>
-              <span>${flower.bestseller ? 'Best Seller' : 'Not Best Seller'}</span>
+            <button type="button" class="btn-toggle-badge ${flower.bestseller ? 'active-bestseller' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'bestseller')" title="${flower.bestseller ? 'Best Seller (Click to remove)' : 'Click to make Best Seller'}">
+              <i class="bi bi-star${flower.bestseller ? '-fill text-warning' : ' text-muted'}"></i>
+              <span>Best Seller</span>
             </button>
-            <button type="button" class="btn-toggle-badge ${flower.newArrival ? 'active-newarrival' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'newArrival')" title="Toggle New Arrival status">
-              <i class="bi bi-sparkles${flower.newArrival ? ' text-success' : ''}"></i>
-              <span>${flower.newArrival ? 'New Arrival' : 'Not New'}</span>
+            <button type="button" class="btn-toggle-badge ${flower.newArrival ? 'active-newarrival' : ''}" onclick="quickToggleFlowerFlag('${flower.id}', 'newArrival')" title="${flower.newArrival ? 'New Arrival (Click to remove)' : 'Click to make New Arrival'}">
+              <i class="bi bi-sparkles${flower.newArrival ? ' text-success' : ' text-muted'}"></i>
+              <span>New Arrival</span>
             </button>
           </div>
 
@@ -1397,7 +1446,7 @@ function quickToggleFlowerFlag(id, flagName) {
 
   const label = flagName === 'bestseller' ? 'Best Seller' : 'New Arrival';
   if (typeof showToast === 'function') {
-    showToast(`${label} ${newVal ? 'Activated' : 'Removed'}!`, 'info');
+    showToast(`${label} ${newVal ? 'Enabled!' : 'Disabled'}`, newVal ? 'success' : 'info');
   }
 }
 
@@ -1482,10 +1531,24 @@ function renderAdminCustomers() {
   if (statActiveEl) statActiveEl.textContent = activeCount;
   if (statBannedEl) statBannedEl.textContent = bannedCount;
 
+  const activeStatCard = document.querySelector('.cust-stat-card.active');
+  const bannedStatCard = document.querySelector('.cust-stat-card.banned');
+  if (activeStatCard) {
+    activeStatCard.classList.toggle('active-tab-selected', customerFilter === 'ACTIVE');
+  }
+  if (bannedStatCard) {
+    bannedStatCard.classList.toggle('banned-tab-selected', customerFilter === 'BANNED');
+  }
+
   let filtered = buyers.filter(buyer => {
     const isBanned = typeof isEmailBanned === 'function' && isEmailBanned(buyer.email);
-    if (customerFilter === 'ACTIVE' && isBanned) return false;
-    if (customerFilter === 'BANNED' && !isBanned) return false;
+    // Strict separation: never mix active and banned accounts
+    if (customerFilter === 'BANNED') {
+      if (!isBanned) return false;
+    } else {
+      // Default to ACTIVE: show only active accounts
+      if (isBanned) return false;
+    }
 
     if (customerSearchQuery) {
       const q = customerSearchQuery;
@@ -1499,11 +1562,12 @@ function renderAdminCustomers() {
   });
 
   if (filtered.length === 0) {
+    const isBannedView = customerFilter === 'BANNED';
     container.innerHTML = `
       <div class="text-center py-5 bg-light rounded-4 border p-4 my-2">
-        <i class="bi bi-people display-4 text-muted mb-2 d-block"></i>
-        <h6 class="fw-bold text-dark">No Customer Accounts Found</h6>
-        <p class="text-muted small mb-0">No registered customers match your current filter or search criteria.</p>
+        <i class="bi ${isBannedView ? 'bi-shield-check text-success' : 'bi-people text-muted'} display-4 mb-2 d-block"></i>
+        <h6 class="fw-bold text-dark">${isBannedView ? 'No Banned Customer Accounts' : 'No Active Customer Accounts Found'}</h6>
+        <p class="text-muted small mb-0">${isBannedView ? 'All customer accounts are active and in good standing.' : (customerSearchQuery ? 'No active customers match your search query.' : 'There are no active customer accounts registered.')}</p>
       </div>
     `;
     return;
